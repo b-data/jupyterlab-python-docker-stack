@@ -147,9 +147,12 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
 		  ln -svT "$src" "/usr/bin/$dst"; \
 	  done; \
   fi \
-  ## Install pip
+  ## Install/update pip, setuptools and wheel
   && curl -sLO https://bootstrap.pypa.io/get-pip.py \
   && python3 get-pip.py \
+    pip \
+    setuptools \
+    wheel \
   && rm get-pip.py \
   ## Install font MesloLGS NF
   && mkdir -p /usr/share/fonts/truetype/meslo \
