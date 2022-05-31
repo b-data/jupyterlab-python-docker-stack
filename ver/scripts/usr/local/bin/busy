@@ -1,0 +1,13 @@
+#!/bin/bash
+# Copyright (c) 2022 b-data GmbH.
+# Distributed under the terms of the MIT License.
+
+while [ ! -z $JUPYTERHUB_API_TOKEN ]; do
+  t=$(date -Iseconds)
+  curl -s \
+    $JUPYTERHUB_ACTIVITY_URL -H \
+    "Authorization: token $JUPYTERHUB_API_TOKEN" -d \
+    "{\"servers\":{\"$JUPYTERHUB_SERVER_NAME\":{\"last_activity\":\"$t\"}},\"last_activity\":\"$t\"}" \
+    > /dev/null 2>&1
+  sleep 300
+done
