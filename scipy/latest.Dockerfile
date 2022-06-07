@@ -8,13 +8,12 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 ARG CODE_BUILTIN_EXTENSIONS_DIR
 ARG CTAN_REPO
-ARG TARGETARCH
 
 USER root
 
 ENV HOME=/root \
     CTAN_REPO=${CTAN_REPO} \
-    PATH=/opt/TinyTeX/bin/${TARGETARCH}-linux:$PATH
+    PATH=/opt/TinyTeX/bin/linux:$PATH
 
 RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && dpkg -i texlive-local.deb \
@@ -30,24 +29,23 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
     | sh -s - --admin --no-path \
   && mv ~/.TinyTeX /opt/TinyTeX \
-  && /opt/TinyTeX/bin/*/tlmgr path add \
+  && ln -rs /opt/TinyTeX/bin/$(uname -m)-linux \
+    /opt/TinyTeX/bin/linux \
+  && /opt/TinyTeX/bin/linux/tlmgr path add \
   && tlmgr update --self \
   && tlmgr install \
     ae \
     cm-super \
+    context \
     dvipng \
     listings \
     makeindex \
     parskip \
     pdfcrop \
-  ## context installs on aarch64 but returns non-zero exit code
-  && tlmgr install context || true \
   && tlmgr path add \
   && chown -R root:${NB_GID} /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
-  && ln -rs /opt/TinyTeX/bin/$(uname -m)-linux \
-    /opt/TinyTeX/bin/${TARGETARCH}-linux \
   ## Build numpy and scipy using stock OpenBLAS
   && pip install --no-binary=":all:" \
     numpy \
