@@ -1,0 +1,103 @@
+ARG PYTHON_VERSION=3.10.4
+ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
+ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
+
+FROM registry.gitlab.b-data.ch/jupyterlab/python/base:${PYTHON_VERSION}
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG CODE_BUILTIN_EXTENSIONS_DIR
+ARG CTAN_REPO
+ARG TARGETARCH
+
+USER root
+
+ENV HOME=/root \
+    CTAN_REPO=${CTAN_REPO} \
+    PATH=/opt/TinyTeX/bin/${TARGETARCH}-linux:$PATH
+
+RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
+  && dpkg -i texlive-local.deb \
+  && rm texlive-local.deb \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    fonts-roboto \
+    ghostscript \
+    qpdf \
+    texinfo \
+  ## Admin-based install of TinyTeX
+  && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
+    | sh -s - --admin --no-path \
+  && mv ~/.TinyTeX /opt/TinyTeX \
+  && /opt/TinyTeX/bin/*/tlmgr path add \
+  && tlmgr update --self \
+  && tlmgr install \
+    ae \
+    cm-super \
+    dvipng \
+    listings \
+    makeindex \
+    parskip \
+    pdfcrop \
+  ## context installs on aarch64 but returns non-zero exit code
+  && tlmgr install context || true \
+  && tlmgr path add \
+  && chown -R root:${NB_GID} /opt/TinyTeX \
+  && chmod -R g+w /opt/TinyTeX \
+  && chmod -R g+wx /opt/TinyTeX/bin \
+  && ln -rs /opt/TinyTeX/bin/$(uname -m)-linux \
+    /opt/TinyTeX/bin/${TARGETARCH}-linux \
+  ## Build numpy and scipy using stock OpenBLAS
+  && pip install --no-binary=":all:" \
+    numpy \
+    scipy \
+  ## Install Python packages
+  && pip install \
+    altair \
+    beautifulsoup4 \
+    bokeh \
+    bottleneck \
+    cloudpickle \
+    cython \
+    dask \
+    dill \
+    h5py \
+    ipympl\
+    ipywidgets \
+    matplotlib \
+    numba \
+    numexpr \
+    pandas \
+    patsy \
+    protobuf \
+    scikit-image \
+    scikit-learn \
+    seaborn \
+    sqlalchemy \
+    statsmodels \
+    sympy \
+    tables \
+    widgetsnbextension \
+    xlrd \
+  ## Install facets
+  && cd /tmp \
+  && git clone https://github.com/PAIR-code/facets.git \
+  && jupyter nbextension install facets/facets-dist/ --sys-prefix \
+  && cd / \
+  ## Install code-server extensions
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
+  ## Clean up
+  && rm -rf /tmp/* \
+  && rm -rf /var/lib/apt/lists/* \
+    $HOME/.cache \
+    $HOME/.config \
+    $HOME/.local \
+    $HOME/.wget-hsts
+
+## Switch back to ${NB_USER} to avoid accidental container runs as root
+USER ${NB_USER}
+
+ENV HOME=/home/${NB_USER}
+
+WORKDIR ${HOME}
