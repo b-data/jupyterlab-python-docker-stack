@@ -19,7 +19,7 @@
   - >
     export VERSION_MAJ_MIN_PAT=`sed -n
     "s|.*PYTHON_VERSION=\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\).*|\1|p"
-    ver/$CI_APP_TAG.Dockerfile`
+    base/$CI_APP_TAG.Dockerfile`
     
     export VERSION_MAJ_MIN=`echo $VERSION_MAJ_MIN_PAT |
     sed -n "s|\([[:digit:]]\+\.[[:digit:]]\+\).*|\1|p"`
@@ -58,7 +58,7 @@ build:latest-linux-amd64:
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
       changes:
-        - ver/latest.Dockerfile
+        - base/latest.Dockerfile
 
 build:latest-linux-arm64v8:
   extends: .build
@@ -80,7 +80,7 @@ build:latest-linux-arm64v8:
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
       changes:
-        - ver/latest.Dockerfile
+        - base/latest.Dockerfile
 
 build:version-linux-amd64:
   extends: .build
@@ -102,7 +102,7 @@ build:version-linux-amd64:
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
       changes:
-        - ver/3.10.3.Dockerfile
+        - base/3.10.3.Dockerfile
 
 build:version-linux-arm64v8:
   extends: .build
@@ -124,7 +124,7 @@ build:version-linux-arm64v8:
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
       changes:
-        - ver/3.10.3.Dockerfile
+        - base/3.10.3.Dockerfile
 
 build-manifest:latest-linux-multiarch:
   extends: .build
@@ -182,7 +182,7 @@ build-manifest:latest-linux-multiarch:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       changes:
-        - ver/latest.Dockerfile
+        - base/latest.Dockerfile
 
 build-manifest:version-linux-multiarch:
   extends: .build
@@ -207,4 +207,4 @@ build-manifest:version-linux-multiarch:
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version"
       changes:
-        - ver/3.10.3.Dockerfile
+        - base/3.10.3.Dockerfile

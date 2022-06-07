@@ -5,7 +5,7 @@ ARG PYTHON_SUBTAG=slim-bullseye
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ARG NB_GID=100
-ARG JUPYTERHUB_VERSION=2.3.0
+ARG JUPYTERHUB_VERSION=2.3.1
 ARG JUPYTERLAB_VERSION=3.4.2
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG CODE_SERVER_RELEASE=4.4.0
@@ -31,39 +31,10 @@ RUN chown -R ${NB_UID}:${NB_GID} /files/var/backups/skel \
   && find /files -type f -exec chmod 644 {} \; \
   && find /files/usr/local/bin -type f -exec chmod 755 {} \;
 
-FROM ${BASE_IMAGE} as builder
-
-ARG BASE_IMAGE
-ARG PYTHON_VERSION
-
-ENV LANG=en_US.UTF-8 \
-    TZ=Etc/UTC \
-    BASE_IMAGE=${BASE_IMAGE} \
-    PYTHON_VERSION=${PYTHON_VERSION}
-
-RUN apt-get update \
-  && apt-get -y install --no-install-recommends \
-    bash-completion \
-    build-essential \
-    ca-certificates \
-    libexpat1-dev \
-    libjs-sphinxdoc \
-    locales \
-    netbase \
-    unzip \
-    zip \
-    zlib1g-dev \
-  && sed -i "s/# $LANG/$LANG/g" /etc/locale.gen \
-  && locale-gen \
-  && update-locale LANG=$LANG \
-  ## Clean up
-  && rm -rf /var/lib/apt/lists/*
-
-FROM python:${PYTHON_VERSION}-${PYTHON_SUBTAG} as psi
 FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE} as gsi
 FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
 
-FROM builder
+FROM registry.gitlab.b-data.ch/python/ver:${PYTHON_VERSION}
 
 LABEL org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.b-data.ch/jupyterlab/python/docker-stack" \
@@ -95,8 +66,6 @@ ENV NB_USER=${NB_USER} \
     GIT_LFS_VERSION=${GIT_LFS_VERSION} \
     PANDOC_VERSION=${PANDOC_VERSION}
 
-## Install Python
-COPY --from=psi /usr/local /usr/local
 ## Install Git
 COPY --from=gsi /usr/local /usr/local
 ## Install Git LFS
@@ -110,7 +79,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     curl \
     file \
     fontconfig \
+    g++ \
     gcc \
+    gfortran \
     gnupg \
     htop \
     info \
@@ -133,9 +104,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ## Additional git runtime recommendations
     less \
     ssh-client \
+  ## Additional python-dev dependencies
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
-      ## Additional python-dev dependencies
       python3-dev \
       python3-distutils; \
     ## make some useful symlinks that are expected to exist
@@ -149,7 +120,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   fi \
   ## Install/update pip, setuptools and wheel
   && curl -sLO https://bootstrap.pypa.io/get-pip.py \
-  && python3 get-pip.py \
+  && python get-pip.py \
     pip \
     setuptools \
     wheel \
@@ -219,7 +190,7 @@ RUN mkdir /opt/code-server \
     $HOME/.local
 
 ## Install JupyterLab
-RUN pip3 install \
+RUN pip install \
     jupyter-server-proxy \
     jupyterhub==${JUPYTERHUB_VERSION} \
     jupyterlab==${JUPYTERLAB_VERSION} \
@@ -228,7 +199,6 @@ RUN pip3 install \
     notebook \
     nbconvert \
     python-lsp-server[all] \
-    virtualenv \
   ## Include custom fonts
   && sed -i 's|</head>|<link rel="preload" href="{{page_config.fullStaticUrl}}/assets/fonts/MesloLGS-NF-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous"></head>|g' /usr/local/share/jupyter/lab/static/index.html \
   && sed -i 's|</head>|<link rel="preload" href="{{page_config.fullStaticUrl}}/assets/fonts/MesloLGS-NF-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous"></head>|g' /usr/local/share/jupyter/lab/static/index.html \
