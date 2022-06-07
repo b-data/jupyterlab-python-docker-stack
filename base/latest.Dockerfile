@@ -76,6 +76,8 @@ USER root
 RUN dpkgArch="$(dpkg --print-architecture)" \
   && apt-get update \
   && apt-get -y install --no-install-recommends \
+    bash-completion \
+    build-essential \
     curl \
     file \
     fontconfig \
@@ -85,6 +87,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     gnupg \
     htop \
     info \
+    inkscape \
     jq \
     libclang-dev \
     lsb-release \
