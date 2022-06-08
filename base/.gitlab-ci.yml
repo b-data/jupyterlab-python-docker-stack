@@ -9,7 +9,7 @@
     if [[ $CI_COMMIT_BRANCH == "main" ]]; then
       export CI_APP_TAG=${CI_APP_TAG:-latest}
     elif [[ $CI_COMMIT_BRANCH == "freeze-version" ]]; then
-      export CI_APP_TAG=${CI_APP_TAG:-3.10.3}
+      export CI_APP_TAG=${CI_APP_TAG:-3.10.4}
     else
       export CI_APP_TAG=${CI_APP_TAG:-$CI_COMMIT_SHA}
     fi
@@ -102,7 +102,7 @@ build:version-linux-amd64:
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
       changes:
-        - base/3.10.3.Dockerfile
+        - base/3.10.4.Dockerfile
 
 build:version-linux-arm64v8:
   extends: .build
@@ -124,7 +124,7 @@ build:version-linux-arm64v8:
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
       changes:
-        - base/3.10.3.Dockerfile
+        - base/3.10.4.Dockerfile
 
 build-manifest:latest-linux-multiarch:
   extends: .build
@@ -207,4 +207,30 @@ build-manifest:version-linux-multiarch:
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version"
       changes:
-        - base/3.10.3.Dockerfile
+        - base/3.10.4.Dockerfile
+
+trigger-latest-build:
+  extends: .build
+  stage: .post
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$JUPYTERLAB_PYTHON_SCIPY -F ref=main https://gitlab.b-data.ch/api/v4/projects/287/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      changes:
+        - base/latest.Dockerfile
+
+trigger-version-build:
+  extends: .build
+  stage: .post
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$JUPYTERLAB_PYTHON_SCIPY -F ref=freeze-version https://gitlab.b-data.ch/api/v4/projects/287/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "freeze-version"
+      changes:
+        - base/3.10.4.Dockerfile
