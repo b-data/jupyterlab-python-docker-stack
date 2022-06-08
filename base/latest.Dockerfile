@@ -1,12 +1,12 @@
 ARG BASE_IMAGE=debian:bullseye
-ARG PYTHON_VERSION=3.10.4
+ARG PYTHON_VERSION=3.10.5
 ARG PYTHON_SUBTAG=slim-bullseye
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ARG NB_GID=100
 ARG JUPYTERHUB_VERSION=2.3.1
-ARG JUPYTERLAB_VERSION=3.4.2
+ARG JUPYTERLAB_VERSION=3.4.3
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG CODE_SERVER_RELEASE=4.4.0
 ARG GIT_VERSION=2.36.1
@@ -223,7 +223,7 @@ ENV HOME=/home/${NB_USER} \
 WORKDIR ${HOME}
 
 ## Install Oh My Zsh with Powerlevel10k theme
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended \
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
   && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git .oh-my-zsh/custom/themes/powerlevel10k \
   && sed -i 's/ZSH="\/home\/jovyan\/.oh-my-zsh"/ZSH="$HOME\/.oh-my-zsh"/g' .zshrc \
   && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' .zshrc \
