@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION=3.10.4
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2022/06/08/tlnet
 
 FROM registry.gitlab.b-data.ch/jupyterlab/python/base:${PYTHON_VERSION}
 
