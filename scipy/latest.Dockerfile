@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.10.5
+ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
