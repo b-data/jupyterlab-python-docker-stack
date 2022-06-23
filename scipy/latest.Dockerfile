@@ -16,6 +16,8 @@ ARG CTAN_REPO
 USER root
 
 ENV HOME=/root \
+    NUMPY_VERSION=${NUMPY_VERSION} \
+    SCIPY_VERSION=${SCIPY_VERSION} \
     CTAN_REPO=${CTAN_REPO} \
     PATH=/opt/TinyTeX/bin/linux:$PATH
 
@@ -51,11 +53,7 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
   ## Build numpy and scipy using stock OpenBLAS
-  && pip install --no-binary=":all:" \
-    numpy==${NUMPY_VERSION} \
-    scipy==${SCIPY_VERSION} \
-  ## Install Python packages
-  && pip install \
+  && pip install --no-binary="numpy,scipy" \
     altair \
     beautifulsoup4 \
     bokeh \
@@ -70,11 +68,13 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
     matplotlib \
     numba \
     numexpr \
+    numpy==${NUMPY_VERSION} \
     pandas \
     patsy \
     protobuf \
     scikit-image \
     scikit-learn \
+    scipy==${SCIPY_VERSION} \
     seaborn \
     sqlalchemy \
     statsmodels \
