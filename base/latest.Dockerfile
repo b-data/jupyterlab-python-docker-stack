@@ -166,6 +166,8 @@ RUN mkdir /opt/code-server \
   && curl -sL https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg -o vscode.svg \
   ## Fix https://github.com/coder/code-server/issues/5335
   && mv lib/vscode/bin/remote-cli/code-server lib/vscode/bin/remote-cli/code-oss \
+  && sed -i 's/code-server/code-oss/g' lib/vscode/bin/remote-cli/code-oss \
+  && sed -i 's/code-server/code-oss/g' lib/vscode/bin/helpers/browser.sh \
   ## Include custom fonts
   && sed -i 's|</head>|	<link rel="preload" href="{{BASE}}/_static/src/browser/media/fonts/MesloLGS-NF-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">\n	</head>|g' /opt/code-server/lib/vscode/out/vs/code/browser/workbench/workbench.html \
   && sed -i 's|</head>|	<link rel="preload" href="{{BASE}}/_static/src/browser/media/fonts/MesloLGS-NF-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">\n	</head>|g' /opt/code-server/lib/vscode/out/vs/code/browser/workbench/workbench.html \
