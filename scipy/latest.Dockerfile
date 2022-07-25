@@ -39,15 +39,22 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
     /opt/TinyTeX/bin/linux \
   && /opt/TinyTeX/bin/linux/tlmgr path add \
   && tlmgr update --self \
+  ## TeX packages as requested by the community
+  && curl -sSLO https://yihui.org/gh/tinytex/tools/pkgs-yihui.txt \
+  && tlmgr install $(cat pkgs-yihui.txt | tr '\n' ' ') \
+  && rm -f pkgs-yihui.txt \
+  ## TeX packages as in rocker/verse
   && tlmgr install \
-    ae \
-    cm-super \
     context \
-    dvipng \
-    listings \
-    makeindex \
-    parskip \
     pdfcrop \
+  ## TeX packages as in jupyter/scipy-notebook
+  && tlmgr install \
+    cm-super \
+    dvipng \
+  ## TeX packages specific for nbconvert
+  && tlmgr install \
+    oberdiek \
+    titling \
   && tlmgr path add \
   && chown -R root:${NB_GID} /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \

@@ -34,7 +34,7 @@
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
     PYTHON_VERSION: "3.10.5"
-    UPDATE_MODE: "false"
+    UPDATE_MODE: "true"
   before_script:
     - *before-script-build
 
@@ -94,7 +94,6 @@ build:version-linux-amd64:
   script:
     - >
       docker build --pull
-      --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f scipy/$PYTHON_VERSION.Dockerfile .
     - |
@@ -116,7 +115,6 @@ build:version-linux-arm64v8:
   script:
     - >
       docker build --pull
-      --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f scipy/$PYTHON_VERSION.Dockerfile .
     - |
