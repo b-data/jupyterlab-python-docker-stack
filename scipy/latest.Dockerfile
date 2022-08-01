@@ -1,5 +1,6 @@
 ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
+ARG QUARTO_VERSION=1.0.37
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM registry.gitlab.b-data.ch/jupyterlab/python/base:${PYTHON_VERSION}
@@ -7,6 +8,7 @@ FROM registry.gitlab.b-data.ch/jupyterlab/python/base:${PYTHON_VERSION}
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG CODE_BUILTIN_EXTENSIONS_DIR
+ARG QUARTO_VERSION
 ARG CTAN_REPO
 
 USER root
@@ -15,7 +17,8 @@ ENV HOME=/root \
     CTAN_REPO=${CTAN_REPO} \
     PATH=/opt/TinyTeX/bin/linux:$PATH
 
-RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
+RUN dpkgArch="$(dpkg --print-architecture)" \
+  && wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && dpkg -i texlive-local.deb \
   && rm texlive-local.deb \
   && apt-get update \
@@ -24,6 +27,16 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
     ghostscript \
     qpdf \
     texinfo \
+  && if [ ${dpkgArch} = "amd64" ]; then \
+    ## Install quarto
+    curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.deb; \
+    dpkg -i quarto-${QUARTO_VERSION}-linux-${dpkgArch}.deb; \
+    rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.deb; \
+    ## Remove qurto pandoc
+    rm /opt/quarto/bin/tools/pandoc; \
+    ## Link to system pandoc
+    ln -s /usr/bin/pandoc /opt/quarto/bin/tools/pandoc; \
+  fi \
   ## Admin-based install of TinyTeX
   && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
     | sh -s - --admin --no-path \
@@ -88,6 +101,9 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && jupyter nbextension install facets/facets-dist/ --sys-prefix \
   && cd / \
   ## Install code-server extensions
+  && if [ ${dpkgArch} = "amd64" ]; then \
+    code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto; \
+  fi \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
   ## Clean up
   && rm -rf /tmp/* \
