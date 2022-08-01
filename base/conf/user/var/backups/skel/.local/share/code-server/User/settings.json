@@ -1,7 +1,6 @@
 {
   "editor.tabSize": 2,
-  "telemetry.enableTelemetry": false,
-  "gitlens.advanced.telemetry.enabled": false,
+  "telemetry.telemetryLevel": "off",
   "workbench.colorTheme": "Default Dark+",
   "terminal.integrated.fontFamily": "MesloLGS NF"
 }
