@@ -20,7 +20,6 @@ RUN wget "https://travis-bin.yihui.name/texlive-local.deb" \
   && rm texlive-local.deb \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-    ffmpeg \
     fonts-roboto \
     ghostscript \
     qpdf \
