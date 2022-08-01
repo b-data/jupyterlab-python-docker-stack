@@ -15,7 +15,7 @@ USER root
 
 ENV HOME=/root \
     CTAN_REPO=${CTAN_REPO} \
-    PATH=/opt/TinyTeX/bin/linux:$PATH
+    PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH
 
 RUN dpkgArch="$(dpkg --print-architecture)" \
   && wget "https://travis-bin.yihui.name/texlive-local.deb" \
@@ -29,9 +29,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     texinfo \
   && if [ ${dpkgArch} = "amd64" ]; then \
     ## Install quarto
-    curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.deb; \
-    dpkg -i quarto-${QUARTO_VERSION}-linux-${dpkgArch}.deb; \
-    rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.deb; \
+    curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
+    mkdir -p /opt/quarto; \
+    tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1; \
+    rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
     ## Remove qurto pandoc
     rm /opt/quarto/bin/tools/pandoc; \
     ## Link to system pandoc
