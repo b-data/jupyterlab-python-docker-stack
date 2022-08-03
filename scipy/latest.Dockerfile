@@ -33,7 +33,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     mkdir -p /opt/quarto; \
     tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1; \
     rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
-    ## Remove qurto pandoc
+    ## Remove quarto pandoc
     rm /opt/quarto/bin/tools/pandoc; \
     ## Link to system pandoc
     ln -s /usr/bin/pandoc /opt/quarto/bin/tools/pandoc; \
