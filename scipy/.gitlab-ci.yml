@@ -9,7 +9,7 @@
     if [[ $CI_COMMIT_BRANCH == "main" ]]; then
       export CI_APP_TAG=${CI_APP_TAG:-latest}
     elif [[ $CI_COMMIT_BRANCH == "freeze-version" ]]; then
-      export CI_APP_TAG=${CI_APP_TAG:-3.10.4}
+      export CI_APP_TAG=${CI_APP_TAG:-$PYTHON_VERSION}
     else
       export CI_APP_TAG=${CI_APP_TAG:-$CI_COMMIT_SHA}
     fi
@@ -17,9 +17,7 @@
     echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER
     --password-stdin $CI_REGISTRY
   - >
-    export VERSION_MAJ_MIN_PAT=`sed -n
-    "s|.*PYTHON_VERSION=\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\).*|\1|p"
-    scipy/$CI_APP_TAG.Dockerfile`
+    export VERSION_MAJ_MIN_PAT=$PYTHON_VERSION
     
     export VERSION_MAJ_MIN=`echo $VERSION_MAJ_MIN_PAT |
     sed -n "s|\([[:digit:]]\+\.[[:digit:]]\+\).*|\1|p"`
@@ -35,6 +33,7 @@
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
+    PYTHON_VERSION: "3.10.5"
     UPDATE_MODE: "false"
   before_script:
     - *before-script-build
@@ -46,9 +45,11 @@ build:latest-linux-amd64:
     - os:linux
   script:
     - >
-      docker build -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
+      docker build --pull
+      --build-arg PYTHON_VERSION
+      -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-amd64
-      -f scipy/$CI_APP_TAG.Dockerfile .
+      -f scipy/latest.Dockerfile .
     - |
       docker build -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64 \
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-root-linux-amd64 -<<EOF
@@ -68,9 +69,11 @@ build:latest-linux-arm64v8:
     - os:linux
   script:
     - >
-      docker build -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+      docker build --pull
+      --build-arg PYTHON_VERSION
+      -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-arm64v8
-      -f scipy/$CI_APP_TAG.Dockerfile .
+      -f scipy/latest.Dockerfile .
     - |
       docker build -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8 \
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-root-linux-arm64v8 -<<EOF
@@ -90,20 +93,19 @@ build:version-linux-amd64:
     - os:linux
   script:
     - >
-      docker build -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
-      -f scipy/$CI_APP_TAG.Dockerfile .
+      docker build --pull
+      -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
+      -f scipy/$PYTHON_VERSION.Dockerfile .
     - |
       docker build -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64 -<<EOF
       FROM $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       USER root
       EOF
-    - |
-      docker push $CI_APP_REPO:$CI_APP_TAG-linux-amd64
-      docker push $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64
+    - docker push -a $CI_APP_REPO
   rules:
-    - if: $CI_COMMIT_BRANCH == "freeze-version" && $UPDATE_MODE != "true" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_PIPELINE_TRIGGERED && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
       changes:
-        - scipy/3.10.4.Dockerfile
+        - scipy/$PYTHON_VERSION.Dockerfile
 
 build:version-linux-arm64v8:
   extends: .build
@@ -112,20 +114,19 @@ build:version-linux-arm64v8:
     - os:linux
   script:
     - >
-      docker build -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      -f scipy/$CI_APP_TAG.Dockerfile .
+      docker build --pull
+      -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+      -f scipy/$PYTHON_VERSION.Dockerfile .
     - |
       docker build -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8 -<<EOF
       FROM $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       USER root
       EOF
-    - |
-      docker push $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
-      docker push $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
+    - docker push -a $CI_APP_REPO
   rules:
-    - if: $CI_COMMIT_BRANCH == "freeze-version" && $UPDATE_MODE != "true" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_PIPELINE_TRIGGERED && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
       changes:
-        - scipy/3.10.4.Dockerfile
+        - scipy/$PYTHON_VERSION.Dockerfile
 
 build-manifest:latest-linux-multiarch:
   extends: .build
@@ -206,6 +207,6 @@ build-manifest:version-linux-multiarch:
       docker manifest push $CI_APP_REPO:$CI_APP_TAG
       docker manifest push $CI_APP_REPO:$CI_APP_TAG-root
   rules:
-    - if: $CI_COMMIT_BRANCH == "freeze-version" && $UPDATE_MODE != "true"
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_PIPELINE_TRIGGERED
       changes:
-        - scipy/3.10.4.Dockerfile
+        - scipy/$PYTHON_VERSION.Dockerfile

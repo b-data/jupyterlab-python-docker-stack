@@ -1,15 +1,15 @@
 ARG BASE_IMAGE=debian:bullseye
-ARG PYTHON_VERSION=3.10.4
+ARG PYTHON_VERSION
 ARG PYTHON_SUBTAG=slim-bullseye
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ARG NB_GID=100
 ARG JUPYTERHUB_VERSION=2.3.1
-ARG JUPYTERLAB_VERSION=3.4.2
+ARG JUPYTERLAB_VERSION=3.4.4
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG CODE_SERVER_RELEASE=4.4.0
-ARG GIT_VERSION=2.36.1
+ARG CODE_SERVER_RELEASE=4.5.1
+ARG GIT_VERSION=2.37.1
 ARG GIT_LFS_VERSION=3.2.0
 ARG PANDOC_VERSION=2.18
 
@@ -87,10 +87,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     gnupg \
     htop \
     info \
-    inkscape \
     jq \
     libclang-dev \
-    lsb-release \
     man-db \
     nano \
     procps \
@@ -114,12 +112,12 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       python3-distutils; \
     ## make some useful symlinks that are expected to exist
     ## ("/usr/bin/python" and friends)
-	  for src in pydoc3 python3 python3-config; do \
-		  dst="$(echo "$src" | tr -d 3)"; \
-		  [ -s "/usr/bin/$src" ]; \
-		  [ ! -e "/usr/bin/$dst" ]; \
-		  ln -svT "$src" "/usr/bin/$dst"; \
-	  done; \
+    for src in pydoc3 python3 python3-config; do \
+      dst="$(echo "$src" | tr -d 3)"; \
+      [ -s "/usr/bin/$src" ]; \
+      [ ! -e "/usr/bin/$dst" ]; \
+      ln -svT "$src" "/usr/bin/$dst"; \
+    done; \
   fi \
   ## Install/update pip, setuptools and wheel
   && curl -sLO https://bootstrap.pypa.io/get-pip.py \
@@ -164,6 +162,10 @@ RUN mkdir /opt/code-server \
   && cd /opt/code-server \
   && curl -sL https://github.com/coder/code-server/releases/download/v${CODE_SERVER_RELEASE}/code-server-${CODE_SERVER_RELEASE}-linux-$(dpkg --print-architecture).tar.gz | tar zxf - --no-same-owner --strip-components=1 \
   && curl -sL https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg -o vscode.svg \
+  ## Fix https://github.com/coder/code-server/issues/5335
+  && mv lib/vscode/bin/remote-cli/code-server lib/vscode/bin/remote-cli/code-oss \
+  && sed -i 's/code-server/code-oss/g' lib/vscode/bin/remote-cli/code-oss \
+  && sed -i 's/code-server/code-oss/g' lib/vscode/bin/helpers/browser.sh \
   ## Include custom fonts
   && sed -i 's|</head>|	<link rel="preload" href="{{BASE}}/_static/src/browser/media/fonts/MesloLGS-NF-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">\n	</head>|g' /opt/code-server/lib/vscode/out/vs/code/browser/workbench/workbench.html \
   && sed -i 's|</head>|	<link rel="preload" href="{{BASE}}/_static/src/browser/media/fonts/MesloLGS-NF-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">\n	</head>|g' /opt/code-server/lib/vscode/out/vs/code/browser/workbench/workbench.html \
@@ -177,15 +179,15 @@ RUN mkdir /opt/code-server \
   && curl -sLO https://dl.b-data.ch/vsix/piotrpalarz.vscode-gitignore-generator-1.0.3.vsix \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension piotrpalarz.vscode-gitignore-generator-1.0.3.vsix \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension GitLab.gitlab-workflow \
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-toolsai.jupyter@2022.2.1010641114 \
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-python.python@2022.2.1924087327 \
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-python.python \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension christian-kohler.path-intellisense \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension eamodio.gitlens \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension mhutchie.git-graph \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension redhat.vscode-yaml \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension grapecity.gc-excelviewer \
-  ## Create tmp folder for Jupyter extension
+  ## Create folders temp and tmp for Jupyter extension
   && cd /opt/code-server/lib/vscode/extensions/ms-toolsai.jupyter-* \
+  && mkdir -m 1777 temp \
   && mkdir -m 1777 tmp \
   ## Clean up
   && rm -rf /tmp/* \
@@ -223,7 +225,7 @@ ENV HOME=/home/${NB_USER} \
 WORKDIR ${HOME}
 
 ## Install Oh My Zsh with Powerlevel10k theme
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended \
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
   && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git .oh-my-zsh/custom/themes/powerlevel10k \
   && sed -i 's/ZSH="\/home\/jovyan\/.oh-my-zsh"/ZSH="$HOME\/.oh-my-zsh"/g' .zshrc \
   && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' .zshrc \
