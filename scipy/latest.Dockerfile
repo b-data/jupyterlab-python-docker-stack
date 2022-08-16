@@ -1,9 +1,10 @@
+ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.0.38
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
-FROM registry.gitlab.b-data.ch/jupyterlab/python/base:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
