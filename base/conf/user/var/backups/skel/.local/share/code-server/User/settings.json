@@ -1,6 +1,18 @@
 {
   "editor.tabSize": 2,
   "telemetry.telemetryLevel": "off",
+  "gitlens.graph.statusBar.enabled": false,
+  "gitlens.menus": {
+    "scm": {
+      "graph": false
+    },
+    "scmRepositoryInline": {
+      "graph": false
+    },
+    "scmRepository": {
+      "graph": false
+    }
+  },
   "workbench.colorTheme": "Default Dark+",
   "terminal.integrated.fontFamily": "MesloLGS NF"
 }
