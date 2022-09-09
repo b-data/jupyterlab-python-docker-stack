@@ -94,18 +94,27 @@ For `<major>.<minor>.<patch>` ≥ `3.10.5`.
 self built:
 
 ```bash
-docker run --rm -ti jupyterlab-python-base[:<major>.<minor>.<patch>]
+docker run -it --rm \
+  -p 8888:8888 \
+  -v $PWD:/home/jovyan \
+  jupyterlab-python-base[:<major>.<minor>.<patch>]
 ```
 
 from the project's GitLab Container Registries:
 
 *  [jupyterlab/python/base](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry)  
     ```bash
-    docker run -it --rm -p 8888:8888 -v $PWD:/home/jovyan registry.gitlab.b-data.ch/jupyterlab/python/base[:<major>[.<minor>[.<patch>]]]
+    docker run -it --rm \
+      -p 8888:8888 \
+      -v $PWD:/home/jovyan \
+      registry.gitlab.b-data.ch/jupyterlab/python/base[:<major>[.<minor>[.<patch>]]]
     ```
 *  [jupyterlab/python/scipy](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
     ```bash
-    docker run -it --rm -p 8888:8888 -v $PWD:/home/jovyan registry.gitlab.b-data.ch/jupyterlab/python/scipy[:<major>[.<minor>[.<patch>]]]
+    docker run -it --rm \
+      -p 8888:8888 \
+      -v $PWD:/home/jovyan \
+      registry.gitlab.b-data.ch/jupyterlab/python/scipy[:<major>[.<minor>[.<patch>]]]
     ```
 
 The use of the `-v` flag in the command mounts the current working directory on
