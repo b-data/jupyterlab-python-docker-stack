@@ -1,6 +1,5 @@
 ARG BASE_IMAGE=debian:bullseye
 ARG PYTHON_VERSION=3.10.5
-ARG PYTHON_SUBTAG=slim-bullseye
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
