@@ -2,12 +2,14 @@
 
 # JupyterLab Python docker stack
 
-Pre-built multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
+Multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-*  `registry.gitlab.b-data.ch/jupyterlab/python/base`
-*  `registry.gitlab.b-data.ch/jupyterlab/python/scipy`
+*  [`registry.gitlab.b-data.ch/jupyterlab/python/base`](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry) 
+*  [`registry.gitlab.b-data.ch/jupyterlab/python/scipy`](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
 
 Images considered stable for Python versions ≥ 3.10.5.
+
+:microscope: Check out `jupyterlab/python/scipy` at https://demo.jupyter.b-data.ch.
 
 **Features**
 
@@ -17,11 +19,11 @@ Images considered stable for Python versions ≥ 3.10.5.
        branding/telemetry/licensing.
     *  **Git**: A distributed version-control system for tracking changes in
        source code.
+    *  **Git LFS**: A Git extension for versioning large files.
     *  **Pandoc**: A universal markup converter.
     *  **Python**: An interpreted, object-oriented, high-level programming
        language with dynamic semantics.
-    *  **Quarto**: An open-source scientific and technical publishing system
-       built on Pandoc.  
+    *  **Quarto**: A scientific and technical publishing system built on Pandoc.  
        :information_source: scipy image, amd64 only
     *  **TinyTeX**: A lightweight, cross-platform, portable, and
        easy-to-maintain LaTeX distribution based on TeX Live.  
@@ -102,14 +104,14 @@ docker run -it --rm \
 
 from the project's GitLab Container Registries:
 
-*  [jupyterlab/python/base](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry)  
+*  [`jupyterlab/python/base`](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry)  
     ```bash
     docker run -it --rm \
       -p 8888:8888 \
       -v $PWD:/home/jovyan \
       registry.gitlab.b-data.ch/jupyterlab/python/base[:<major>[.<minor>[.<patch>]]]
     ```
-*  [jupyterlab/python/scipy](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
+*  [`jupyterlab/python/scipy`](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
     ```bash
     docker run -it --rm \
       -p 8888:8888 \
