@@ -129,6 +129,7 @@ The server logs appear in the terminal.
 
 What makes this project different:
 
+1.  Multi-arch: `linux/amd64`, `linux/arm64/v8`
 1.  Base image: [Debian](https://hub.docker.com/_/debian) instead of
     [Ubuntu](https://hub.docker.com/_/ubuntu)
 1.  IDE: [code-server](https://github.com/coder/code-server) next to
