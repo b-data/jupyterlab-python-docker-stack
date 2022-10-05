@@ -4,7 +4,7 @@
 
 Multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-*  [`registry.gitlab.b-data.ch/jupyterlab/python/base`](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry) 
+*  [`registry.gitlab.b-data.ch/jupyterlab/python/base`](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry)
 *  [`registry.gitlab.b-data.ch/jupyterlab/python/scipy`](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
 
 Images considered stable for Python versions ≥ 3.10.5.
