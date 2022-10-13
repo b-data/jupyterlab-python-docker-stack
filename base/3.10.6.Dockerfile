@@ -1,7 +1,6 @@
 ARG BASE_IMAGE=debian:bullseye
 ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/ver
 ARG PYTHON_VERSION=3.10.6
-ARG PYTHON_SUBTAG=slim-bullseye
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
