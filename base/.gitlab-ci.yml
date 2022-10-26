@@ -33,7 +33,7 @@
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
-    PYTHON_VERSION: "3.10.7"
+    PYTHON_VERSION: "3.10.8"
   before_script:
     - *before-script-build
 

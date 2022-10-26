@@ -4,19 +4,18 @@ ARG PYTHON_VERSION
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
-ARG NB_GID=100
 ARG JUPYTERHUB_VERSION=2.3.1
-ARG JUPYTERLAB_VERSION=3.4.8
+ARG JUPYTERLAB_VERSION=3.5.0
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG CODE_SERVER_RELEASE=4.7.1
-ARG GIT_VERSION=2.38.0
+ARG GIT_VERSION=2.38.1
 ARG GIT_LFS_VERSION=3.2.0
 ARG PANDOC_VERSION=2.19.2
 
 FROM ${BASE_IMAGE} as files
 
 ARG NB_UID
-ARG NB_GID
+ENV NB_GID=100
 
 RUN mkdir /files
 
@@ -45,7 +44,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 ARG NB_USER
 ARG NB_UID
-ARG NB_GID
 ARG JUPYTERHUB_VERSION
 ARG JUPYTERLAB_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR
@@ -58,7 +56,7 @@ ARG CODE_WORKDIR
 
 ENV NB_USER=${NB_USER} \
     NB_UID=${NB_UID} \
-    NB_GID=${NB_GID} \
+    NB_GID=100 \
     JUPYTERHUB_VERSION=${JUPYTERHUB_VERSION} \
     JUPYTERLAB_VERSION=${JUPYTERLAB_VERSION} \
     CODE_SERVER_RELEASE=${CODE_SERVER_RELEASE} \
@@ -144,7 +142,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && dpkg -i pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   && rm pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   ## Add user
-  && useradd -m -s /bin/bash -N -u ${NB_UID} ${NB_USER} \
+  && useradd -l -m -s /bin/bash -N -u ${NB_UID} ${NB_USER} \
   && mkdir -p /var/backups/skel \
   && chown ${NB_UID}:${NB_GID} /var/backups/skel \
   ## Install Tini
