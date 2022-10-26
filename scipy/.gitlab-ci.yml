@@ -34,7 +34,7 @@
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
     PYTHON_VERSION: "3.11.0"
-    UPDATE_MODE: "true"
+    UPDATE_MODE: "false"
   before_script:
     - *before-script-build
 
