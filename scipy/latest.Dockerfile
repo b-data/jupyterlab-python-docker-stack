@@ -28,6 +28,11 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ghostscript \
     qpdf \
     texinfo \
+    ## For tables wheels
+    libblosc-dev \
+    libbz2-dev \
+    libhdf5-dev \
+    liblzo2-dev \
   && if [ ${dpkgArch} = "amd64" ]; then \
     ## Install quarto
     curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
@@ -81,7 +86,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ipympl\
     ipywidgets \
     matplotlib \
-    numba \
+    #numba \
     numexpr \
     numpy \
     pandas \
@@ -92,9 +97,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     scipy \
     seaborn \
     sqlalchemy \
-    statsmodels \
+    git+https://github.com/statsmodels/statsmodels.git@main \
     sympy \
-    tables \
+    git+https://github.com/PyTables/PyTables.git@master \
     widgetsnbextension \
     xlrd \
   ## Install facets
