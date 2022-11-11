@@ -58,7 +58,7 @@ build:latest-linux-amd64:
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-root-linux-amd64
-      -f ../common/subtags/root.Dockerfile .
+      -f ../common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
@@ -82,7 +82,7 @@ build:latest-linux-arm64v8:
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-root-linux-arm64v8
-      -f ../common/subtags/root.Dockerfile .
+      -f ../common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
@@ -103,7 +103,7 @@ build:version-linux-amd64:
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64
-      -f ../common/subtags/root.Dockerfile .
+      -f ../common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
@@ -124,7 +124,7 @@ build:version-linux-arm64v8:
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
-      -f ../common/subtags/root.Dockerfile .
+      -f ../common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
