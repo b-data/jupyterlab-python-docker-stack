@@ -27,7 +27,6 @@
 
 .build:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
-  stage: build
   services:
     - docker:dind
   variables:
@@ -41,8 +40,17 @@
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
   stage: .post
 
+stages:
+  - .pre
+  - build1
+  - build2
+  - test
+  - deploy
+  - .post
+
 build:latest-linux-amd64:
   extends: .build
+  stage: build1
   tags:
     - arch:amd64
     - os:linux
@@ -67,6 +75,7 @@ build:latest-linux-amd64:
 
 build:latest-linux-arm64v8:
   extends: .build
+  stage: build1
   tags:
     - arch:arm64/v8
     - os:linux
@@ -91,6 +100,7 @@ build:latest-linux-arm64v8:
 
 build:version-linux-amd64:
   extends: .build
+  stage: build1
   tags:
     - arch:amd64
     - os:linux
@@ -112,6 +122,7 @@ build:version-linux-amd64:
 
 build:version-linux-arm64v8:
   extends: .build
+  stage: build1
   tags:
     - arch:arm64/v8
     - os:linux
@@ -133,7 +144,7 @@ build:version-linux-arm64v8:
 
 build-manifest:latest-linux-multiarch:
   extends: .build
-  stage: deploy
+  stage: build1
   needs: ["build:latest-linux-amd64", "build:latest-linux-arm64v8"]
   script:
     - |
@@ -192,7 +203,7 @@ build-manifest:latest-linux-multiarch:
 
 build-manifest:version-linux-multiarch:
   extends: .build
-  stage: deploy
+  stage: build1
   needs: ["build:version-linux-amd64", "build:version-linux-arm64v8"]
   script:
     - |
@@ -243,3 +254,198 @@ trigger-version-build:
     - if: $CI_COMMIT_BRANCH == "freeze-version"
       changes:
         - base/$PYTHON_VERSION.Dockerfile
+
+build:latest-devtools-linux-amd64:
+  extends: .build
+  stage: build2
+  tags:
+    - arch:amd64
+    - os:linux
+  script:
+    - >
+      docker build --pull
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
+      --build-arg PYTHON_VERSION
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-amd64
+      -f common/subtags/devtools/latest.Dockerfile .
+    - >
+      docker build
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
+      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root-linux-amd64
+      -f common/subtags/root/Dockerfile .
+    - |
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      docker push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-amd64
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
+      docker push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root-linux-amd64
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
+      changes:
+        - common/subtags/devtools/latest.Dockerfile
+
+build:latest-devtools-linux-arm64v8:
+  extends: .build
+  stage: build2
+  tags:
+    - arch:arm64/v8
+    - os:linux
+  script:
+    - >
+      docker build --pull
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
+      --build-arg PYTHON_VERSION
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-arm64v8
+      -f common/subtags/devtools/latest.Dockerfile .
+    - >
+      docker build
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root-linux-arm64v8
+      -f common/subtags/root/Dockerfile .
+    - |
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      docker push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-arm64v8
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      docker push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root-linux-arm64v8
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
+      changes:
+        - common/subtags/devtools/latest.Dockerfile
+
+build:version-devtools-linux-amd64:
+  extends: .build
+  stage: build2
+  tags:
+    - arch:amd64
+    - os:linux
+  script:
+    - >
+      docker build --pull
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      -f common/subtags/devtools/$PYTHON_VERSION.Dockerfile .
+    - >
+      docker build
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
+      -f common/subtags/root/Dockerfile .
+    - |
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
+  rules:
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/amd64)/
+      changes:
+        - common/subtags/devtools/$PYTHON_VERSION.Dockerfile
+
+build:version-devtools-linux-arm64v8:
+  extends: .build
+  stage: build2
+  tags:
+    - arch:arm64/v8
+    - os:linux
+  script:
+    - >
+      docker build --pull
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      -f common/subtags/devtools/$PYTHON_VERSION.Dockerfile .
+    - >
+      docker build
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      -f common/subtags/root/Dockerfile .
+    - |
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      docker push $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+  rules:
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CI_BUILD_PLATFORMS =~ /(linux\/arm64\/v8)/
+      changes:
+        - common/subtags/devtools/$PYTHON_VERSION.Dockerfile
+
+build-manifest:latest-devtools-linux-multiarch:
+  extends: .build
+  stage: build2
+  needs: ["build:latest-devtools-linux-amd64", "build:latest-devtools-linux-arm64v8"]
+  script:
+    - |
+      for i in $OS_ARCH; do
+        export CI_MANIFEST_LIST="$CI_MANIFEST_LIST $CI_APP_REPO:$CI_APP_TAG-devtools-$i"
+        export CI_MANIFEST_LIST_ROOT="$CI_MANIFEST_LIST_ROOT $CI_APP_REPO:$CI_APP_TAG-devtools-root-$i"
+      done
+    - |
+      docker manifest create $CI_APP_REPO:$CI_APP_TAG-devtools $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$CI_APP_TAG-devtools-root $CI_MANIFEST_LIST_ROOT
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG-devtools \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG-devtools-root \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$CI_APP_TAG-devtools
+      docker manifest push $CI_APP_REPO:$CI_APP_TAG-devtools-root
+    - |
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root $CI_MANIFEST_LIST_ROOT
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root
+    - |
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-devtools $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-root $CI_MANIFEST_LIST_ROOT
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-devtools \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-root \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-devtools
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-root
+    - |
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ-devtools $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ-devtools-root $CI_MANIFEST_LIST_ROOT
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ-devtools \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ-devtools-root \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ-devtools
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ-devtools-root
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - common/subtags/devtools/latest.Dockerfile
+
+build-manifest:version-devtools-linux-multiarch:
+  extends: .build
+  stage: build2
+  needs: ["build:version-devtools-linux-amd64", "build:version-devtools-linux-arm64v8"]
+  script:
+    - |
+      for i in $OS_ARCH; do
+        export CI_MANIFEST_LIST="$CI_MANIFEST_LIST $CI_APP_REPO:$CI_APP_TAG-devtools-$i"
+        export CI_MANIFEST_LIST_ROOT="$CI_MANIFEST_LIST_ROOT $CI_APP_REPO:$CI_APP_TAG-devtools-root-$i"
+      done
+    - |
+      docker manifest create $CI_APP_REPO:$CI_APP_TAG-devtools $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$CI_APP_TAG-devtools-root $CI_MANIFEST_LIST_ROOT
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG-devtools \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$CI_APP_TAG-devtools-root \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$CI_APP_TAG-devtools
+      docker manifest push $CI_APP_REPO:$CI_APP_TAG-devtools-root
+  rules:
+    - if: $CI_COMMIT_BRANCH == "freeze-version"
+      changes:
+        - common/subtags/devtools/$PYTHON_VERSION.Dockerfile
