@@ -1,6 +1,6 @@
 ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=bullseye
-ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/ver
+ARG PARENT_IMAGE=registry.gitlab.b-data.ch/python/ver
 ARG PYTHON_VERSION
 
 ARG NB_USER=jovyan
@@ -34,7 +34,7 @@ RUN chown -R ${NB_UID}:${NB_GID} /files/var/backups/skel \
 FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as gsi
 FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
 
-FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
+FROM ${PARENT_IMAGE}:${PYTHON_VERSION}
 
 LABEL org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.b-data.ch/jupyterlab/python/docker-stack" \
@@ -43,6 +43,7 @@ LABEL org.opencontainers.image.licenses="MIT" \
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ARG PARENT_IMAGE
 ARG NB_USER
 ARG NB_UID
 ARG JUPYTERHUB_VERSION
@@ -55,7 +56,8 @@ ARG PANDOC_VERSION
 
 ARG CODE_WORKDIR
 
-ENV NB_USER=${NB_USER} \
+ENV PARENT_IMAGE=${PARENT_IMAGE}:${PYTHON_VERSION} \
+    NB_USER=${NB_USER} \
     NB_UID=${NB_UID} \
     NB_GID=100 \
     JUPYTERHUB_VERSION=${JUPYTERHUB_VERSION} \

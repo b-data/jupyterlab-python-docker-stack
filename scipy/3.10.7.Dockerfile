@@ -1,10 +1,10 @@
-ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/jupyterlab/python/base
+ARG PARENT_IMAGE=registry.gitlab.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION=3.10.7
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.1.251
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2022/10/11/tlnet
 
-FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
+FROM ${PARENT_IMAGE}:${PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
