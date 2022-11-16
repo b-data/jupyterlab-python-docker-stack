@@ -33,7 +33,7 @@
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
     PYTHON_VERSION: "3.11.0"
-    UPDATE_MODE: "false"
+    UPDATE_MODE: "true"
   before_script:
     - *before-script-build
 
@@ -64,7 +64,7 @@ build:latest-linux-amd64:
       -f scipy/latest.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-amd64
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-amd64
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-root-linux-amd64
       -f common/subtags/root/Dockerfile .
@@ -89,7 +89,7 @@ build:latest-linux-arm64v8:
       -f scipy/latest.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-arm64v8
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-linux-arm64v8
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-root-linux-arm64v8
       -f common/subtags/root/Dockerfile .
@@ -112,7 +112,7 @@ build:version-linux-amd64:
       -f scipy/$PYTHON_VERSION.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-amd64
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64
       -f common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
@@ -134,7 +134,7 @@ build:version-linux-arm64v8:
       -f scipy/$PYTHON_VERSION.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
       -f common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
@@ -237,14 +237,14 @@ build:latest-devtools-linux-amd64:
   script:
     - >
       docker build --pull
-      --build-arg PARENT_IMAGE=$CI_APP_REPO
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-amd64
       -f common/subtags/devtools/latest.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-amd64
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-amd64
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root-linux-amd64
       -f common/subtags/root/Dockerfile .
@@ -268,14 +268,14 @@ build:latest-devtools-linux-arm64v8:
   script:
     - >
       docker build --pull
-      --build-arg PARENT_IMAGE=$CI_APP_REPO
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
       --build-arg PYTHON_VERSION
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-arm64v8
       -f common/subtags/devtools/latest.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-arm64v8
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-linux-arm64v8
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
       -t $CI_APP_REPO:$VERSION_MAJ_MIN_PAT-devtools-root-linux-arm64v8
       -f common/subtags/root/Dockerfile .
@@ -299,12 +299,12 @@ build:version-devtools-linux-amd64:
   script:
     - >
       docker build --pull
-      --build-arg PARENT_IMAGE=$CI_APP_REPO
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
       -f common/subtags/devtools/$PYTHON_VERSION.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
       -f common/subtags/root/Dockerfile .
     - |
@@ -325,12 +325,12 @@ build:version-devtools-linux-arm64v8:
   script:
     - >
       docker build --pull
-      --build-arg PARENT_IMAGE=$CI_APP_REPO
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
       -f common/subtags/devtools/$PYTHON_VERSION.Dockerfile .
     - >
       docker build
-      --build-arg PARENT_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
       -f common/subtags/root/Dockerfile .
     - |

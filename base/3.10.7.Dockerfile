@@ -1,5 +1,5 @@
 ARG BASE_IMAGE=debian:bullseye
-ARG PARENT_IMAGE=registry.gitlab.b-data.ch/python/ver
+ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/ver
 ARG PYTHON_VERSION=3.10.7
 
 ARG NB_USER=jovyan
@@ -34,7 +34,7 @@ RUN chown -R ${NB_UID}:${NB_GID} /files/var/backups/skel \
 FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE} as gsi
 FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
 
-FROM ${PARENT_IMAGE}:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
 
 LABEL org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.b-data.ch/jupyterlab/python/docker-stack" \

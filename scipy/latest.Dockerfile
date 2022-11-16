@@ -1,21 +1,21 @@
-ARG PARENT_IMAGE=registry.gitlab.b-data.ch/jupyterlab/python/base
+ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.2.269
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
-FROM ${PARENT_IMAGE}:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ARG PARENT_IMAGE
+ARG BUILD_ON_IMAGE
 ARG CODE_BUILTIN_EXTENSIONS_DIR
 ARG QUARTO_VERSION
 ARG CTAN_REPO
 
 USER root
 
-ENV PARENT_IMAGE=${PARENT_IMAGE}:${PYTHON_VERSION} \
+ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
     HOME=/root \
     CTAN_REPO=${CTAN_REPO} \
     PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH
