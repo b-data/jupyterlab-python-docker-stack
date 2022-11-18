@@ -1,3 +1,7 @@
+.env:
+  variables:
+    PYTHON_VERSION: "3.11.0"
+
 .before-script-build: &before-script-build
   - |
     if [[ ! -z "$CI_BUILD_PLATFORMS" ]]; then
@@ -27,18 +31,19 @@
 
 .build:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
+  extends: .env
   services:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
-    PYTHON_VERSION: "3.11.0"
   before_script:
     - *before-script-build
 
 .post:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
   stage: .post
+  extends: .env
 
 stages:
   - .pre
