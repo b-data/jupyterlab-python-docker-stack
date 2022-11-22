@@ -110,7 +110,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
-      python3-distutils; \
+      python3-distutils \
+      ## Install venv module for python3
+      python3-venv; \
     ## make some useful symlinks that are expected to exist
     ## ("/usr/bin/python" and friends)
     for src in pydoc3 python3 python3-config; do \
