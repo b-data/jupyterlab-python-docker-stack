@@ -21,6 +21,7 @@ ENV NB_GID=100
 RUN mkdir /files
 
 COPY assets /files
+COPY conf/jupyterlab /files
 COPY conf/user /files
 COPY scripts /files
 
