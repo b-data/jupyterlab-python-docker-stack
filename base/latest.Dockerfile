@@ -13,7 +13,7 @@ ARG GIT_VERSION=2.38.1
 ARG GIT_LFS_VERSION=3.3.0
 ARG PANDOC_VERSION=2.19.2
 
-FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG} as files
+FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION} as files
 
 ARG NB_UID
 ENV NB_GID=100
@@ -99,6 +99,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     psmisc \
     screen \
     sudo \
+    swig \
     tmux \
     vim \
     wget \
