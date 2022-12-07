@@ -1,20 +1,22 @@
 ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG QUARTO_VERSION=1.1.251
+ARG QUARTO_VERSION=1.2.269
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ARG BUILD_ON_IMAGE
 ARG CODE_BUILTIN_EXTENSIONS_DIR
 ARG QUARTO_VERSION
 ARG CTAN_REPO
 
 USER root
 
-ENV HOME=/root \
+ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
+    HOME=/root \
     CTAN_REPO=${CTAN_REPO} \
     PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH
 
@@ -28,12 +30,30 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ghostscript \
     qpdf \
     texinfo \
+    ## For tables wheels
+    libblosc-dev \
+    libbz2-dev \
+    libhdf5-dev \
+    liblzo2-dev \
   && if [ ${dpkgArch} = "amd64" ]; then \
     ## Install quarto
     curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
     mkdir -p /opt/quarto; \
     tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1; \
     rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
+    ## Apply patch
+    echo '\n\
+    79064,79065c79064,79069\n\
+    <         const sep = path.startsWith("/") ? "" : "/";\n\
+    <         const browseUrl = vsCodeServerProxyUri().replace("{{port}}", `${port}`) + sep + path;\n\
+    ---\n\
+    >         if (vsCodeServerProxyUri().endsWith("/")) {\n\
+    >             path = path.startsWith("/") ? path.slice(1) : path;\n\
+    >         } else {\n\
+    >             path = path.startsWith("/") ? path : "/" + path;\n\
+    >         }\n\
+    >         const browseUrl = vsCodeServerProxyUri().replace("{{port}}", `${port}`) + path;\n\
+    ' | patch /opt/quarto/bin/quarto.js; \
     ## Remove quarto pandoc
     rm /opt/quarto/bin/tools/pandoc; \
     ## Link to system pandoc
@@ -81,7 +101,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ipympl\
     ipywidgets \
     matplotlib \
-    numba \
+    #numba \
     numexpr \
     numpy \
     pandas \
@@ -94,7 +114,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
-    tables \
+    git+https://github.com/PyTables/PyTables.git@master \
     widgetsnbextension \
     xlrd \
   ## Install facets
