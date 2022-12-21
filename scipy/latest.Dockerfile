@@ -41,6 +41,13 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     mkdir -p /opt/quarto; \
     tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1; \
     rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
+    ## Apply patch
+    echo '\n\
+    91521c91521\n\
+    <                 const url = isRStudioWorkbench() ? await rswURL(port, kPdfJsInitialPath) : "/" + kPdfJsInitialPath;\n\
+    ---\n\
+    >                 const url = isRStudioWorkbench() ? await rswURL(port, kPdfJsInitialPath) : isVSCodeServer() ? vsCodeServerProxyUri().replace("{{port}}", `${port}`) + kPdfJsInitialPath : "/" + kPdfJsInitialPath;\n\
+    ' | patch /opt/quarto/bin/quarto.js; \
     ## Remove quarto pandoc
     rm /opt/quarto/bin/tools/pandoc; \
     ## Link to system pandoc
