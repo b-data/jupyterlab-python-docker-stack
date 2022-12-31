@@ -108,7 +108,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
-    git+https://github.com/PyTables/PyTables.git@master \
+    tables \
     widgetsnbextension \
     xlrd \
   ## Install facets
