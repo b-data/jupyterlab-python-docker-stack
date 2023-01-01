@@ -114,7 +114,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
-      python3-distutils \
+      ## Install Python package installer
+      ## (dep: python3-distutils, python3-setuptools and python3-wheel)
+      python3-pip \
       ## Install venv module for python3
       python3-venv; \
     ## make some useful symlinks that are expected to exist
@@ -125,14 +127,15 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       [ ! -e "/usr/bin/$dst" ]; \
       ln -svT "$src" "/usr/bin/$dst"; \
     done; \
+  else \
+    ## Force update pip, setuptools and wheel
+    curl -sLO https://bootstrap.pypa.io/get-pip.py; \
+    python get-pip.py \
+      pip \
+      setuptools \
+      wheel; \
+    rm get-pip.py; \
   fi \
-  ## Install/update pip, setuptools and wheel
-  && curl -sLO https://bootstrap.pypa.io/get-pip.py \
-  && python get-pip.py \
-    pip \
-    setuptools \
-    wheel \
-  && rm get-pip.py \
   ## Install font MesloLGS NF
   && mkdir -p /usr/share/fonts/truetype/meslo \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Regular.ttf \
