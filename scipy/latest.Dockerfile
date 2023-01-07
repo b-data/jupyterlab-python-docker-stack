@@ -1,7 +1,7 @@
 ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG QUARTO_VERSION=1.2.280
+ARG QUARTO_VERSION=1.2.313
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
@@ -41,13 +41,6 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     mkdir -p /opt/quarto; \
     tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1; \
     rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
-    ## Apply patch
-    echo '\n\
-    91521c91521\n\
-    <                 const url = isRStudioWorkbench() ? await rswURL(port, kPdfJsInitialPath) : "/" + kPdfJsInitialPath;\n\
-    ---\n\
-    >                 const url = isRStudioWorkbench() ? await rswURL(port, kPdfJsInitialPath) : isVSCodeServer() ? vsCodeServerProxyUri().replace("{{port}}", `${port}`) + kPdfJsInitialPath : "/" + kPdfJsInitialPath;\n\
-    ' | patch /opt/quarto/bin/quarto.js; \
     ## Remove quarto pandoc
     rm /opt/quarto/bin/tools/pandoc; \
     ## Link to system pandoc
