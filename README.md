@@ -76,8 +76,8 @@ latest:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.10.7 \
-  -t jupyterlab-python-base \
+  --build-arg PYTHON_VERSION=3.11.1 \
+  -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
 
@@ -85,11 +85,11 @@ version:
 
 ```bash
 cd base && docker build \
-  -t jupyterlab-python-base:<major>.<minor>.<patch> \
-  -f <major>.<minor>.<patch>.Dockerfile .
+  -t jupyterlab/python/base:MAJOR.MINOR.PATCH \
+  -f MAJOR.MINOR.PATCH.Dockerfile .
 ```
 
-For `<major>.<minor>.<patch>` ≥ `3.10.5`.
+For `MAJOR.MINOR.PATCH` ≥ `3.10.5`.
 
 ### Run container
 
@@ -99,7 +99,7 @@ self built:
 docker run -it --rm \
   -p 8888:8888 \
   -v $PWD:/home/jovyan \
-  jupyterlab-python-base[:<major>.<minor>.<patch>]
+  jupyterlab/python/base[:MAJOR.MINOR.PATCH]
 ```
 
 from the project's GitLab Container Registries:
@@ -109,14 +109,14 @@ from the project's GitLab Container Registries:
     docker run -it --rm \
       -p 8888:8888 \
       -v $PWD:/home/jovyan \
-      registry.gitlab.b-data.ch/jupyterlab/python/base[:<major>[.<minor>[.<patch>]]]
+      registry.gitlab.b-data.ch/jupyterlab/python/base[:MAJOR[.MINOR[.PATCH]]]
     ```
 *  [`jupyterlab/python/scipy`](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
     ```bash
     docker run -it --rm \
       -p 8888:8888 \
       -v $PWD:/home/jovyan \
-      registry.gitlab.b-data.ch/jupyterlab/python/scipy[:<major>[.<minor>[.<patch>]]]
+      registry.gitlab.b-data.ch/jupyterlab/python/scipy[:MAJOR[.MINOR[.PATCH]]]
     ```
 
 The use of the `-v` flag in the command mounts the current working directory on
