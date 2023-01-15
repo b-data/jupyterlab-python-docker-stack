@@ -11,6 +11,10 @@ Images considered stable for Python versions ≥ 3.10.5.
 
 :microscope: Check out `jupyterlab/python/scipy` at https://demo.jupyter.b-data.ch.
 
+**Build chain**
+
+base → scipy
+
 **Features**
 
 * **JupyterLab**: A web-based interactive development environment for Jupyter
@@ -47,6 +51,14 @@ The following extensions are pre-installed for **code-server**:
 * [Quarto](https://open-vsx.org/extension/quarto/quarto)  
   :information_source: scipy image, amd64 only
 * [YAML](https://open-vsx.org/extension/redhat/vscode-yaml)
+
+**Subtags**
+
+* `{PYTHON_VERSION,latest}-root`: Container runs as `root`
+* `{PYTHON_VERSION,latest}-devtools`: Includes the requirements according to
+  * [coder/code-server > Docs > Contributing](https://github.com/coder/code-server/blob/main/docs/CONTRIBUTING.md)
+  * [microsoft/vscode-python > Wiki > Coding](https://github.com/microsoft/vscode-python/wiki/Coding)
+* `{PYTHON_VERSION,latest}-devtools-root`: The combination of both
 
 ## Table of Contents
 
