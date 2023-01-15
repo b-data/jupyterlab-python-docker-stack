@@ -12,13 +12,15 @@ ARG BUILD_ON_IMAGE
 ARG CODE_BUILTIN_EXTENSIONS_DIR
 ARG QUARTO_VERSION
 ARG CTAN_REPO
+ARG BUILD_START
 
 USER root
 
 ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
     HOME=/root \
     CTAN_REPO=${CTAN_REPO} \
-    PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH
+    PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH \
+    BUILD_DATE=${BUILD_START}
 
 RUN dpkgArch="$(dpkg --print-architecture)" \
   && wget "https://travis-bin.yihui.name/texlive-local.deb" \
