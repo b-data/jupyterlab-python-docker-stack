@@ -175,6 +175,7 @@ if [ "$(id -u)" == 0 ] ; then
     unset_explicit_env_vars
     _log "Running as ${NB_USER}:" "${cmd[@]}"
     exec sudo --preserve-env --set-home --user "${NB_USER}" \
+        LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}" \
         PATH="${PATH}" \
         PYTHONPATH="${PYTHONPATH:-}" \
         "${cmd[@]}"
