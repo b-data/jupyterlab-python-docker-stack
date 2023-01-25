@@ -35,6 +35,7 @@
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - *before-script-build
+  retry: 2
 
 .post:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
