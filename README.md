@@ -91,7 +91,7 @@ latest:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.11.1 \
+  --build-arg PYTHON_VERSION=3.11.2 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
