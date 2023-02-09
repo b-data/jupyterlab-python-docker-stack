@@ -65,7 +65,6 @@ ARG CODE_WORKDIR
 ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR} \
     NB_USER=${NB_USER} \
     NB_UID=${NB_UID} \
-    NB_GID=100 \
     JUPYTERHUB_VERSION=${JUPYTERHUB_VERSION} \
     JUPYTERLAB_VERSION=${JUPYTERLAB_VERSION} \
     CODE_SERVER_VERSION=${CODE_SERVER_VERSION} \
@@ -73,6 +72,8 @@ ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUD
     GIT_LFS_VERSION=${GIT_LFS_VERSION} \
     PANDOC_VERSION=${PANDOC_VERSION} \
     BUILD_DATE=${BUILD_START}
+
+ENV NB_GID=100
 
 ## Install Git
 COPY --from=gsi /usr/local /usr/local
@@ -108,13 +109,13 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     vim-tiny \
     wget \
     zsh \
-    ## Additional git runtime dependencies
+    ## Git: Additional runtime dependencies
     libcurl3-gnutls \
     liberror-perl \
-    ## Additional git runtime recommendations
+    ## Git: Additional runtime recommendations
     less \
     ssh-client \
-  ## Additional python-dev dependencies
+  ## Python: Additional dev dependencies
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
@@ -147,16 +148,20 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Italic.ttf \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Bold\ Italic.ttf \
   && fc-cache -fv \
-  ## Set default branch name to main
+  ## Git: Set default branch name to main
   && sudo git config --system init.defaultBranch main \
-  ## Store passwords for one hour in memory
+  ## Git: Store passwords for one hour in memory
   && git config --system credential.helper "cache --timeout=3600" \
-  ## Merge the default branch from the default remote when "git pull" is run
+  ## Git: Merge the default branch from the default remote when "git pull" is run
   && sudo git config --system pull.rebase false \
   ## Install pandoc
   && curl -sLO https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   && dpkg -i pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   && rm pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
+  ## Delete potential user with UID 1000
+  && if $(grep -q 1000 /etc/passwd); then \
+    userdel $(id -un 1000); \
+  fi \
   ## Add user
   && useradd -l -m -s /bin/bash -N -u ${NB_UID} ${NB_USER} \
   && mkdir -p /var/backups/skel \
