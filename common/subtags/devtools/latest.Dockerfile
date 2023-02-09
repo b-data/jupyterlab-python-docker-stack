@@ -51,8 +51,8 @@ RUN apt-get update \
     done; \
   fi \
   ## Clean up Node.js installation
-  && bash -c 'rm /usr/local/bin/{yarn,yarnpkg}' \
-  && bash -c 'rm /usr/local/{CHANGELOG.md,LICENSE,README.md}' \
+  && bash -c 'rm -f /usr/local/bin/{docker-entrypoint.sh,yarn*}' \
+  && bash -c 'rm -f /usr/local/{CHANGELOG.md,LICENSE,README.md}' \
   ## Enable corepack (Yarn, pnpm)
   && corepack enable \
   ## Install nFPM
