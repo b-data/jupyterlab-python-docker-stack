@@ -79,6 +79,8 @@ if [ "$(id -u)" == 0 ] ; then
     # - CHOWN_HOME: a boolean ("1" or "yes") to chown the user's home folder
     # - CHOWN_EXTRA: a comma separated list of paths to chown
     # - CHOWN_HOME_OPTS / CHOWN_EXTRA_OPTS: arguments to the chown commands
+    # - CHMOD_HOME: a boolean ("1" or "yes") to chmod the user's home folder
+    # - CHMOD_HOME_MODE: mode argument to the chmod command
 
     # Refit the jovyan user to the desired the user (NB_USER)
     if id jovyan &> /dev/null ; then
@@ -156,6 +158,10 @@ if [ "$(id -u)" == 0 ] ; then
             chown ${CHOWN_EXTRA_OPTS} "${NB_UID}:${NB_GID}" "${extra_dir}"
         done
     fi
+    # Optionally change the mode of the user's home folder
+    if [[ "${CHMOD_HOME}" == "1" || "${CHMOD_HOME}" == "yes" ]]; then
+        chmod "${CHMOD_HOME_MODE:-755}" "/home/${NB_USER}"
+    fi
 
     # Update potentially outdated environment variables since image build
     export XDG_CACHE_HOME="/home/${NB_USER}/.cache"
@@ -175,6 +181,7 @@ if [ "$(id -u)" == 0 ] ; then
     unset_explicit_env_vars
     _log "Running as ${NB_USER}:" "${cmd[@]}"
     exec sudo --preserve-env --set-home --user "${NB_USER}" \
+        LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}" \
         PATH="${PATH}" \
         PYTHONPATH="${PYTHONPATH:-}" \
         "${cmd[@]}"

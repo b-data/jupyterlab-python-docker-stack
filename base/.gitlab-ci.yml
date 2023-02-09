@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.11.0"
+    PYTHON_VERSION: "3.11.1"
 
 .before-script-build: &before-script-build
   - |
@@ -35,6 +35,7 @@
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - *before-script-build
+  retry: 2
 
 .post:
   image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
@@ -62,12 +63,15 @@ build:latest-linux-amd64:
       --build-arg BASE_IMAGE_TAG
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
+      --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:latest-linux-amd64
       -f latest.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-amd64
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64
       -t $CI_APP_REPO:latest-root-linux-amd64
       -f ../common/subtags/root/Dockerfile .
@@ -90,12 +94,15 @@ build:latest-linux-arm64v8:
       --build-arg BASE_IMAGE_TAG
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
+      --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:latest-linux-arm64v8
       -f latest.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
       -t $CI_APP_REPO:latest-root-linux-arm64v8
       -f ../common/subtags/root/Dockerfile .
@@ -117,11 +124,14 @@ build:version-linux-amd64:
       --build-arg BASE_IMAGE
       --build-arg BASE_IMAGE_TAG
       --build-arg BUILD_ON_IMAGE
+      --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f $PYTHON_VERSION.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-amd64
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-amd64
       -f ../common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
@@ -142,11 +152,14 @@ build:version-linux-arm64v8:
       --build-arg BASE_IMAGE
       --build-arg BASE_IMAGE_TAG
       --build-arg BUILD_ON_IMAGE
+      --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f $PYTHON_VERSION.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
       -f ../common/subtags/root/Dockerfile .
     - docker push -a $CI_APP_REPO
@@ -250,6 +263,8 @@ trigger-latest-build:
   script:
     - curl -X POST -F token=$JUPYTERLAB_PYTHON_SCIPY -F ref=main https://gitlab.b-data.ch/api/v4/projects/287/trigger/pipeline
   rules:
+    - if: $CUDA_IMAGE
+      when: never
     - if: $CI_COMMIT_BRANCH == "main"
       changes:
         - base/latest.Dockerfile
@@ -264,7 +279,37 @@ trigger-version-build:
   script:
     - curl -X POST -F token=$JUPYTERLAB_PYTHON_SCIPY -F ref=freeze-version https://gitlab.b-data.ch/api/v4/projects/287/trigger/pipeline
   rules:
+    - if: $CUDA_IMAGE
+      when: never
     - if: $CI_COMMIT_BRANCH == "freeze-version"
+      changes:
+        - base/$PYTHON_VERSION.Dockerfile
+
+trigger-latest-cuda-build:
+  extends: .post
+  stage: .post
+  needs: ["build-manifest:latest-linux-multiarch"]
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$JUPYTERLAB_CUDA_PYTHON_SCIPY -F ref=main https://gitlab.b-data.ch/api/v4/projects/322/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CUDA_IMAGE
+      changes:
+        - base/latest.Dockerfile
+
+trigger-version-cuda-build:
+  extends: .post
+  stage: .post
+  needs: ["build-manifest:version-linux-multiarch"]
+  before_script:
+    - apk upgrade --no-cache
+    - apk add --update --no-cache curl
+  script:
+    - curl -X POST -F token=$JUPYTERLAB_CUDA_PYTHON_SCIPY -F ref=freeze-version https://gitlab.b-data.ch/api/v4/projects/322/trigger/pipeline
+  rules:
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_IMAGE
       changes:
         - base/$PYTHON_VERSION.Dockerfile
 
@@ -279,12 +324,14 @@ build:latest-devtools-linux-amd64:
       docker build --pull
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
       --build-arg PYTHON_VERSION
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
       -t $CI_APP_REPO:latest-devtools-linux-amd64
       -f common/subtags/devtools/latest.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
       -t $CI_APP_REPO:latest-devtools-root-linux-amd64
       -f common/subtags/root/Dockerfile .
@@ -310,12 +357,14 @@ build:latest-devtools-linux-arm64v8:
       docker build --pull
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
       --build-arg PYTHON_VERSION
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
       -t $CI_APP_REPO:latest-devtools-linux-arm64v8
       -f common/subtags/devtools/latest.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
       -t $CI_APP_REPO:latest-devtools-root-linux-arm64v8
       -f common/subtags/root/Dockerfile .
@@ -340,11 +389,13 @@ build:version-devtools-linux-amd64:
     - >
       docker build --pull
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
       -f common/subtags/devtools/$PYTHON_VERSION.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-amd64
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-amd64
       -f common/subtags/root/Dockerfile .
     - |
@@ -366,11 +417,13 @@ build:version-devtools-linux-arm64v8:
     - >
       docker build --pull
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
       -f common/subtags/devtools/$PYTHON_VERSION.Dockerfile .
     - >
       docker build
       --build-arg BUILD_ON_IMAGE=$CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+      --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
       -f common/subtags/root/Dockerfile .
     - |

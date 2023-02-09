@@ -2,18 +2,19 @@ ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=bullseye
 ARG BUILD_ON_IMAGE=registry.gitlab.b-data.ch/python/ver
 ARG PYTHON_VERSION
+ARG CUDA_IMAGE_FLAVOR
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
-ARG JUPYTERHUB_VERSION=3.1.0
-ARG JUPYTERLAB_VERSION=3.5.1
+ARG JUPYTERHUB_VERSION=3.1.1
+ARG JUPYTERLAB_VERSION=3.5.3
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG CODE_SERVER_VERSION=4.9.0
-ARG GIT_VERSION=2.38.1
+ARG CODE_SERVER_VERSION=4.9.1
+ARG GIT_VERSION=2.39.1
 ARG GIT_LFS_VERSION=3.3.0
 ARG PANDOC_VERSION=2.19.2
 
-FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION} as files
+FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR} as files
 
 ARG NB_UID
 ENV NB_GID=100
@@ -37,7 +38,7 @@ RUN chown -R ${NB_UID}:${NB_GID} /files/var/backups/skel \
 FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as gsi
 FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
 
-FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR}
 
 LABEL org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://gitlab.b-data.ch/jupyterlab/python/docker-stack" \
@@ -47,6 +48,7 @@ LABEL org.opencontainers.image.licenses="MIT" \
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG BUILD_ON_IMAGE
+ARG CUDA_IMAGE_FLAVOR
 ARG NB_USER
 ARG NB_UID
 ARG JUPYTERHUB_VERSION
@@ -56,10 +58,11 @@ ARG CODE_SERVER_VERSION
 ARG GIT_VERSION
 ARG GIT_LFS_VERSION
 ARG PANDOC_VERSION
+ARG BUILD_START
 
 ARG CODE_WORKDIR
 
-ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
+ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR} \
     NB_USER=${NB_USER} \
     NB_UID=${NB_UID} \
     NB_GID=100 \
@@ -68,7 +71,8 @@ ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
     CODE_SERVER_VERSION=${CODE_SERVER_VERSION} \
     GIT_VERSION=${GIT_VERSION} \
     GIT_LFS_VERSION=${GIT_LFS_VERSION} \
-    PANDOC_VERSION=${PANDOC_VERSION}
+    PANDOC_VERSION=${PANDOC_VERSION} \
+    BUILD_DATE=${BUILD_START}
 
 ## Install Git
 COPY --from=gsi /usr/local /usr/local
@@ -101,7 +105,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sudo \
     swig \
     tmux \
-    vim \
+    vim-tiny \
     wget \
     zsh \
     ## Additional git runtime dependencies
@@ -114,7 +118,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
-      python3-distutils \
+      ## Install Python package installer
+      ## (dep: python3-distutils, python3-setuptools and python3-wheel)
+      python3-pip \
       ## Install venv module for python3
       python3-venv; \
     ## make some useful symlinks that are expected to exist
@@ -125,14 +131,15 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
       [ ! -e "/usr/bin/$dst" ]; \
       ln -svT "$src" "/usr/bin/$dst"; \
     done; \
+  else \
+    ## Force update pip, setuptools and wheel
+    curl -sLO https://bootstrap.pypa.io/get-pip.py; \
+    python get-pip.py \
+      pip \
+      setuptools \
+      wheel; \
+    rm get-pip.py; \
   fi \
-  ## Install/update pip, setuptools and wheel
-  && curl -sLO https://bootstrap.pypa.io/get-pip.py \
-  && python get-pip.py \
-    pip \
-    setuptools \
-    wheel \
-  && rm get-pip.py \
   ## Install font MesloLGS NF
   && mkdir -p /usr/share/fonts/truetype/meslo \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Regular.ttf \
