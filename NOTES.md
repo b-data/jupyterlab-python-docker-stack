@@ -62,7 +62,7 @@ unattended computations.
 **Miscellaneous**
 
 * `BASE_IMAGE`: Its very base, a [Docker Official Image](https://hub.docker.com/search?q=&type=image&image_filter=official).
-* `PARENT_IMAGE`: The image it was built on.
+* `PARENT_IMAGE`: The image it was derived from.
 * `BUILD_DATE`: The date it was built (ISO 8601 format).
 * `CTAN_REPO`: The CTAN mirror URL. (scipy image)
 
@@ -162,8 +162,9 @@ The CUDA and OS versions are selected as follows:
 
 * CUDA: The lastest version that has image flavour `devel` including cuDNN
   available.
-* OS: The latest version that has TensortRT libraries for both `amd64` and
-  `arm64` available.
+* OS: The latest version that has TensortRT libraries for `amd64` available.  
+  :information_source: It is taking quite a long time for these to be available
+  for `arm64`.
 
 ## Tweaks
 

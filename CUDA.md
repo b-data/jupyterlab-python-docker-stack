@@ -1,6 +1,6 @@
 # CUDA-enabled JupyterLab Python docker stack
 
-GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) images:
+GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
 * [`registry.gitlab.b-data.ch/jupyterlab/cuda/python/base`](https://gitlab.b-data.ch/jupyterlab/cuda/python/base/container_registry)
 * [`registry.gitlab.b-data.ch/jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)
@@ -69,7 +69,7 @@ latest:
 ```bash
 cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
+  --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=registry.gitlab.b-data.ch/cuda/python/ver \
   --build-arg PYTHON_VERSION=3.11.2 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
@@ -82,7 +82,7 @@ version:
 ```bash
 cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
+  --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=registry.gitlab.b-data.ch/cuda/python/ver \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base:MAJOR.MINOR.PATCH \
@@ -123,8 +123,8 @@ from the project's GitLab Container Registries:
   ```
 
 The use of the `-v` flag in the command mounts the current working directory on
-the host (`$PWD` in the example command) as `/home/jovyan` in the container.  
-The server logs appear in the terminal.
+the host (`$PWD` in the example command) as `/home/jovyan` in the container. The
+server logs appear in the terminal.
 
 ## Similar projects
 
@@ -134,7 +134,7 @@ The server logs appear in the terminal.
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=11.8.0-cudnn8-devel-ubuntu20.04)
+1. Derived from [`nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=11.8.0-cudnn8-devel-ubuntu22.04)
     * including development libraries and headers
 1. TensortRT and TensorRT plugin libraries
     * including development libraries and headers

@@ -83,7 +83,7 @@ COPY --from=glfsi /usr/local /usr/local
 USER root
 
 RUN dpkgArch="$(dpkg --print-architecture)" \
-  ## Unminimize if the system has been minimized
+  ## Unminimise if the system has been minimised
   && if [ $(command -v unminimize) ]; then \
     yes | unminimize; \
   fi \
