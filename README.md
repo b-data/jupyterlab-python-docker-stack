@@ -62,6 +62,13 @@ The following extensions are pre-installed for **code-server**:
   * [coder/code-server > Docs > Contributing](https://github.com/coder/code-server/blob/main/docs/CONTRIBUTING.md)
   * [microsoft/vscode-python > Wiki > Coding](https://github.com/microsoft/vscode-python/wiki/Coding)
 * `{PYTHON_VERSION,latest}-devtools-root`: The combination of both
+* `{PYTHON_VERSION,latest}-docker`: Includes
+  * `docker-ce-cli`
+  * `docker-buildx-plugin`
+  * `docker-compose-plugin`
+* `{PYTHON_VERSION,latest}-docker-root`: The combination of both
+* `{PYTHON_VERSION,latest}-devtools-docker`: The combination of both
+* `{PYTHON_VERSION,latest}-devtools-docker-root`: The combination of all three
 
 ## Table of Contents
 
