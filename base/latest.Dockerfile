@@ -1,5 +1,3 @@
-## Unminimise if the system has been minimised
-
 ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=bullseye
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
@@ -12,7 +10,7 @@ ARG JUPYTERHUB_VERSION=3.1.1
 ARG JUPYTERLAB_VERSION=3.6.1
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG CODE_SERVER_VERSION=4.9.1
-ARG GIT_VERSION=2.39.2
+ARG GIT_VERSION=2.40.0
 ARG GIT_LFS_VERSION=3.3.0
 ARG PANDOC_VERSION=2.19.2
 
