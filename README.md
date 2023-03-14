@@ -7,8 +7,8 @@
 
 Multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-* [`registry.gitlab.b-data.ch/jupyterlab/python/base`](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry)
-* [`registry.gitlab.b-data.ch/jupyterlab/python/scipy`](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
+* [`glcr.b-data.ch/jupyterlab/python/base`](https://gitlab.b-data.ch/jupyterlab/python/base/container_registry)
+* [`glcr.b-data.ch/jupyterlab/python/scipy`](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
 
 Images considered stable for Python versions ≥ 3.10.5.
 
@@ -131,14 +131,14 @@ from the project's GitLab Container Registries:
   docker run -it --rm \
     -p 8888:8888 \
     -v $PWD:/home/jovyan \
-    registry.gitlab.b-data.ch/jupyterlab/python/base[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/jupyterlab/python/base[:MAJOR[.MINOR[.PATCH]]]
   ```
 * [`jupyterlab/python/scipy`](https://gitlab.b-data.ch/jupyterlab/python/scipy/container_registry)
   ```bash
   docker run -it --rm \
     -p 8888:8888 \
     -v $PWD:/home/jovyan \
-    registry.gitlab.b-data.ch/jupyterlab/python/scipy[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/jupyterlab/python/scipy[:MAJOR[.MINOR[.PATCH]]]
   ```
 
 The use of the `-v` flag in the command mounts the current working directory on

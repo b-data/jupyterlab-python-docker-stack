@@ -26,7 +26,7 @@
     sed -n "s|\([[:digit:]]\+\).*|\1|p"`
 
 .build:
-  image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
+  image: glcr.b-data.ch/docker/docker-buildx:latest
   extends: .env
   services:
     - docker:dind
@@ -38,7 +38,7 @@
   retry: 2
 
 .post:
-  image: registry.gitlab.b-data.ch/docker/docker-buildx:latest
+  image: glcr.b-data.ch/docker/docker-buildx:latest
   stage: .post
   extends: .env
 

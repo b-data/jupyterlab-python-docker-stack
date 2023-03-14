@@ -2,8 +2,8 @@
 
 GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-* [`registry.gitlab.b-data.ch/jupyterlab/cuda/python/base`](https://gitlab.b-data.ch/jupyterlab/cuda/python/base/container_registry)
-* [`registry.gitlab.b-data.ch/jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)
+* [`glcr.b-data.ch/jupyterlab/cuda/python/base`](https://gitlab.b-data.ch/jupyterlab/cuda/python/base/container_registry)
+* [`glcr.b-data.ch/jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)
 
 Images available for Python versions ≥ 3.11.1.
 
@@ -70,7 +70,7 @@ latest:
 cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
-  --build-arg BUILD_ON_IMAGE=registry.gitlab.b-data.ch/cuda/python/ver \
+  --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
   --build-arg PYTHON_VERSION=3.11.2 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
@@ -83,7 +83,7 @@ version:
 cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
-  --build-arg BUILD_ON_IMAGE=registry.gitlab.b-data.ch/cuda/python/ver \
+  --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base:MAJOR.MINOR.PATCH \
   -f MAJOR.MINOR.PATCH.Dockerfile .
@@ -111,7 +111,7 @@ from the project's GitLab Container Registries:
     --gpus '"device=all"' \
     -p 8888:8888 \
     -v $PWD:/home/jovyan \
-    registry.gitlab.b-data.ch/jupyterlab/cuda/python/base[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/jupyterlab/cuda/python/base[:MAJOR[.MINOR[.PATCH]]]
   ```
 * [`jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)  
   ```bash
@@ -119,7 +119,7 @@ from the project's GitLab Container Registries:
     --gpus '"device=all"' \
     -p 8888:8888 \
     -v $PWD:/home/jovyan \
-    registry.gitlab.b-data.ch/jupyterlab/cuda/python/scipy[:MAJOR[.MINOR[.PATCH]]]
+    glcr.b-data.ch/jupyterlab/cuda/python/scipy[:MAJOR[.MINOR[.PATCH]]]
   ```
 
 The use of the `-v` flag in the command mounts the current working directory on
