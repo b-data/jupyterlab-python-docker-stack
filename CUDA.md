@@ -134,7 +134,7 @@ server logs appear in the terminal.
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=11.8.0-cudnn8-devel-ubuntu22.04)
+1. Derived from [`nvidia/cuda:12.0.0-cudnn8-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=12.0.0-cudnn8-devel-ubuntu22.04)
     * including development libraries and headers
 1. TensortRT and TensorRT plugin libraries
     * including development libraries and headers
