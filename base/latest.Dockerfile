@@ -7,7 +7,7 @@ ARG CUDA_IMAGE_FLAVOR
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ARG JUPYTERHUB_VERSION=3.1.1
-ARG JUPYTERLAB_VERSION=3.6.1
+ARG JUPYTERLAB_VERSION=3.6.2
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG CODE_SERVER_VERSION=4.9.1
 ARG GIT_VERSION=2.40.0
@@ -153,11 +153,11 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Bold\ Italic.ttf \
   && fc-cache -fv \
   ## Git: Set default branch name to main
-  && sudo git config --system init.defaultBranch main \
+  && git config --system init.defaultBranch main \
   ## Git: Store passwords for one hour in memory
   && git config --system credential.helper "cache --timeout=3600" \
   ## Git: Merge the default branch from the default remote when "git pull" is run
-  && sudo git config --system pull.rebase false \
+  && git config --system pull.rebase false \
   ## Install pandoc
   && curl -sLO https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   && dpkg -i pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
