@@ -128,7 +128,7 @@ if [ "$(id -u)" == 0 ] ; then
         # The home directory could be bind mounted. Populate it if it is empty
         elif [[ "$(ls -A "/home/${NB_USER}" 2> /dev/null)" == "" ]]; then
             _log "Populating home dir /home/${NB_USER}..."
-            if su $NB_USER -c "cp -a /home/jovyan/. /home/${NB_USER}/"; then
+            if cp -a /home/jovyan/. "/home/${NB_USER}/"; then
                 _log "Success!"
             else
                 _log "Failed to copy data from /home/jovyan to /home/${NB_USER}!"
