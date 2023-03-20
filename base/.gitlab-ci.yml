@@ -26,19 +26,21 @@
     sed -n "s|\([[:digit:]]\+\).*|\1|p"`
 
 .build:
-  image: glcr.b-data.ch/docker/docker-buildx:latest
+  image: glcr.b-data.ch/docker/docker:latest
   extends: .env
   services:
-    - docker:dind
+    - name: glcr.b-data.ch/docker/docker:dind
+      alias: docker
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: "/certs"
+    BUILDX_NO_DEFAULT_ATTESTATIONS: "true"
   before_script:
     - *before-script-build
   retry: 2
 
 .post:
-  image: glcr.b-data.ch/docker/docker-buildx:latest
+  image: glcr.b-data.ch/docker/docker:latest
   stage: .post
   extends: .env
 
