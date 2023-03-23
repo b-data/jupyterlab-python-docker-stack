@@ -13,14 +13,15 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && mkdir -m 0755 -p /etc/apt/keyrings \
   && curl -fsSL https://download.docker.com/linux/$ID/gpg | \
     gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
-  && echo "deb [arch=$dpkgArch signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$ID \
-    $VERSION_CODENAME stable" | \
+  && echo "deb [arch=$dpkgArch signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$ID $VERSION_CODENAME stable" | \
     tee /etc/apt/sources.list.d/docker.list > /dev/null \
   && apt-get update \
   && apt-get -y install \
     docker-ce-cli \
     docker-buildx-plugin \
     docker-compose-plugin \
+  && ln -s /usr/libexec/docker/cli-plugins/docker-compose \
+    /usr/local/bin/docker-compose \
   ## Clean up
   && rm -rf /var/lib/apt/lists/*
 
