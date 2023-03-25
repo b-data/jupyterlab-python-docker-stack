@@ -78,6 +78,10 @@ COPY --from=glfsi /usr/local /usr/local
 USER root
 
 RUN dpkgArch="$(dpkg --print-architecture)" \
+  ## Unminimise if the system has been minimised
+  && if [ $(command -v unminimize) ]; then \
+    yes | unminimize; \
+  fi \
   && apt-get update \
   && apt-get -y install --no-install-recommends \
     bash-completion \
@@ -114,7 +118,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if [ -z "$PYTHON_VERSION" ]; then \
     apt-get -y install --no-install-recommends \
       python3-dev \
-      python3-distutils \
+      ## Install Python package installer
+      ## (dep: python3-distutils, python3-setuptools and python3-wheel)
+      python3-pip \
       ## Install venv module for python3
       python3-venv; \
     ## make some useful symlinks that are expected to exist

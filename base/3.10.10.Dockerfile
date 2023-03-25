@@ -82,6 +82,10 @@ COPY --from=glfsi /usr/local /usr/local
 USER root
 
 RUN dpkgArch="$(dpkg --print-architecture)" \
+  ## Unminimise if the system has been minimised
+  && if [ $(command -v unminimize) ]; then \
+    yes | unminimize; \
+  fi \
   && apt-get update \
   && apt-get -y install --no-install-recommends \
     bash-completion \
