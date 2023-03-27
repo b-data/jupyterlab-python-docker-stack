@@ -164,7 +164,7 @@ docker run -it --rm \
   --gpus '"device=all"' \
   -p 8888:8888 \
   -v "${PWD}":/home/jovyan \
-  IMAGE
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
 ```
 
 *might* be sufficient.

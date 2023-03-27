@@ -183,7 +183,7 @@ The server logs appear in the terminal.
 docker run -it --rm \
   -p 8888:8888 \
   -v "${PWD}":/home/jovyan \
-  IMAGE
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
 ```
 
 *might* be sufficient.
