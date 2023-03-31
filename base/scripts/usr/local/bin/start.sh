@@ -131,7 +131,7 @@ if [ "$(id -u)" == 0 ] ; then
             if cp -a /home/jovyan/. "/home/${NB_USER}/"; then
                 _log "Success!"
             else
-                _log "Failed to copy data from /home/jovyan to /home/${NB_USER}!"
+                _log "ERROR: Failed to copy data from /home/jovyan to /home/${NB_USER}!"
                 exit 1
             fi
         fi
