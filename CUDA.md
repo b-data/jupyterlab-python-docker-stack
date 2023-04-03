@@ -106,7 +106,7 @@ automatically populated on first run.
 ### Run container
 
 | :exclamation: Always mount the user's **entire** home directory.<br>Mounting a subfolder prevents the container from starting.[^1] |
-|------------------------------------------------------------------------------------------------------------------------------------|
+|:-----------------------------------------------------------------------------------------------------------------------------------|
 
 [^1]: The only exception is the use case described at [Jupyter Docker Stacks > Quick Start > Example 2](https://github.com/jupyter/docker-stacks#quick-start).
 

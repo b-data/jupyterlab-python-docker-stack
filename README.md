@@ -1,7 +1,7 @@
 [![minimal-readme compliant](https://img.shields.io/badge/readme%20style-minimal-brightgreen.svg)](https://github.com/RichardLitt/standard-readme/blob/master/example-readmes/minimal-readme.md) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) <a href="https://liberapay.com/benz0li/donate"><img src="https://liberapay.com/assets/widgets/donate.svg" alt="Donate using Liberapay" height="20"></a>
 
 | See the [CUDA-enabled JupyterLab Python docker stack](CUDA.md) for GPU accelerated docker images. |
-|---------------------------------------------------------------------------------------------------|
+|:--------------------------------------------------------------------------------------------------|
 
 # JupyterLab Python docker stack
 
@@ -128,7 +128,7 @@ automatically populated on first run.
 ### Run container
 
 | :exclamation: Always mount the user's **entire** home directory.<br>Mounting a subfolder prevents the container from starting.[^1] |
-|------------------------------------------------------------------------------------------------------------------------------------|
+|:-----------------------------------------------------------------------------------------------------------------------------------|
 
 [^1]: The only exception is the use case described at [Jupyter Docker Stacks > Quick Start > Example 2](https://github.com/jupyter/docker-stacks#quick-start).
 
