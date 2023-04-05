@@ -20,7 +20,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     docker-ce-cli \
     docker-buildx-plugin \
     docker-compose-plugin \
-    $(test $dpkgArch == "amd64" && echo docker-scan-plugin) \
+    $(test $dpkgArch = "amd64" && echo docker-scan-plugin) \
   && ln -s /usr/libexec/docker/cli-plugins/docker-compose \
     /usr/local/bin/docker-compose \
   ## Clean up
