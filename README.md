@@ -66,6 +66,7 @@ The following extensions are pre-installed for **code-server**:
   * `docker-ce-cli`
   * `docker-buildx-plugin`
   * `docker-compose-plugin`
+  * `docker-scan-plugin`
 * `{PYTHON_VERSION,latest}-docker-root`: The combination of both
 * `{PYTHON_VERSION,latest}-devtools-docker`: The combination of both
 * `{PYTHON_VERSION,latest}-devtools-docker-root`: The combination of all three
