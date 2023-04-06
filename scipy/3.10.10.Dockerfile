@@ -90,7 +90,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ipympl\
     ipywidgets \
     matplotlib \
-    #numba \
+    numba \
     numexpr \
     numpy \
     pandas \

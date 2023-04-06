@@ -1,9 +1,9 @@
 # CUDA-enabled JupyterLab Python docker stack
 
-GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) images:
+GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
-* [`registry.gitlab.b-data.ch/jupyterlab/cuda/python/base`](https://gitlab.b-data.ch/jupyterlab/cuda/python/base/container_registry)
-* [`registry.gitlab.b-data.ch/jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)
+* [`glcr.b-data.ch/jupyterlab/cuda/python/base`](https://gitlab.b-data.ch/jupyterlab/cuda/python/base/container_registry)
+* [`glcr.b-data.ch/jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)
 
 Images available for Python versions ≥ 3.11.1.
 
@@ -69,9 +69,9 @@ latest:
 ```bash
 cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
-  --build-arg BUILD_ON_IMAGE=registry.gitlab.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.11.1 \
+  --build-arg BASE_IMAGE_TAG=22.04 \
+  --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
+  --build-arg PYTHON_VERSION=3.11.2 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -82,8 +82,8 @@ version:
 ```bash
 cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
-  --build-arg BASE_IMAGE_TAG=20.04 \
-  --build-arg BUILD_ON_IMAGE=registry.gitlab.b-data.ch/cuda/python/ver \
+  --build-arg BASE_IMAGE_TAG=22.04 \
+  --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base:MAJOR.MINOR.PATCH \
   -f MAJOR.MINOR.PATCH.Dockerfile .
@@ -91,7 +91,24 @@ cd base && docker build \
 
 For `MAJOR.MINOR.PATCH` ≥ `3.11.1`.
 
+### Create home directory
+
+Create an empty directory:
+
+```bash
+mkdir jupyterlab-jovyan
+sudo chown 1000:100 jupyterlab-jovyan
+```
+
+It will be *bind mounted* as the JupyterLab user's home directory and
+automatically populated on first run.
+
 ### Run container
+
+| :exclamation: Always mount the user's **entire** home directory.<br>Mounting a subfolder prevents the container from starting.[^1] |
+|:-----------------------------------------------------------------------------------------------------------------------------------|
+
+[^1]: The only exception is the use case described at [Jupyter Docker Stacks > Quick Start > Example 2](https://github.com/jupyter/docker-stacks#quick-start).
 
 self built:
 
@@ -99,32 +116,62 @@ self built:
 docker run -it --rm \
   --gpus '"device=all"' \
   -p 8888:8888 \
-  -v $PWD:/home/jovyan \
+  -u root \
+  -v "${PWD}/jupyterlab-jovyan":/home/jovyan \
+  -e NB_UID=$(id -u) \
+  -e NB_GID=$(id -g) \
+  -e CHOWN_HOME=yes \
+  -e CHOWN_HOME_OPTS='-R' \
   jupyterlab/cuda/python/base[:MAJOR.MINOR.PATCH]
 ```
 
 from the project's GitLab Container Registries:
 
-* [`jupyterlab/cuda/python/base`](https://gitlab.b-data.ch/jupyterlab/cuda/python/base/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    -p 8888:8888 \
-    -v $PWD:/home/jovyan \
-    registry.gitlab.b-data.ch/jupyterlab/cuda/python/base[:MAJOR[.MINOR[.PATCH]]]
-  ```
-* [`jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)  
-  ```bash
-  docker run -it --rm \
-    --gpus '"device=all"' \
-    -p 8888:8888 \
-    -v $PWD:/home/jovyan \
-    registry.gitlab.b-data.ch/jupyterlab/cuda/python/scipy[:MAJOR[.MINOR[.PATCH]]]
-  ```
+```bash
+docker run -it --rm \
+  --gpus '"device=all"' \
+  -p 8888:8888 \
+  -u root \
+  -v "${PWD}/jupyterlab-jovyan":/home/jovyan \
+  -e NB_UID=$(id -u) \
+  -e NB_GID=$(id -g) \
+  -e CHOWN_HOME=yes \
+  -e CHOWN_HOME_OPTS='-R' \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
+```
 
-The use of the `-v` flag in the command mounts the current working directory on
-the host (`$PWD` in the example command) as `/home/jovyan` in the container.  
+`IMAGE` being one of
+
+* [`glcr.b-data.ch/jupyterlab/cuda/python/base`](https://gitlab.b-data.ch/jupyterlab/cuda/python/base/container_registry)
+* [`glcr.b-data.ch/jupyterlab/cuda/python/scipy`](https://gitlab.b-data.ch/jupyterlab/cuda/python/scipy/container_registry)
+
+The use of the `-v` flag in the command mounts the empty directory on the host
+(`${PWD}/jupyterlab-jovyan` in the command) as `/home/jovyan` in the container.
+
+`-e NB_UID=$(id -u) -e NB_GID=$(id -g)` instructs the startup script to switch
+the user ID and the primary group ID of `${NB_USER}` to the user and group ID of
+the one executing the command.
+
+`-e CHOWN_HOME=yes -e CHOWN_HOME_OPTS='-R'` instructs the startup script to
+recursively change the `${NB_USER}` home directory owner and group to the
+current value of `${NB_UID}` and `${NB_GID}`.  
+:information_source: This is only required for the first run.
+
 The server logs appear in the terminal.
+
+**Using Docker Desktop**
+
+`sudo chown 1000:100 jupyterlab-jovyan` *might* not be required. Also
+
+```bash
+docker run -it --rm \
+  --gpus '"device=all"' \
+  -p 8888:8888 \
+  -v "${PWD}/jupyterlab-jovyan":/home/jovyan \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
+```
+
+*might* be sufficient.
 
 ## Similar projects
 
@@ -134,7 +181,7 @@ The server logs appear in the terminal.
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=11.8.0-cudnn8-devel-ubuntu20.04)
+1. Derived from [`nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=11.8.0-cudnn8-devel-ubuntu22.04)
     * including development libraries and headers
 1. TensortRT and TensorRT plugin libraries
     * including development libraries and headers
