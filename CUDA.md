@@ -29,6 +29,9 @@ The same as the
 * TensortRT and TensorRT plugin libraries
   * including development libraries and headers
 
+:point_right: See the [CUDA Version Matrix](CUDA_VERSION_MATRIX.md) for detailed
+information.
+
 **Subtags**
 
 The same as the

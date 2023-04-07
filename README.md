@@ -38,6 +38,9 @@ base → scipy
   * **Zsh**: A shell designed for interactive use, although it is also a
     powerful scripting language.
 
+:point_right: See the [Version Matrix](VERSION_MATRIX.md) for detailed
+information.
+
 The following extensions are pre-installed for **code-server**:
 
 * [.gitignore Generator](https://github.com/piotrpalarz/vscode-gitignore-generator)
