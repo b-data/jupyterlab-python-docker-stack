@@ -166,6 +166,11 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if $(grep -q 1000 /etc/passwd); then \
     userdel $(id -un 1000); \
   fi \
+  ## Do not set user limits for sudo/sudo-i
+  && sed -i 's/.*pam_limits.so/#&/g' /etc/pam.d/sudo \
+  && if [ -f "/etc/pam.d/sudo-i" ]; then \
+    sed -i 's/.*pam_limits.so/#&/g' /etc/pam.d/sudo-i; \
+  fi \
   ## Add user
   && useradd -l -m -s /bin/bash -N -u ${NB_UID} ${NB_USER} \
   && mkdir -p /var/backups/skel \
