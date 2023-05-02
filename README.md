@@ -186,7 +186,8 @@ The server logs appear in the terminal.
 
 **Using Docker Desktop**
 
-`sudo chown 1000:100 jupyterlab-jovyan` *might* not be required. Also
+[Creating a home directory](#create-home-directory) *might* not be required.
+Also
 
 ```bash
 docker run -it --rm \
