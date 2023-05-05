@@ -212,6 +212,8 @@ What makes this project different:
 1. Just Python – no [Conda](https://github.com/conda/conda) /
    [Mamba](https://github.com/mamba-org/mamba)
 
+See [Notes](NOTES.md) for tweaks, settings, etc.
+
 ## Contributing
 
 PRs accepted.
