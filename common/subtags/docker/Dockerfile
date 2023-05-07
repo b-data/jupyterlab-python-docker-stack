@@ -1,7 +1,10 @@
 ARG BUILD_ON_IMAGE
 
+ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
+
 FROM ${BUILD_ON_IMAGE}
 
+ARG CODE_BUILTIN_EXTENSIONS_DIR
 ARG BUILD_START
 
 ENV BUILD_DATE=${BUILD_START}
@@ -23,6 +26,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     $(test $dpkgArch = "amd64" && echo docker-scan-plugin) \
   && ln -s /usr/libexec/docker/cli-plugins/docker-compose \
     /usr/local/bin/docker-compose \
+  ## Install code-server extensions
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-azuretools.vscode-docker \
   ## Clean up
   && rm -rf /var/lib/apt/lists/*
 
