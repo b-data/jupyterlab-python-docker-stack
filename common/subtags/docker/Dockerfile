@@ -11,6 +11,10 @@ ENV BUILD_DATE=${BUILD_START}
 
 USER root
 
+ENV HOME=/root
+
+WORKDIR ${HOME}
+
 RUN dpkgArch="$(dpkg --print-architecture)" \
   && . /etc/os-release \
   && mkdir -m 0755 -p /etc/apt/keyrings \
@@ -29,7 +33,12 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-azuretools.vscode-docker \
   ## Clean up
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+    /root/.config
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}
+
+ENV HOME=/home/${NB_USER}
+
+WORKDIR ${HOME}
