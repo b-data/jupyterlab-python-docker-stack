@@ -60,16 +60,18 @@ The following extensions are pre-installed for **code-server**:
 
 **Subtags**
 
-* `{PYTHON_VERSION,latest}-root`: Container runs as `root`
-* `{PYTHON_VERSION,latest}-devtools`: Includes the requirements according to
+* `{PYTHON_VERSION,latest}-root` (versions ≥ 3.10.5): Container runs as `root`
+* `{PYTHON_VERSION,latest}-devtools` (versions ≥ 3.10.5): Includes the
+  requirements according to
   * [coder/code-server > Docs > Contributing](https://github.com/coder/code-server/blob/main/docs/CONTRIBUTING.md)
   * [microsoft/vscode-python > Wiki > Coding](https://github.com/microsoft/vscode-python/wiki/Coding)
 * `{PYTHON_VERSION,latest}-devtools-root`: The combination of both
-* `{PYTHON_VERSION,latest}-docker`: Includes
+* `{PYTHON_VERSION,latest}-docker` (versions ≥ 3.10.11, versions ≥ 3.11.2):
+  Includes
   * `docker-ce-cli`
   * `docker-buildx-plugin`
   * `docker-compose-plugin`
-  * `docker-scan-plugin`
+  * `docker-scan-plugin` (amd64 only)
 * `{PYTHON_VERSION,latest}-docker-root`: The combination of both
 * `{PYTHON_VERSION,latest}-devtools-docker`: The combination of both
 * `{PYTHON_VERSION,latest}-devtools-docker-root`: The combination of all three
