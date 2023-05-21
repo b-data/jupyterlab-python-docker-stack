@@ -81,7 +81,7 @@ The following extensions are pre-installed for **code-server**:
 * [Prerequisites](#prerequisites)
 * [Install](#install)
 * [Usage](#usage)
-* [Similar project](#similar-project)
+* [Similar projects](#similar-projects)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -200,9 +200,10 @@ docker run -it --rm \
 
 *might* be sufficient.
 
-## Similar project
+## Similar projects
 
 * [jupyter/docker-stacks](https://github.com/jupyter/docker-stacks)
+* [geocompx/docker](https://github.com/geocompx/docker)
 
 What makes this project different:
 
