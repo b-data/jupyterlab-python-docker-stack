@@ -181,7 +181,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
-    $HOME/.cache
+    ${HOME}/.cache
 
 ENV PATH=/opt/code-server/bin:$PATH \
     CS_DISABLE_GETTING_STARTED_OVERRIDE=1
@@ -218,8 +218,8 @@ RUN mkdir /opt/code-server \
   && mkdir -m 1777 tmp \
   ## Clean up
   && rm -rf /tmp/* \
-    $HOME/.config \
-    $HOME/.local
+    ${HOME}/.config \
+    ${HOME}/.local
 
 ## Install JupyterLab
 RUN pip install \
@@ -239,7 +239,7 @@ RUN pip install \
   && sed -i 's|</head>|<link rel="stylesheet" type="text/css" href="{{page_config.fullStaticUrl}}/assets/css/fonts.css"></head>|g' /usr/local/share/jupyter/lab/static/index.html \
   ## Clean up
   && rm -rf /tmp/* \
-    $HOME/.cache
+    ${HOME}/.cache
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}
@@ -253,19 +253,19 @@ WORKDIR ${HOME}
 
 ## Install Oh My Zsh with Powerlevel10k theme
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
-  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git .oh-my-zsh/custom/themes/powerlevel10k \
-  && sed -i 's/ZSH="\/home\/jovyan\/.oh-my-zsh"/ZSH="$HOME\/.oh-my-zsh"/g' .zshrc \
-  && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' .zshrc \
-  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/bin:\$PATH\"\nfi" >> .zshrc \
-  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/.local/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/.local/bin:\$PATH\"\nfi" >> .zshrc \
-  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    busy &\nfi" >> .bashrc \
-  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    setopt nocheckjobs\n    busy &\nfi" >> .zshrc \
-  && echo "\n# To customize prompt, run \`p10k configure\` or edit ~/.p10k.zsh." >> .zshrc \
-  && echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> .zshrc \
+  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${HOME}/.oh-my-zsh/custom/themes/powerlevel10k \
+  && sed -i 's/ZSH="\/home\/jovyan\/.oh-my-zsh"/ZSH="$HOME\/.oh-my-zsh"/g' ${HOME}/.zshrc \
+  && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ${HOME}/.zshrc \
+  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/.local/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/.local/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    busy &\nfi" >> ${HOME}/.bashrc \
+  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    setopt nocheckjobs\n    busy &\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# To customize prompt, run \`p10k configure\` or edit ~/.p10k.zsh." >> ${HOME}/.zshrc \
+  && echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> ${HOME}/.zshrc \
   ## Create user's private bin
-  && mkdir -p .local/bin \
+  && mkdir -p ${HOME}/.local/bin \
   ## Create backup of home directory
-  && cp -a $HOME/. /var/backups/skel
+  && cp -a ${HOME}/. /var/backups/skel
 
 ## Copy files as late as possible to avoid cache busting
 COPY --from=files /files /

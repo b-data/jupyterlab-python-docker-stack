@@ -24,6 +24,8 @@ ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
 ENV HOME=/root \
     PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH
 
+WORKDIR ${HOME}
+
 RUN dpkgArch="$(dpkg --print-architecture)" \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
@@ -53,8 +55,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Admin-based install of TinyTeX
   && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
     | sh -s - --admin --no-path \
-  && mv ~/.TinyTeX /opt/TinyTeX \
-  && sed -i 's/\/root\/.TinyTeX/\/opt\/TinyTeX/g' \
+  && mv ${HOME}/.TinyTeX /opt/TinyTeX \
+  && sed -i "s|${HOME}/.TinyTeX|/opt/TinyTeX|g" \
     /opt/TinyTeX/texmf-var/fonts/conf/texlive-fontconfig.conf \
   && ln -rs /opt/TinyTeX/bin/$(uname -m)-linux \
     /opt/TinyTeX/bin/linux \
@@ -125,10 +127,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
-    $HOME/.cache \
-    $HOME/.config \
-    $HOME/.local \
-    $HOME/.wget-hsts
+    ${HOME}/.cache \
+    ${HOME}/.config \
+    ${HOME}/.local \
+    ${HOME}/.wget-hsts
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}

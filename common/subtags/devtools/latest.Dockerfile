@@ -67,8 +67,8 @@ RUN apt-get update \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
-    /root/.config \
-    /root/.local
+    ${HOME}/.config \
+    ${HOME}/.local
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}
