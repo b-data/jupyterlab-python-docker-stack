@@ -34,20 +34,20 @@ if [ "$(id -u)" == 0 ] ; then
   fi
 
   # Update code-server settings
-  su $NB_USER -c "mkdir -p .local/share/code-server/User"
-  if [[ ! -f ".local/share/code-server/User/settings.json" ]]; then
+  su $NB_USER -c "mkdir -p /home/$NB_USER/.local/share/code-server/User"
+  if [[ ! -f "/home/$NB_USER/.local/share/code-server/User/settings.json" ]]; then
     su $NB_USER -c "cp -a /var/backups/skel/.local/share/code-server/User/settings.json \
-      .local/share/code-server/User/settings.json"
+      /home/$NB_USER/.local/share/code-server/User/settings.json"
   fi
 
-  su $NB_USER -c "mv .local/share/code-server/User/settings.json \
-    .local/share/code-server/User/settings.json.bak"
+  su $NB_USER -c "mv /home/$NB_USER/.local/share/code-server/User/settings.json \
+    /home/$NB_USER/.local/share/code-server/User/settings.json.bak"
   su $NB_USER -c "sed -i ':a;N;\$!ba;s/,\n\}/\n}/g' \
-    .local/share/code-server/User/settings.json.bak"
+    /home/$NB_USER/.local/share/code-server/User/settings.json.bak"
   su $NB_USER -c "jq -s '.[0] * .[1]' \
     /var/backups/skel/.local/share/code-server/User/settings.json \
-    .local/share/code-server/User/settings.json.bak > \
-    .local/share/code-server/User/settings.json"
+    /home/$NB_USER/.local/share/code-server/User/settings.json.bak > \
+    /home/$NB_USER/.local/share/code-server/User/settings.json"
 else
   # Warn if the user wants to change the timezone but hasn't started the
   # container as root.
@@ -67,21 +67,21 @@ else
   fi
 
   # Update code-server settings
-  mkdir -p .local/share/code-server/User
-  if [[ ! -f ".local/share/code-server/User/settings.json" ]]; then
+  mkdir -p /home/$NB_USER/.local/share/code-server/User
+  if [[ ! -f "/home/$NB_USER/.local/share/code-server/User/settings.json" ]]; then
     cp -a /var/backups/skel/.local/share/code-server/User/settings.json \
-      .local/share/code-server/User/settings.json
+      /home/$NB_USER/.local/share/code-server/User/settings.json
   fi
 
-  mv .local/share/code-server/User/settings.json \
-    .local/share/code-server/User/settings.json.bak
+  mv /home/$NB_USER/.local/share/code-server/User/settings.json \
+    /home/$NB_USER/.local/share/code-server/User/settings.json.bak
   sed -i ':a;N;$!ba;s/,\n\}/\n}/g' \
-    .local/share/code-server/User/settings.json.bak
+    /home/$NB_USER/.local/share/code-server/User/settings.json.bak
   jq -s '.[0] * .[1]' \
     /var/backups/skel/.local/share/code-server/User/settings.json \
-    .local/share/code-server/User/settings.json.bak > \
-    .local/share/code-server/User/settings.json
+    /home/$NB_USER/.local/share/code-server/User/settings.json.bak > \
+    /home/$NB_USER/.local/share/code-server/User/settings.json
 fi
 
 # Remove old .zcompdump files
-rm -f .zcompdump*
+rm -f /home/$NB_USER/.zcompdump*
