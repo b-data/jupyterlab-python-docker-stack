@@ -31,16 +31,25 @@ base → scipy
   * **Python**: An interpreted, object-oriented, high-level programming language
     with dynamic semantics.
   * **Quarto**: A scientific and technical publishing system built on Pandoc.  
-    :information_source: scipy image, amd64 only
+    :information_source: scipy image
   * **TinyTeX**: A lightweight, cross-platform, portable, and easy-to-maintain
     LaTeX distribution based on TeX Live.  
     :information_source: scipy image
   * **Zsh**: A shell designed for interactive use, although it is also a
     powerful scripting language.
 
+:point_right: See the [Version Matrix](VERSION_MATRIX.md) for detailed
+information.
+
 The following extensions are pre-installed for **code-server**:
 
 * [.gitignore Generator](https://github.com/piotrpalarz/vscode-gitignore-generator)
+* [Black Formatter](https://open-vsx.org/extension/ms-python/black-formatter)  
+  :information_source: devtools subtags
+* [Docker](https://open-vsx.org/extension/ms-azuretools/vscode-docker)  
+  :information_source: docker subtags
+* [ESLint](https://open-vsx.org/extension/dbaeumer/vscode-eslint)  
+  :information_source: devtools subtags
 * [Git Graph](https://open-vsx.org/extension/mhutchie/git-graph)
 * [GitLab Workflow](https://open-vsx.org/extension/GitLab/gitlab-workflow)
 * [GitLens — Git supercharged](https://open-vsx.org/extension/eamodio/gitlens)
@@ -49,24 +58,28 @@ The following extensions are pre-installed for **code-server**:
 * [LaTeX Workshop](https://open-vsx.org/extension/James-Yu/latex-workshop)  
   :information_source: scipy image
 * [Path Intellisense](https://open-vsx.org/extension/christian-kohler/path-intellisense)
+* [Prettier - Code formatter](https://open-vsx.org/extension/esbenp/prettier-vscode)  
+  :information_source: devtools subtags
 * [Project Manager](https://open-vsx.org/extension/alefragnani/project-manager)
 * [Python](https://open-vsx.org/extension/ms-python/python)
 * [Quarto](https://open-vsx.org/extension/quarto/quarto)  
-  :information_source: scipy image, amd64 only
+  :information_source: scipy image
 * [YAML](https://open-vsx.org/extension/redhat/vscode-yaml)
 
 **Subtags**
 
-* `{PYTHON_VERSION,latest}-root`: Container runs as `root`
-* `{PYTHON_VERSION,latest}-devtools`: Includes the requirements according to
+* `{PYTHON_VERSION,latest}-root` (versions ≥ 3.10.5): Container runs as `root`
+* `{PYTHON_VERSION,latest}-devtools` (versions ≥ 3.10.5): Includes the
+  requirements according to
   * [coder/code-server > Docs > Contributing](https://github.com/coder/code-server/blob/main/docs/CONTRIBUTING.md)
   * [microsoft/vscode-python > Wiki > Coding](https://github.com/microsoft/vscode-python/wiki/Coding)
 * `{PYTHON_VERSION,latest}-devtools-root`: The combination of both
-* `{PYTHON_VERSION,latest}-docker`: Includes
+* `{PYTHON_VERSION,latest}-docker` (versions ≥ 3.10.11, versions ≥ 3.11.2):
+  Includes
   * `docker-ce-cli`
   * `docker-buildx-plugin`
   * `docker-compose-plugin`
-  * `docker-scan-plugin`
+  * `docker-scan-plugin` (amd64 only)
 * `{PYTHON_VERSION,latest}-docker-root`: The combination of both
 * `{PYTHON_VERSION,latest}-devtools-docker`: The combination of both
 * `{PYTHON_VERSION,latest}-devtools-docker-root`: The combination of all three
@@ -76,7 +89,7 @@ The following extensions are pre-installed for **code-server**:
 * [Prerequisites](#prerequisites)
 * [Install](#install)
 * [Usage](#usage)
-* [Similar project](#similar-project)
+* [Similar projects](#similar-projects)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -99,7 +112,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.11.2 \
+  --build-arg PYTHON_VERSION=3.11.3 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
@@ -116,11 +129,12 @@ For `MAJOR.MINOR.PATCH` ≥ `3.10.5`.
 
 ### Create home directory
 
-Create an empty directory:
+Create an empty directory using docker:
 
 ```bash
-mkdir jupyterlab-jovyan
-sudo chown 1000:100 jupyterlab-jovyan
+docker run --rm \
+  -v "${PWD}/jupyterlab-jovyan":/dummy \
+  alpine chown 1000:100 /dummy
 ```
 
 It will be *bind mounted* as the JupyterLab user's home directory and
@@ -182,7 +196,8 @@ The server logs appear in the terminal.
 
 **Using Docker Desktop**
 
-`sudo chown 1000:100 jupyterlab-jovyan` *might* not be required. Also
+[Creating a home directory](#create-home-directory) *might* not be required.
+Also
 
 ```bash
 docker run -it --rm \
@@ -193,9 +208,10 @@ docker run -it --rm \
 
 *might* be sufficient.
 
-## Similar project
+## Similar projects
 
 * [jupyter/docker-stacks](https://github.com/jupyter/docker-stacks)
+* [geocompx/docker](https://github.com/geocompx/docker)
 
 What makes this project different:
 
@@ -206,6 +222,8 @@ What makes this project different:
    [JupyterLab](https://github.com/jupyterlab/jupyterlab)
 1. Just Python – no [Conda](https://github.com/conda/conda) /
    [Mamba](https://github.com/mamba-org/mamba)
+
+See [Notes](NOTES.md) for tweaks, settings, etc.
 
 ## Contributing
 

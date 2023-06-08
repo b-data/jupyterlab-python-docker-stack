@@ -1,7 +1,7 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG QUARTO_VERSION=1.2.475
+ARG QUARTO_VERSION=1.3.361
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
@@ -17,41 +17,47 @@ ARG BUILD_START
 USER root
 
 ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
-    HOME=/root \
+    QUARTO_VERSION=${QUARTO_VERSION} \
     CTAN_REPO=${CTAN_REPO} \
-    PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH \
     BUILD_DATE=${BUILD_START}
 
+ENV HOME=/root \
+    PATH=/opt/TinyTeX/bin/linux:/opt/quarto/bin:$PATH
+
+WORKDIR ${HOME}
+
 RUN dpkgArch="$(dpkg --print-architecture)" \
-  && wget "https://travis-bin.yihui.name/texlive-local.deb" \
-  && dpkg -i texlive-local.deb \
-  && rm texlive-local.deb \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
     fonts-roboto \
     ghostscript \
     qpdf \
     texinfo \
-    ## For tables wheels
-    libblosc-dev \
-    libbz2-dev \
-    libhdf5-dev \
-    liblzo2-dev \
-  && if [ ${dpkgArch} = "amd64" ]; then \
-    ## Install quarto
-    curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
-    mkdir -p /opt/quarto; \
-    tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1; \
-    rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz; \
-    ## Remove quarto pandoc
-    rm /opt/quarto/bin/tools/pandoc; \
-    ## Link to system pandoc
-    ln -s /usr/bin/pandoc /opt/quarto/bin/tools/pandoc; \
-  fi \
+  ## Install quarto
+  && curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
+  && mkdir -p /opt/quarto \
+  && tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1 \
+  && rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
+  ## Remove quarto pandoc
+  && rm /opt/quarto/bin/tools/pandoc \
+  ## Link to system pandoc
+  && ln -s /usr/bin/pandoc /opt/quarto/bin/tools/pandoc \
+  ## Tell APT about the TeX Live installation
+  ## by building a dummy package using equivs
+  && apt-get install -y --no-install-recommends equivs \
+  && cd /tmp \
+  && wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/debian-control-texlive-in.txt \
+  && equivs-build debian-* \
+  && mv texlive-local*.deb texlive-local.deb \
+  && dpkg -i texlive-local.deb \
+  && apt-get -y purge equivs \
+  && apt-get -y autoremove \
   ## Admin-based install of TinyTeX
   && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
     | sh -s - --admin --no-path \
-  && mv ~/.TinyTeX /opt/TinyTeX \
+  && mv ${HOME}/.TinyTeX /opt/TinyTeX \
+  && sed -i "s|${HOME}/.TinyTeX|/opt/TinyTeX|g" \
+    /opt/TinyTeX/texmf-var/fonts/conf/texlive-fontconfig.conf \
   && ln -rs /opt/TinyTeX/bin/$(uname -m)-linux \
     /opt/TinyTeX/bin/linux \
   && /opt/TinyTeX/bin/linux/tlmgr path add \
@@ -76,6 +82,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && chown -R root:${NB_GID} /opt/TinyTeX \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
+  ## Make the TeX Live fonts available as system fonts
+  && cp /opt/TinyTeX/texmf-var/fonts/conf/texlive-fontconfig.conf \
+    /etc/fonts/conf.d/09-texlive.conf \
+  && fc-cache -fsv \
   ## Install Python packages
   && pip install \
     altair \
@@ -90,7 +100,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ipympl\
     ipywidgets \
     matplotlib \
-    #numba \
+    numba \
     numexpr \
     numpy \
     pandas \
@@ -112,17 +122,15 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && jupyter nbextension install facets/facets-dist/ --sys-prefix \
   && cd / \
   ## Install code-server extensions
-  && if [ ${dpkgArch} = "amd64" ]; then \
-    code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto; \
-  fi \
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
-    $HOME/.cache \
-    $HOME/.config \
-    $HOME/.local \
-    $HOME/.wget-hsts
+    ${HOME}/.cache \
+    ${HOME}/.config \
+    ${HOME}/.local \
+    ${HOME}/.wget-hsts
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}

@@ -6,13 +6,13 @@ ARG CUDA_IMAGE_FLAVOR
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
-ARG JUPYTERHUB_VERSION=3.1.1
-ARG JUPYTERLAB_VERSION=3.6.3
+ARG JUPYTERHUB_VERSION=4.0.0
+ARG JUPYTERLAB_VERSION=3.6.4
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG CODE_SERVER_VERSION=4.9.1
-ARG GIT_VERSION=2.40.0
+ARG CODE_SERVER_VERSION=4.13.0
+ARG GIT_VERSION=2.41.0
 ARG GIT_LFS_VERSION=3.3.0
-ARG PANDOC_VERSION=2.19.2
+ARG PANDOC_VERSION=3.1.1
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR} as files
 
@@ -151,7 +151,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Bold.ttf \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Italic.ttf \
   && curl -sL https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf -o /usr/share/fonts/truetype/meslo/MesloLGS\ NF\ Bold\ Italic.ttf \
-  && fc-cache -fv \
+  && fc-cache -fsv \
   ## Git: Set default branch name to main
   && git config --system init.defaultBranch main \
   ## Git: Store passwords for one hour in memory
@@ -166,6 +166,11 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && if $(grep -q 1000 /etc/passwd); then \
     userdel $(id -un 1000); \
   fi \
+  ## Do not set user limits for sudo/sudo-i
+  && sed -i 's/.*pam_limits.so/#&/g' /etc/pam.d/sudo \
+  && if [ -f "/etc/pam.d/sudo-i" ]; then \
+    sed -i 's/.*pam_limits.so/#&/g' /etc/pam.d/sudo-i; \
+  fi \
   ## Add user
   && useradd -l -m -s /bin/bash -N -u ${NB_UID} ${NB_USER} \
   && mkdir -p /var/backups/skel \
@@ -176,7 +181,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
-    $HOME/.cache
+    ${HOME}/.cache
 
 ENV PATH=/opt/code-server/bin:$PATH \
     CS_DISABLE_GETTING_STARTED_OVERRIDE=1
@@ -200,19 +205,21 @@ RUN mkdir /opt/code-server \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension piotrpalarz.vscode-gitignore-generator-1.0.3.vsix \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension GitLab.gitlab-workflow \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-python.python \
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-toolsai.jupyter \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension christian-kohler.path-intellisense \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension eamodio.gitlens \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension mhutchie.git-graph \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension redhat.vscode-yaml \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension grapecity.gc-excelviewer \
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension editorconfig.editorconfig \
   ## Create folders temp and tmp for Jupyter extension
   && cd /opt/code-server/lib/vscode/extensions/ms-toolsai.jupyter-* \
   && mkdir -m 1777 temp \
   && mkdir -m 1777 tmp \
   ## Clean up
   && rm -rf /tmp/* \
-    $HOME/.config \
-    $HOME/.local
+    ${HOME}/.config \
+    ${HOME}/.local
 
 ## Install JupyterLab
 RUN pip install \
@@ -232,7 +239,7 @@ RUN pip install \
   && sed -i 's|</head>|<link rel="stylesheet" type="text/css" href="{{page_config.fullStaticUrl}}/assets/css/fonts.css"></head>|g' /usr/local/share/jupyter/lab/static/index.html \
   ## Clean up
   && rm -rf /tmp/* \
-    $HOME/.cache
+    ${HOME}/.cache
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}
@@ -246,19 +253,19 @@ WORKDIR ${HOME}
 
 ## Install Oh My Zsh with Powerlevel10k theme
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
-  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git .oh-my-zsh/custom/themes/powerlevel10k \
-  && sed -i 's/ZSH="\/home\/jovyan\/.oh-my-zsh"/ZSH="$HOME\/.oh-my-zsh"/g' .zshrc \
-  && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' .zshrc \
-  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/bin:\$PATH\"\nfi" >> .zshrc \
-  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/.local/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/.local/bin:\$PATH\"\nfi" >> .zshrc \
-  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    busy &\nfi" >> .bashrc \
-  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    setopt nocheckjobs\n    busy &\nfi" >> .zshrc \
-  && echo "\n# To customize prompt, run \`p10k configure\` or edit ~/.p10k.zsh." >> .zshrc \
-  && echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> .zshrc \
+  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${HOME}/.oh-my-zsh/custom/themes/powerlevel10k \
+  && sed -i 's/ZSH="\/home\/jovyan\/.oh-my-zsh"/ZSH="$HOME\/.oh-my-zsh"/g' ${HOME}/.zshrc \
+  && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ${HOME}/.zshrc \
+  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/.local/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/.local/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    busy &\nfi" >> ${HOME}/.bashrc \
+  && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    setopt nocheckjobs\n    busy &\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# To customize prompt, run \`p10k configure\` or edit ~/.p10k.zsh." >> ${HOME}/.zshrc \
+  && echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> ${HOME}/.zshrc \
   ## Create user's private bin
-  && mkdir -p .local/bin \
+  && mkdir -p ${HOME}/.local/bin \
   ## Create backup of home directory
-  && cp -a $HOME/. /var/backups/skel
+  && cp -a ${HOME}/. /var/backups/skel
 
 ## Copy files as late as possible to avoid cache busting
 COPY --from=files /files /

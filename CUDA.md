@@ -29,6 +29,9 @@ The same as the
 * TensortRT and TensorRT plugin libraries
   * including development libraries and headers
 
+:point_right: See the [CUDA Version Matrix](CUDA_VERSION_MATRIX.md) for detailed
+information.
+
 **Subtags**
 
 The same as the
@@ -71,7 +74,7 @@ cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.11.2 \
+  --build-arg PYTHON_VERSION=3.11.3 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -93,11 +96,12 @@ For `MAJOR.MINOR.PATCH` ≥ `3.11.1`.
 
 ### Create home directory
 
-Create an empty directory:
+Create an empty directory using docker:
 
 ```bash
-mkdir jupyterlab-jovyan
-sudo chown 1000:100 jupyterlab-jovyan
+docker run --rm \
+  -v "${PWD}/jupyterlab-jovyan":/dummy \
+  alpine chown 1000:100 /dummy
 ```
 
 It will be *bind mounted* as the JupyterLab user's home directory and
@@ -161,7 +165,8 @@ The server logs appear in the terminal.
 
 **Using Docker Desktop**
 
-`sudo chown 1000:100 jupyterlab-jovyan` *might* not be required. Also
+[Creating a home directory](#create-home-directory) *might* not be required.
+Also
 
 ```bash
 docker run -it --rm \
