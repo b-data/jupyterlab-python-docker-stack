@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.11.3"
+    PYTHON_VERSION: "3.10.12"
 
 .before-script-build: &before-script-build
   - |
@@ -346,6 +346,25 @@ build-manifest:version-linux-multiarch:
       docker manifest push $CI_APP_REPO:$CI_APP_TAG-root
       docker manifest push $CI_APP_REPO:$CI_APP_TAG-docker
       docker manifest push $CI_APP_REPO:$CI_APP_TAG-docker-root
+    - |
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-root $CI_MANIFEST_LIST_ROOT
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-docker $CI_MANIFEST_LIST_DOCKER
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-docker-root $CI_MANIFEST_LIST_DOCKER_ROOT
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN \
+          $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-root \
+          $CI_APP_REPO:$CI_APP_TAG-root-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-docker \
+          $CI_APP_REPO:$CI_APP_TAG-docker-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-docker-root \
+          $CI_APP_REPO:$CI_APP_TAG-docker-root-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-root
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-docker
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-docker-root
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version"
       changes:
@@ -722,6 +741,25 @@ build-manifest:version-devtools-linux-multiarch:
       docker manifest push $CI_APP_REPO:$CI_APP_TAG-devtools-root
       docker manifest push $CI_APP_REPO:$CI_APP_TAG-devtools-docker
       docker manifest push $CI_APP_REPO:$CI_APP_TAG-devtools-docker-root
+    - |
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-devtools $CI_MANIFEST_LIST
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-root $CI_MANIFEST_LIST_ROOT
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-docker $CI_MANIFEST_LIST_DOCKER
+      docker manifest create $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-docker-root $CI_MANIFEST_LIST_DOCKER_ROOT
+      if echo $OS_ARCH | grep "linux-arm64v8" >/dev/null ; then
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-devtools \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-root \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-root-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-docker \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-docker-linux-arm64v8
+        docker manifest annotate --variant v8 $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-docker-root \
+          $CI_APP_REPO:$CI_APP_TAG-devtools-docker-root-linux-arm64v8
+      fi
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-devtools
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-root
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-docker
+      docker manifest push $CI_APP_REPO:$VERSION_MAJ_MIN-devtools-docker-root
   rules:
     - if: $CI_COMMIT_BRANCH == "freeze-version"
       changes:
