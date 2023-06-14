@@ -103,7 +103,7 @@ if [ "$(id -u)" == 0 ] ; then
         fi
         # Recreate the desired user as we want it
         userdel "${NB_USER}"
-        useradd --home "/home/${NB_USER}" --shell /bin/bash --uid "${NB_UID}" --gid "${NB_GID}" --groups 100 --no-log-init "${NB_USER}"
+        useradd --home "/home/${NB_USER}" --shell "$(which zsh)" --uid "${NB_UID}" --gid "${NB_GID}" --groups 100 --no-log-init "${NB_USER}"
     fi
 
     # Move or symlink the jovyan home directory to the desired users home
@@ -238,7 +238,7 @@ else
             # We cannot use "sed --in-place" since sed tries to create a temp file in
             # /etc/ and we may not have write access. Apply sed on our own temp file:
             sed --expression="s/^jovyan:/nayvoj:/" /etc/passwd > /tmp/passwd
-            echo "${NB_USER}:x:$(id -u):$(id -g):,,,:/home/jovyan:/bin/bash" >> /tmp/passwd
+            echo "${NB_USER}:x:$(id -u):$(id -g):,,,:/home/jovyan:$(which zsh)" >> /tmp/passwd
             cat /tmp/passwd > /etc/passwd
             rm /tmp/passwd
 

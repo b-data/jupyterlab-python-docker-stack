@@ -84,6 +84,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && chmod -R g+w /opt/TinyTeX \
   && chmod -R g+wx /opt/TinyTeX/bin \
   ## Install Python packages
+  && export PIP_BREAK_SYSTEM_PACKAGES=1 \
   && pip install \
     altair \
     beautifulsoup4 \

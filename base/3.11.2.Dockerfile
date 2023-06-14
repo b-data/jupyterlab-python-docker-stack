@@ -215,7 +215,8 @@ RUN mkdir /opt/code-server \
     $HOME/.local
 
 ## Install JupyterLab
-RUN pip install \
+RUN export PIP_BREAK_SYSTEM_PACKAGES=1 \
+  && pip install \
     jupyter-server-proxy \
     jupyterhub==${JUPYTERHUB_VERSION} \
     jupyterlab==${JUPYTERLAB_VERSION} \
