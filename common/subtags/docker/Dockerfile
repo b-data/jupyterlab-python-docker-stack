@@ -34,7 +34,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-azuretools.vscode-docker \
   ## Clean up
   && rm -rf /var/lib/apt/lists/* \
-    ${HOME}/.config
+    ${HOME}/.config \
+    ${HOME}/.local
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}
