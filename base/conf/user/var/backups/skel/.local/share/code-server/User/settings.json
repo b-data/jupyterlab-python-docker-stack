@@ -12,6 +12,8 @@
       "graph": false
     }
   },
+  "gitlens.showWelcomeOnInstall": false,
+  "gitlens.showWhatsNewAfterUpgrades": false,
   "resmon.show.battery": false,
   "resmon.show.cpufreq": false,
   "telemetry.telemetryLevel": "off",
