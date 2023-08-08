@@ -215,11 +215,14 @@ docker run -it --rm \
 
 What makes this project different:
 
-1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
+1. Multi-arch: `linux/amd64`, `linux/arm64/v8`  
+   :information_source: Runs on Apple M series using Docker Desktop.
 1. Base image: [Debian](https://hub.docker.com/_/debian) instead of
-   [Ubuntu](https://hub.docker.com/_/ubuntu)
+   [Ubuntu](https://hub.docker.com/_/ubuntu)  
+   :information_source: CUDA-enabled images are Ubuntu-based.
 1. IDE: [code-server](https://github.com/coder/code-server) next to
-   [JupyterLab](https://github.com/jupyterlab/jupyterlab)
+   [JupyterLab](https://github.com/jupyterlab/jupyterlab)  
+   :information_source: code-server = VS Code in the browser.
 1. Just Python – no [Conda](https://github.com/conda/conda) /
    [Mamba](https://github.com/mamba-org/mamba)
 

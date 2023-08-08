@@ -92,11 +92,8 @@ are installed.
 
 ### Default
 
-* [Terminal IPython](base/conf/ipython/usr/local/etc/ipython/ipython_config.py):
-  * Only enable figure formats `svg` and `pdf` for Terminal IPython.
-* [IPython kernel](base/conf/ipython/usr/local/etc/ipython/ipython_kernel_config.py):
-  * Only enable figure formats `svg` and `pdf` for IPython Kernel (Jupyter
-    Notebooks).
+* [IPython](base/conf/ipython/usr/local/etc/ipython/ipython_config.py):
+  * Only enable figure formats `svg` and `pdf` for IPython.
 * [JupyterLab](base/conf/jupyterlab/usr/local/share/jupyter/lab/settings/overrides.json):
   * Theme > Selected Theme: JupyterLab Dark
   * Terminal > Font family: MesloLGS NF
@@ -136,10 +133,7 @@ are installed.
 
 ### Customise
 
-* Terminal IPython: Create file `~/.ipython/profile_default/ipython_config.py`
-  * Valid figure formats: `png`, `retina`, `jpeg`, `svg`, `pdf`.
-* IPython kernel: Create file
-  `~/.ipython/profile_default/ipython_kernel_config.py`
+* IPython: Create file `~/.ipython/profile_default/ipython_config.py`
   * Valid figure formats: `png`, `retina`, `jpeg`, `svg`, `pdf`.
 * JupyterLab: Settings > Advanced Settings Editor
 * code-server: Manage > Settings
@@ -186,11 +180,13 @@ and/or pnpm:
 * [Installation | Yarn - Package Manager > Updating the global Yarn version](https://yarnpkg.com/getting-started/install#updating-the-global-yarn-version)
 * [Installation | pnpm > Using Corepack](https://pnpm.io/installation#using-corepack)
 
-## OS Python
+## System Python
 
-Package `libsecret-1-dev` depends on `python3` from the OS' package repository.
+Package `libsecret-1-dev` depends on `python3` from the system's package
+repository.
 
-The OS' Python version is installed at `/usr/bin`.  
+The system's Python version is installed at `/usr/bin`.  
 
-:information_source: Because the [recent Python version](#python) is installed
-at `/usr/local/bin`, it takes precedence over the OS' Python version.
+:information_source: Because [a more recent Python version](#python) is
+installed at `/usr/local/bin`, it takes precedence over the system's Python
+version.
