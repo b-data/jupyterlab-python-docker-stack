@@ -52,7 +52,8 @@ The following extensions are pre-installed for **code-server**:
   :information_source: devtools subtags
 * [Git Graph](https://open-vsx.org/extension/mhutchie/git-graph)
 * [GitLab Workflow](https://open-vsx.org/extension/GitLab/gitlab-workflow)
-* [GitLens — Git supercharged](https://open-vsx.org/extension/eamodio/gitlens)
+* [GitLens — Git supercharged](https://open-vsx.org/extension/eamodio/gitlens)  
+  :information_source: Pinned to version 11.7.0 due to unsolicited AI content (3.11.4+)
 * [Excel Viewer](https://open-vsx.org/extension/GrapeCity/gc-excelviewer)
 * [Jupyter](https://open-vsx.org/extension/ms-toolsai/jupyter)
 * [LaTeX Workshop](https://open-vsx.org/extension/James-Yu/latex-workshop)  
