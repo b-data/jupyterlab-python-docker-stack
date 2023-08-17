@@ -41,7 +41,7 @@ RUN apt-get update \
     libxt6 \
     quilt \
     rsync \
-  && if [ ! -z "$PYTHON_VERSION" ]; then \
+  && if [ -n "$PYTHON_VERSION" ]; then \
     ## make some useful symlinks that are expected to exist
     ## ("/usr/bin/python" and friends)
     for src in pydoc3 python3; do \
@@ -63,14 +63,22 @@ RUN apt-get update \
   && apt-get update \
   && apt-get install -y --no-install-recommends nfpm \
   ## Install code-server extensions
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension dbaeumer.vscode-eslint \
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension esbenp.prettier-vscode \
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-python.black-formatter \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension dbaeumer.vscode-eslint \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension esbenp.prettier-vscode \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension ms-python.black-formatter \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension timonwong.shellcheck \
+  ## Enable shellcheck system-wide
+  && ln -sf "$CODE_BUILTIN_EXTENSIONS_DIR"/timonwong.shellcheck-*/binaries/*/*/shellcheck \
+    /usr/local/bin/shellcheck \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
-    ${HOME}/.config \
-    ${HOME}/.local
+    "$HOME/.config" \
+    "$HOME/.local"
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}
