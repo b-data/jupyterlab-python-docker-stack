@@ -1,17 +1,17 @@
 ARG BASE_IMAGE=debian
-ARG BASE_IMAGE_TAG=bullseye
+ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
 ARG PYTHON_VERSION
 ARG CUDA_IMAGE_FLAVOR
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
-ARG JUPYTERHUB_VERSION=4.0.0
-ARG JUPYTERLAB_VERSION=3.6.4
+ARG JUPYTERHUB_VERSION=4.0.2
+ARG JUPYTERLAB_VERSION=3.6.5
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG CODE_SERVER_VERSION=4.13.0
-ARG GIT_VERSION=2.41.0
-ARG GIT_LFS_VERSION=3.3.0
+ARG CODE_SERVER_VERSION=4.16.1
+ARG GIT_VERSION=2.42.0
+ARG GIT_LFS_VERSION=3.4.0
 ARG PANDOC_VERSION=3.1.1
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR} as files
@@ -172,7 +172,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sed -i 's/.*pam_limits.so/#&/g' /etc/pam.d/sudo-i; \
   fi \
   ## Add user
-  && useradd -l -m -s /bin/bash -N -u ${NB_UID} ${NB_USER} \
+  && useradd -l -m -s $(which zsh) -N -u ${NB_UID} ${NB_USER} \
   && mkdir -p /var/backups/skel \
   && chown ${NB_UID}:${NB_GID} /var/backups/skel \
   ## Install Tini
@@ -203,11 +203,13 @@ RUN mkdir /opt/code-server \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension alefragnani.project-manager-12.7.0.vsix \
   && curl -sLO https://dl.b-data.ch/vsix/piotrpalarz.vscode-gitignore-generator-1.0.3.vsix \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension piotrpalarz.vscode-gitignore-generator-1.0.3.vsix \
+  && curl -sLO https://dl.b-data.ch/vsix/mutantdino.resourcemonitor-1.0.7.vsix \
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension mutantdino.resourcemonitor-1.0.7.vsix \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension GitLab.gitlab-workflow \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-python.python \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-toolsai.jupyter \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension christian-kohler.path-intellisense \
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension eamodio.gitlens \
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension eamodio.gitlens@11.7.0 \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension mhutchie.git-graph \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension redhat.vscode-yaml \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension grapecity.gc-excelviewer \
@@ -222,7 +224,8 @@ RUN mkdir /opt/code-server \
     ${HOME}/.local
 
 ## Install JupyterLab
-RUN pip install \
+RUN export PIP_BREAK_SYSTEM_PACKAGES=1 \
+  && pip install \
     jupyter-server-proxy \
     jupyterhub==${JUPYTERHUB_VERSION} \
     jupyterlab==${JUPYTERLAB_VERSION} \
@@ -256,8 +259,8 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
   && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${HOME}/.oh-my-zsh/custom/themes/powerlevel10k \
   && sed -i 's/ZSH="\/home\/jovyan\/.oh-my-zsh"/ZSH="$HOME\/.oh-my-zsh"/g' ${HOME}/.zshrc \
   && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ${HOME}/.zshrc \
-  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
-  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/.local/bin\" -a \"\$SHLVL\" = 1 -a ! \"\$TERM_PROGRAM\" = \"vscode\" ] ; then\n    PATH=\"\$HOME/.local/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/bin\" ] && [[ \"\$PATH\" != *\"\$HOME/bin\"* ]] ; then\n    PATH=\"\$HOME/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
+  && echo "\n# set PATH so it includes user's private bin if it exists\nif [ -d \"\$HOME/.local/bin\" ] && [[ \"\$PATH\" != *\"\$HOME/.local/bin\"* ]] ; then\n    PATH=\"\$HOME/.local/bin:\$PATH\"\nfi" >> ${HOME}/.zshrc \
   && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    busy &\nfi" >> ${HOME}/.bashrc \
   && echo "\n# Update last-activity timestamps while in screen/tmux session\nif [ ! -z \"\$TMUX\" -o ! -z \"\$STY\" ] ; then\n    setopt nocheckjobs\n    busy &\nfi" >> ${HOME}/.zshrc \
   && echo "\n# To customize prompt, run \`p10k configure\` or edit ~/.p10k.zsh." >> ${HOME}/.zshrc \

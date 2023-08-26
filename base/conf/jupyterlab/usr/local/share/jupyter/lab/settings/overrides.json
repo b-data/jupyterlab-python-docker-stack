@@ -5,7 +5,7 @@
   "@jupyterlab/terminal-extension:plugin": {
     "fontFamily": "MesloLGS NF"
   },
-  "@krassowski/jupyterlab-lsp:plugin": {
+  "@jupyter-lsp/jupyterlab-lsp:plugin": {
     "language_servers": {
       "pylsp": {
         "serverSettings": {

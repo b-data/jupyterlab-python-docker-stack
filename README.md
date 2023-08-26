@@ -52,7 +52,8 @@ The following extensions are pre-installed for **code-server**:
   :information_source: devtools subtags
 * [Git Graph](https://open-vsx.org/extension/mhutchie/git-graph)
 * [GitLab Workflow](https://open-vsx.org/extension/GitLab/gitlab-workflow)
-* [GitLens — Git supercharged](https://open-vsx.org/extension/eamodio/gitlens)
+* [GitLens — Git supercharged](https://open-vsx.org/extension/eamodio/gitlens)  
+  :information_source: Pinned to version 11.7.0 due to unsolicited AI content (3.11.4+)
 * [Excel Viewer](https://open-vsx.org/extension/GrapeCity/gc-excelviewer)
 * [Jupyter](https://open-vsx.org/extension/ms-toolsai/jupyter)
 * [LaTeX Workshop](https://open-vsx.org/extension/James-Yu/latex-workshop)  
@@ -112,7 +113,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.11.3 \
+  --build-arg PYTHON_VERSION=3.11.4 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
@@ -215,11 +216,14 @@ docker run -it --rm \
 
 What makes this project different:
 
-1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
+1. Multi-arch: `linux/amd64`, `linux/arm64/v8`  
+   :information_source: Runs on Apple M series using Docker Desktop.
 1. Base image: [Debian](https://hub.docker.com/_/debian) instead of
-   [Ubuntu](https://hub.docker.com/_/ubuntu)
+   [Ubuntu](https://hub.docker.com/_/ubuntu)  
+   :information_source: CUDA-enabled images are Ubuntu-based.
 1. IDE: [code-server](https://github.com/coder/code-server) next to
-   [JupyterLab](https://github.com/jupyterlab/jupyterlab)
+   [JupyterLab](https://github.com/jupyterlab/jupyterlab)  
+   :information_source: code-server = VS Code in the browser.
 1. Just Python – no [Conda](https://github.com/conda/conda) /
    [Mamba](https://github.com/mamba-org/mamba)
 

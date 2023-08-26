@@ -1,13 +1,10 @@
-# Copyright (c) 2022 b-data GmbH.
-# Distributed under the terms of the MIT License.
-
 c.InlineBackend.figure_formats = {"svg", "pdf"}
 
 import os
 
 if (
     os.path.exists(os.path.join(os.environ["HOME"], "bin"))
-    and os.getenv("SHLVL") == "0"
+    and not os.path.join(os.environ["HOME"], "bin") in os.getenv("PATH", "")
 ):
     os.environ["PATH"] = (
         os.path.join(os.environ["HOME"], "bin")
@@ -16,11 +13,12 @@ if (
     )
 
 if (
-    os.path.exists(os.path.join(os.environ["HOME"], ".local/bin"))
-    and os.getenv("SHLVL") == "0"
+    os.path.exists(os.path.join(os.environ["HOME"], ".local", "bin"))
+    and not os.path.join(os.environ["HOME"], ".local", "bin")
+    in os.getenv("PATH", "")
 ):
     os.environ["PATH"] = (
-        os.path.join(os.environ["HOME"], ".local/bin")
+        os.path.join(os.environ["HOME"], ".local", "bin")
         + os.pathsep
         + os.getenv("PATH", "")
     )

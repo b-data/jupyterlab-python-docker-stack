@@ -1,5 +1,6 @@
 {
   "editor.tabSize": 2,
+  "gitlab.aiAssistedCodeSuggestions.enabled": false,
   "gitlens.graph.statusBar.enabled": false,
   "gitlens.menus": {
     "scm": {
@@ -12,6 +13,10 @@
       "graph": false
     }
   },
+  "gitlens.showWelcomeOnInstall": false,
+  "gitlens.showWhatsNewAfterUpgrades": false,
+  "resmon.show.battery": false,
+  "resmon.show.cpufreq": false,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.fontFamily": "MesloLGS NF",
   "workbench.colorTheme": "Default Dark+"

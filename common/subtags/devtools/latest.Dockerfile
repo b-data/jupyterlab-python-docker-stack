@@ -1,9 +1,9 @@
 ARG BASE_IMAGE=debian
-ARG BASE_IMAGE_TAG=bullseye
+ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE
 ARG PYTHON_VERSION
 
-ARG NODE_VERSION=16.20.0
+ARG NODE_VERSION=16.20.2
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 
 FROM glcr.b-data.ch/nodejs/nsi/${NODE_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as nsi
@@ -34,13 +34,14 @@ WORKDIR ${HOME}
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     bats \
+    libkrb5-dev \
     libsecret-1-dev \
     libx11-dev \
     libxkbfile-dev \
     libxt6 \
     quilt \
     rsync \
-  && if [ ! -z "$PYTHON_VERSION" ]; then \
+  && if [ -n "$PYTHON_VERSION" ]; then \
     ## make some useful symlinks that are expected to exist
     ## ("/usr/bin/python" and friends)
     for src in pydoc3 python3; do \
@@ -52,7 +53,8 @@ RUN apt-get update \
   fi \
   ## Clean up Node.js installation
   && bash -c 'rm -f /usr/local/bin/{docker-entrypoint.sh,yarn*}' \
-  && bash -c 'rm -f /usr/local/{CHANGELOG.md,LICENSE,README.md}' \
+  && bash -c 'mv /usr/local/{CHANGELOG.md,LICENSE,README.md} \
+    /usr/local/share/doc/node' \
   ## Enable corepack (Yarn, pnpm)
   && corepack enable \
   ## Install nFPM
@@ -61,14 +63,22 @@ RUN apt-get update \
   && apt-get update \
   && apt-get install -y --no-install-recommends nfpm \
   ## Install code-server extensions
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension dbaeumer.vscode-eslint \
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension esbenp.prettier-vscode \
-  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension ms-python.black-formatter \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension dbaeumer.vscode-eslint \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension esbenp.prettier-vscode \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension ms-python.black-formatter \
+  && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
+    --install-extension timonwong.shellcheck \
+  ## Enable shellcheck system-wide
+  && ln -sf "$CODE_BUILTIN_EXTENSIONS_DIR"/timonwong.shellcheck-*/binaries/*/*/shellcheck \
+    /usr/local/bin/shellcheck \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \
-    ${HOME}/.config \
-    ${HOME}/.local
+    "$HOME/.config" \
+    "$HOME/.local"
 
 ## Switch back to ${NB_USER} to avoid accidental container runs as root
 USER ${NB_USER}
