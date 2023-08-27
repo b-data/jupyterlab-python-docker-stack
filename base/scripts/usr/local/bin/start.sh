@@ -83,7 +83,9 @@ if [ "$(id -u)" == 0 ] ; then
     # desired user id (NB_UID) is 0 and the desired group id (NB_GID) is 0.
     if [ "${NB_USER}" = "root" ] && [ "${NB_UID}" = "$(id -u "${NB_USER}")" ] && [ "${NB_GID}" = "$(id -g "${NB_USER}")" ]; then
         sed -i 's|/root|/home/root|g' /etc/passwd
-        # Pip: Install packages to the user site (option --user)
+        # Do not preserve ownership in rootless mode
+        CP_OPTS="-a --no-preserve=ownership"
+        # Pip: Install packages to the user site
         export PIP_USER=1
     fi
     # Note: Allows to run the container as root.
@@ -111,11 +113,11 @@ if [ "$(id -u)" == 0 ] ; then
         # The home directory could be bind mounted. Populate it if it is empty
         elif [[ "$(ls -A "/home/${NB_USER}" 2> /dev/null)" == "" ]]; then
             _log "Populating home dir /home/${NB_USER}..."
-            if cp -a /home/jovyan/. "/home/${NB_USER}/"; then
+            # shellcheck disable=SC2086
+            if cp ${CP_OPTS:--a} /home/jovyan/. "/home/${NB_USER}/"; then
                 _log "Success!"
             else
                 _log "ERROR: Failed to copy data from /home/jovyan to /home/${NB_USER}!"
-                _log "       The home dir /home/${NB_USER} must be empty at the first run."
                 exit 1
             fi
         fi
