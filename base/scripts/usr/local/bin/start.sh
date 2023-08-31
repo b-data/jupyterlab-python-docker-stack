@@ -149,12 +149,6 @@ if [ "$(id -u)" == 0 ] ; then
         chmod "${CHMOD_HOME_MODE:-755}" "/home/${NB_USER}"
     fi
 
-    # Update potentially outdated environment variables since image build
-    export XDG_CACHE_HOME="/home/${NB_USER}/.cache"
-
-    # Prepend ${CONDA_DIR}/bin to sudo secure_path
-    sed -r "s#Defaults\s+secure_path\s*=\s*\"?([^\"]+)\"?#Defaults secure_path=\"${CONDA_DIR}/bin:\1\"#" /etc/sudoers | grep secure_path > /etc/sudoers.d/path
-
     # Optionally grant passwordless sudo rights for the desired user
     if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == "yes" ]]; then
         _log "Granting ${NB_USER} passwordless sudo rights!"

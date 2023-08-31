@@ -101,7 +101,9 @@ are installed.
   * R LSP Server: Example settings according to [jupyter-lsp/jupyterlab-lsp > Installation > Configuring the servers](https://github.com/jupyter-lsp/jupyterlab-lsp#configuring-the-servers)
 * [code-server](base/conf/user/var/backups/skel/.local/share/code-server/User/settings.json)
   * Text Editor > Tab Size: 2
-  * Extensions > Gitlens > Graph > Status Bar: Enabled: off
+  * Extensions > GitLens — Git supercharged
+    * General > Show Welcome On Install: false
+    * General > Show Whats New After Upgrade: false
     * Graph commands disabled where possible
   * Application > Telemetry: Telemetry Level: off
   * Features > Terminal > Integrated: Font Family: MesloLGS NF
