@@ -51,6 +51,7 @@ The following extensions are pre-installed for **code-server**:
 * [ESLint](https://open-vsx.org/extension/dbaeumer/vscode-eslint)  
   :information_source: devtools subtags
 * [Git Graph](https://open-vsx.org/extension/mhutchie/git-graph)
+* [GitHub Pull Requests and Issues](https://open-vsx.org/extension/GitHub/vscode-pull-request-github)
 * [GitLab Workflow](https://open-vsx.org/extension/GitLab/gitlab-workflow)
 * [GitLens — Git supercharged](https://open-vsx.org/extension/eamodio/gitlens)  
   :information_source: Pinned to version 11.7.0 due to unsolicited AI content (3.11.4+)
@@ -194,6 +195,16 @@ current value of `${NB_UID}` and `${NB_GID}`.
 :information_source: This is only required for the first run.
 
 The server logs appear in the terminal.
+
+**:exclamation: Keyring services are not available due to the difficulties of**
+**setting them up in containers.**  
+**Therefore, provide credentials for the following extensions as environment**
+**variables (`-e`):**
+
+| Extension                       | Environment variable                                                                                                                                                |
+|:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GitHub Pull Requests and Issues | `GITHUB_TOKEN`: Personal access token with scopes `repo` and `user`.                                                                                                |
+| GitLab Workflow                 | `GITLAB_WORKFLOW_INSTANCE_URL`: GitLab instance URL (e.g. https://gitlab.com).<br>`GITLAB_WORKFLOW_TOKEN`: Personal access token with scopes `api` and `read_user`. |
 
 #### Using Podman (rootless mode, 3.11.5+)
 
