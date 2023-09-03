@@ -203,8 +203,10 @@ The server logs appear in the terminal.
 
 | Extension                       | Environment variable                                                                                                                                                |
 |:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GitHub Pull Requests and Issues | `GITHUB_TOKEN`: Personal access token with scopes `repo` and `user`.                                                                                                |
+| GitHub Pull Requests and Issues | `GITHUB_TOKEN`: Personal access token with scopes `repo` and `user`.[^2]                                                                                            |
 | GitLab Workflow                 | `GITLAB_WORKFLOW_INSTANCE_URL`: GitLab instance URL (e.g. https://gitlab.com).<br>`GITLAB_WORKFLOW_TOKEN`: Personal access token with scopes `api` and `read_user`. |
+
+[^2]: *Device activation* may require a one-time login from the extension's sidebar.
 
 #### Using Podman (rootless mode, 3.11.5+)
 
