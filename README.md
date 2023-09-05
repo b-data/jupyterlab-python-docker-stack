@@ -196,18 +196,6 @@ current value of `${NB_UID}` and `${NB_GID}`.
 
 The server logs appear in the terminal.
 
-**:exclamation: Keyring services are not available due to the difficulties of**
-**setting them up in containers.**  
-**Therefore, provide credentials for the following extensions as environment**
-**variables (`-e`):**
-
-| Extension                       | Environment variable                                                                                                                                                |
-|:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GitHub Pull Requests and Issues | `GITHUB_TOKEN`: Personal access token with scopes `repo` and `user`.[^2]                                                                                            |
-| GitLab Workflow                 | `GITLAB_WORKFLOW_INSTANCE_URL`: GitLab instance URL (e.g. https://gitlab.com).<br>`GITLAB_WORKFLOW_TOKEN`: Personal access token with scopes `api` and `read_user`. |
-
-[^2]: *Device activation* may require a one-time login from the extension's sidebar.
-
 #### Using Podman (rootless mode, 3.11.5+)
 
 Create an empty home directory:
@@ -242,6 +230,20 @@ docker run -it --rm \
 ```
 
 *might* be sufficient.
+
+### Credential storage
+
+**:exclamation: Keyring services are not available due to the difficulties of**
+**setting them up in containers.**  
+**Therefore, provide login credentials for the following extensions as**
+**environment variables (`-e`):**
+
+| Extension                       | Environment variable                                                                                                                                                |
+|:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GitHub Pull Requests and Issues | `GITHUB_TOKEN`: Personal access token with scopes `repo` and `user`.[^2]                                                                                            |
+| GitLab Workflow                 | `GITLAB_WORKFLOW_INSTANCE_URL`: GitLab instance URL (e.g. https://gitlab.com).<br>`GITLAB_WORKFLOW_TOKEN`: Personal access token with scopes `api` and `read_user`. |
+
+[^2]: *Device activation* may require a one-time login from the extension's sidebar.
 
 ## Similar projects
 
