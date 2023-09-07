@@ -13,7 +13,7 @@ ARG GIT_VERSION=2.37.3
 ARG GIT_LFS_VERSION=3.2.0
 ARG PANDOC_VERSION=2.19.2
 
-FROM ${BASE_IMAGE} as files
+FROM ${BASE_IMAGE} AS files
 
 ARG NB_UID
 ARG NB_GID
@@ -31,8 +31,8 @@ RUN chown -R ${NB_UID}:${NB_GID} /files/var/backups/skel \
   && find /files -type f -exec chmod 644 {} \; \
   && find /files/usr/local/bin -type f -exec chmod 755 {} \;
 
-FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE} as gsi
-FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} as glfsi
+FROM registry.gitlab.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE} AS gsi
+FROM registry.gitlab.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} AS glfsi
 
 FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
 
