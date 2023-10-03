@@ -9,7 +9,7 @@ if [ "$(ls -A "/home/jovyan" 2> /dev/null)" == "" ]; then
   if cp -a /var/backups/skel/. /home/jovyan; then
     _log "Success!"
   else
-    _log "Failed to copy data from /var/backups/skel to /home/jovyan!"
+    _log "ERROR: Failed to copy data from /var/backups/skel to /home/jovyan!"
     exit 1
   fi
 fi

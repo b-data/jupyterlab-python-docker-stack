@@ -31,6 +31,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && apt-get install -y --no-install-recommends \
     fonts-roboto \
     ghostscript \
+    librsvg2-bin \
     qpdf \
     texinfo \
   ## Install quarto

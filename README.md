@@ -51,6 +51,7 @@ The following extensions are pre-installed for **code-server**:
 * [ESLint](https://open-vsx.org/extension/dbaeumer/vscode-eslint)  
   :information_source: devtools subtags
 * [Git Graph](https://open-vsx.org/extension/mhutchie/git-graph)
+* [GitHub Pull Requests and Issues](https://open-vsx.org/extension/GitHub/vscode-pull-request-github)
 * [GitLab Workflow](https://open-vsx.org/extension/GitLab/gitlab-workflow)
 * [GitLens — Git supercharged](https://open-vsx.org/extension/eamodio/gitlens)  
   :information_source: Pinned to version 11.7.0 due to unsolicited AI content (3.11.4+)
@@ -113,7 +114,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.11.4 \
+  --build-arg PYTHON_VERSION=3.11.5 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
@@ -195,7 +196,28 @@ current value of `${NB_UID}` and `${NB_GID}`.
 
 The server logs appear in the terminal.
 
-**Using Docker Desktop**
+#### Using Podman (rootless mode, 3.11.5+)
+
+Create an empty home directory:
+
+```bash
+mkdir "${PWD}/jupyterlab-root"
+```
+
+Use the following command to run the container as `root`:
+
+```bash
+podman run -it --rm \
+  -p 8888:8888 \
+  -u root \
+  -v "${PWD}/jupyterlab-root":/home/root \
+  -e NB_USER=root \
+  -e NB_UID=0 \
+  -e NB_GID=0 \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]] start-notebook.sh --allow-root
+```
+
+#### Using Docker Desktop
 
 [Creating a home directory](#create-home-directory) *might* not be required.
 Also
@@ -208,6 +230,20 @@ docker run -it --rm \
 ```
 
 *might* be sufficient.
+
+### Credential storage
+
+**:exclamation: Keyring services are not available due to the difficulties of**
+**setting them up in containers.**  
+**Therefore, provide login credentials for the following extensions as**
+**environment variables (`-e`):**
+
+| Extension                       | Environment variable                                                                                                                                                |
+|:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GitHub Pull Requests and Issues | `GITHUB_TOKEN`: Personal access token with scopes `repo` and `user`.[^2]                                                                                            |
+| GitLab Workflow                 | `GITLAB_WORKFLOW_INSTANCE_URL`: GitLab instance URL (e.g. https://gitlab.com).<br>`GITLAB_WORKFLOW_TOKEN`: Personal access token with scopes `api` and `read_user`. |
+
+[^2]: *Device activation* may require a one-time login from the extension's sidebar.
 
 ## Similar projects
 

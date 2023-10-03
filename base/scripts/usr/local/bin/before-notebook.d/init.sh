@@ -36,7 +36,7 @@ if [ "$(id -u)" == 0 ] ; then
   # Update code-server settings
   su $NB_USER -c "mkdir -p /home/$NB_USER/.local/share/code-server/User"
   if [[ ! -f "/home/$NB_USER/.local/share/code-server/User/settings.json" ]]; then
-    su $NB_USER -c "cp -a /var/backups/skel/.local/share/code-server/User/settings.json \
+    su $NB_USER -c "cp ${CP_OPTS:--a} /var/backups/skel/.local/share/code-server/User/settings.json \
       /home/$NB_USER/.local/share/code-server/User/settings.json"
   fi
 

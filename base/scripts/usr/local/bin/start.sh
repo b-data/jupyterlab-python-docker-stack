@@ -14,39 +14,12 @@ _log () {
 }
 _log "Entered start.sh with args:" "$@"
 
-# The run-hooks function looks for .sh scripts to source and executable files to
-# run within a passed directory.
-run-hooks () {
-    if [[ ! -d "${1}" ]] ; then
-        return
-    fi
-    _log "${0}: running hooks in ${1} as uid / gid: $(id -u) / $(id -g)"
-    for f in "${1}/"*; do
-        case "${f}" in
-            *.sh)
-                _log "${0}: running script ${f}"
-                # shellcheck disable=SC1090
-                source "${f}"
-                ;;
-            *)
-                if [[ -x "${f}" ]] ; then
-                    _log "${0}: running executable ${f}"
-                    "${f}"
-                else
-                    _log "${0}: ignoring non-executable ${f}"
-                fi
-                ;;
-        esac
-    done
-    _log "${0}: done running hooks in ${1}"
-}
-
 # A helper function to unset env vars listed in the value of the env var
 # JUPYTER_ENV_VARS_TO_UNSET.
 unset_explicit_env_vars () {
     if [ -n "${JUPYTER_ENV_VARS_TO_UNSET}" ]; then
         for env_var_to_unset in $(echo "${JUPYTER_ENV_VARS_TO_UNSET}" | tr ',' ' '); do
-            echo "Unset ${env_var_to_unset} due to JUPYTER_ENV_VARS_TO_UNSET"
+            _log "Unset ${env_var_to_unset} due to JUPYTER_ENV_VARS_TO_UNSET"
             unset "${env_var_to_unset}"
         done
         unset JUPYTER_ENV_VARS_TO_UNSET
@@ -62,7 +35,8 @@ else
 fi
 
 # NOTE: This hook will run as the user the container was started with!
-run-hooks /usr/local/bin/start-notebook.d
+# shellcheck disable=SC1091
+source /usr/local/bin/run-hooks.sh /usr/local/bin/start-notebook.d
 
 # If the container started as the root user, then we have permission to refit
 # the jovyan user, and ensure file permissions, grant sudo rights, and such
@@ -103,8 +77,19 @@ if [ "$(id -u)" == 0 ] ; then
         fi
         # Recreate the desired user as we want it
         userdel "${NB_USER}"
-        useradd --home "/home/${NB_USER}" --shell "$(which zsh)" --uid "${NB_UID}" --gid "${NB_GID}" --groups 100 --no-log-init "${NB_USER}"
+        useradd --no-log-init --home "/home/${NB_USER}" --shell "$(which zsh)" --uid "${NB_UID}" --gid "${NB_GID}" --groups 100 "${NB_USER}"
     fi
+    # Update the home directory if the desired user (NB_USER) is root and the
+    # desired user id (NB_UID) is 0 and the desired group id (NB_GID) is 0.
+    if [ "${NB_USER}" = "root" ] && [ "${NB_UID}" = "$(id -u "${NB_USER}")" ] && [ "${NB_GID}" = "$(id -g "${NB_USER}")" ]; then
+        sed -i 's|/root|/home/root|g' /etc/passwd
+        # Do not preserve ownership in rootless mode
+        CP_OPTS="-a --no-preserve=ownership"
+        # Pip: Install packages to the user site
+        export PIP_USER=1
+    fi
+    # Note: Allows to run the container as root.
+    # Use case: Docker/Podman in rootless mode.
 
     # Move or symlink the jovyan home directory to the desired users home
     # directory if it doesn't already exist, and update the current working
@@ -128,7 +113,8 @@ if [ "$(id -u)" == 0 ] ; then
         # The home directory could be bind mounted. Populate it if it is empty
         elif [[ "$(ls -A "/home/${NB_USER}" 2> /dev/null)" == "" ]]; then
             _log "Populating home dir /home/${NB_USER}..."
-            if cp -a /home/jovyan/. "/home/${NB_USER}/"; then
+            # shellcheck disable=SC2086
+            if cp ${CP_OPTS:--a} /home/jovyan/. "/home/${NB_USER}/"; then
                 _log "Success!"
             else
                 _log "ERROR: Failed to copy data from /home/jovyan to /home/${NB_USER}!"
@@ -140,7 +126,7 @@ if [ "$(id -u)" == 0 ] ; then
             new_wd="/home/${NB_USER}/${PWD:13}"
             _log "Changing working directory to ${new_wd}"
             cd "${new_wd}"
-            CODE_WORKDIR=/home/${NB_USER}/projects
+            export CODE_WORKDIR=/home/${NB_USER}/projects
         fi
     fi
 
@@ -163,12 +149,6 @@ if [ "$(id -u)" == 0 ] ; then
         chmod "${CHMOD_HOME_MODE:-755}" "/home/${NB_USER}"
     fi
 
-    # Update potentially outdated environment variables since image build
-    export XDG_CACHE_HOME="/home/${NB_USER}/.cache"
-
-    # Prepend ${CONDA_DIR}/bin to sudo secure_path
-    sed -r "s#Defaults\s+secure_path\s*=\s*\"?([^\"]+)\"?#Defaults secure_path=\"${CONDA_DIR}/bin:\1\"#" /etc/sudoers | grep secure_path > /etc/sudoers.d/path
-
     # Optionally grant passwordless sudo rights for the desired user
     if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == "yes" ]]; then
         _log "Granting ${NB_USER} passwordless sudo rights!"
@@ -176,12 +156,13 @@ if [ "$(id -u)" == 0 ] ; then
     fi
 
     # NOTE: This hook is run as the root user!
-    run-hooks /usr/local/bin/before-notebook.d
-
+    # shellcheck disable=SC1091
+    source /usr/local/bin/run-hooks.sh /usr/local/bin/before-notebook.d
     unset_explicit_env_vars
+
     _log "Running as ${NB_USER}:" "${cmd[@]}"
     exec sudo --preserve-env --set-home --user "${NB_USER}" \
-        LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}" \
+        LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
         PATH="${PATH}" \
         PYTHONPATH="${PYTHONPATH:-}" \
         "${cmd[@]}"
@@ -195,7 +176,7 @@ if [ "$(id -u)" == 0 ] ; then
         #   command. The behavior can be inspected with `sudo -V` run as root.
         #
         #   ref: `man sudo`    https://linux.die.net/man/8/sudo
-        #   ref: `man sudoers` https://www.sudo.ws/man/1.8.15/sudoers.man.html
+        #   ref: `man sudoers` https://www.sudo.ws/docs/man/sudoers.man/
         #
         # - We use the `--preserve-env` flag to pass through most environment
         #   variables, but understand that exceptions are caused by the sudoers
@@ -207,7 +188,7 @@ if [ "$(id -u)" == 0 ] ; then
         #   used `env_delete` from /etc/sudoers. It has higher priority than the
         #   `--preserve-env` flag and the `env_keep` configuration.
         #
-        # - We preserve PATH and PYTHONPATH explicitly. Note however that sudo
+        # - We preserve LD_LIBRARY_PATH, PATH and PYTHONPATH explicitly. Note however that sudo
         #   resolves `${cmd[@]}` using the "secure_path" variable we modified
         #   above in /etc/sudoers.d/path. Thus PATH is irrelevant to how the above
         #   sudo command resolves the path of `${cmd[@]}`. The PATH will be relevant
@@ -272,8 +253,10 @@ else
     fi
 
     # NOTE: This hook is run as the user we started the container as!
-    run-hooks /usr/local/bin/before-notebook.d
+    # shellcheck disable=SC1091
+    source /usr/local/bin/run-hooks.sh /usr/local/bin/before-notebook.d
     unset_explicit_env_vars
+
     _log "Executing the command:" "${cmd[@]}"
     exec "${cmd[@]}"
 fi
