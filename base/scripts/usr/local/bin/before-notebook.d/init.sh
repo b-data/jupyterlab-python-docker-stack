@@ -38,6 +38,7 @@ if [ "$(id -u)" == 0 ] ; then
   if [[ ! -f "/home/$NB_USER/.local/share/code-server/User/settings.json" ]]; then
     su $NB_USER -c "cp ${CP_OPTS:--a} /var/backups/skel/.local/share/code-server/User/settings.json \
       /home/$NB_USER/.local/share/code-server/User/settings.json"
+    chown :$NB_GID "/home/$NB_USER/.local/share/code-server/User/settings.json"
   fi
 
   su $NB_USER -c "mv /home/$NB_USER/.local/share/code-server/User/settings.json \
