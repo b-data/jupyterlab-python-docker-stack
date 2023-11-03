@@ -104,6 +104,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     libclang-dev \
     man-db \
     nano \
+    ncdu \
     procps \
     psmisc \
     screen \
