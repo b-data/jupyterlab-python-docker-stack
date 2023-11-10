@@ -59,6 +59,7 @@ The following extensions are pre-installed for **code-server**:
 * [Jupyter](https://open-vsx.org/extension/ms-toolsai/jupyter)
 * [LaTeX Workshop](https://open-vsx.org/extension/James-Yu/latex-workshop)  
   :information_source: scipy image
+* [markdownlint](https://open-vsx.org/extension/DavidAnson/vscode-markdownlint)
 * [Path Intellisense](https://open-vsx.org/extension/christian-kohler/path-intellisense)
 * [Prettier - Code formatter](https://open-vsx.org/extension/esbenp/prettier-vscode)  
   :information_source: devtools subtags
