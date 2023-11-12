@@ -15,6 +15,7 @@
   },
   "gitlens.showWelcomeOnInstall": false,
   "gitlens.showWhatsNewAfterUpgrades": false,
+  "python.languageServer": "Jedi",
   "resmon.show.battery": false,
   "resmon.show.cpufreq": false,
   "telemetry.telemetryLevel": "off",
