@@ -14,6 +14,8 @@ Images considered stable for Python versions ≥ 3.10.5.
 
 :microscope: Check out `jupyterlab/python/scipy` at https://demo.jupyter.b-data.ch.
 
+![Screenshot](assets/screenshot.png)
+
 **Build chain**
 
 base → scipy
