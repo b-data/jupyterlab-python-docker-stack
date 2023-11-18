@@ -76,7 +76,7 @@ The following extensions are pre-installed for **code-server**:
 * [Quarto](https://open-vsx.org/extension/quarto/quarto)  
   :information_source: scipy image
 * Resource Monitor (3.11.4+)
-* [ShellCheck](https://open-vsx.org/extension/timonwong/shellcheck)
+* [ShellCheck](https://open-vsx.org/extension/timonwong/shellcheck)  
   :information_source: devtools and docker subtags (3.11.4+)
 * [YAML](https://open-vsx.org/extension/redhat/vscode-yaml)
 
