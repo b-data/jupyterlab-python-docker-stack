@@ -121,7 +121,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Install facets
   && cd /tmp \
   && git clone https://github.com/PAIR-code/facets.git \
-  && jupyter nbextension install facets/facets-dist/ --sys-prefix \
+  && jupyter nbclassic-extension install facets/facets-dist/ --sys-prefix \
   && cd / \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
