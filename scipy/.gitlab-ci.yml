@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.11.6"
+    PYTHON_VERSION: "3.12.0"
 
 .before-script-build: &before-script-build
   - |
