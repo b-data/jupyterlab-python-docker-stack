@@ -33,8 +33,8 @@ if [ "$(id -u)" == 0 ] ; then
     update-locale --reset LANG="$LANG"
   fi
 
-  CS_USD="/home/$NB_USER/.local/share/code-server/User"
-  # Update code-server settings
+  CS_USD="/home/$NB_USER${DOMAIN:+@$DOMAIN}/.local/share/code-server/User"
+  # Install code-server settings
   su "$NB_USER" -c "mkdir -p $CS_USD"
   if [[ ! -f "$CS_USD/settings.json" ]]; then
     su "$NB_USER" -c "cp ${CP_OPTS:--a} /var/backups/skel/.local/share/code-server/User/settings.json \
@@ -54,7 +54,7 @@ if [ "$(id -u)" == 0 ] ; then
   fi
 
   # Remove old .zcompdump files
-  rm -f "/home/$NB_USER/.zcompdump"*
+  rm -f "/home/$NB_USER${DOMAIN:+@$DOMAIN}/.zcompdump"*
 else
   # Warn if the user wants to change the timezone but hasn't started the
   # container as root.
@@ -74,7 +74,7 @@ else
   fi
 
   CS_USD="$HOME/.local/share/code-server/User"
-  # Update code-server settings
+  # Install code-server settings
   mkdir -p "$CS_USD"
   if [[ ! -f "$CS_USD/settings.json" ]]; then
     cp -a /var/backups/skel/.local/share/code-server/User/settings.json \
