@@ -36,8 +36,8 @@ def _codeserver_command(port):
     return [
         full_path,
         "--bind-addr=0.0.0.0:" + str(port),
-        "--auth",
-        "none",
+        "--auth=none",
+        "--disable-telemetry",
         data_dir,
         extensions_dir,
         work_dir,
