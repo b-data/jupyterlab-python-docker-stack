@@ -11,6 +11,8 @@ Images available for Python versions ≥ 3.11.1.
 https://demo.cuda.jupyter.b-data.ch.  
 :point_right: You can ask [b-data](mailto:request@b-data.ch?subject=[CUDA%20Jupyter]%20Request%20to%20whitelist%20GitHub%20account) to whitelist your GitHub account for access.
 
+![CUDA screenshot](assets/cuda-screenshot.png)
+
 **Build chain**
 
 The same as the
@@ -74,7 +76,7 @@ cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.11.5 \
+  --build-arg PYTHON_VERSION=3.12.0 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -163,7 +165,29 @@ current value of `${NB_UID}` and `${NB_GID}`.
 
 The server logs appear in the terminal.
 
-**Using Docker Desktop**
+#### Using Podman (rootless mode, 3.11.6+)
+
+Create an empty home directory:
+
+```bash
+mkdir "${PWD}/jupyterlab-root"
+```
+
+Use the following command to run the container as `root`:
+
+```bash
+podman run -it --rm \
+  --device 'nvidia.com/gpu=all' \
+  -p 8888:8888 \
+  -u root \
+  -v "${PWD}/jupyterlab-root":/home/root \
+  -e NB_USER=root \
+  -e NB_UID=0 \
+  -e NB_GID=0 \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]] start-notebook.sh --allow-root
+```
+
+#### Using Docker Desktop
 
 [Creating a home directory](#create-home-directory) *might* not be required.
 Also

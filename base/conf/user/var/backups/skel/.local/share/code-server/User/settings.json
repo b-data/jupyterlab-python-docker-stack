@@ -1,6 +1,7 @@
 {
   "editor.tabSize": 2,
   "gitlab.aiAssistedCodeSuggestions.enabled": false,
+  "gitlab.duoChat.enabled": false,
   "gitlens.graph.statusBar.enabled": false,
   "gitlens.menus": {
     "scm": {
@@ -15,6 +16,7 @@
   },
   "gitlens.showWelcomeOnInstall": false,
   "gitlens.showWhatsNewAfterUpgrades": false,
+  "python.languageServer": "Jedi",
   "resmon.show.battery": false,
   "resmon.show.cpufreq": false,
   "telemetry.telemetryLevel": "off",

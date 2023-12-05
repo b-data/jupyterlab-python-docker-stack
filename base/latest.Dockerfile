@@ -7,10 +7,10 @@ ARG CUDA_IMAGE_FLAVOR
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ARG JUPYTERHUB_VERSION=4.0.2
-ARG JUPYTERLAB_VERSION=3.6.6
+ARG JUPYTERLAB_VERSION=4.0.9
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG CODE_SERVER_VERSION=4.17.1
-ARG GIT_VERSION=2.42.0
+ARG CODE_SERVER_VERSION=4.19.1
+ARG GIT_VERSION=2.43.0
 ARG GIT_LFS_VERSION=3.4.0
 ARG PANDOC_VERSION=3.1.1
 
@@ -104,6 +104,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     libclang-dev \
     man-db \
     nano \
+    ncdu \
     procps \
     psmisc \
     screen \
@@ -215,6 +216,7 @@ RUN mkdir /opt/code-server \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension redhat.vscode-yaml \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension grapecity.gc-excelviewer \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension editorconfig.editorconfig \
+  && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension DavidAnson.vscode-markdownlint \
   ## Create folders temp and tmp for Jupyter extension
   && cd /opt/code-server/lib/vscode/extensions/ms-toolsai.jupyter-* \
   && mkdir -m 1777 temp \
@@ -233,6 +235,7 @@ RUN export PIP_BREAK_SYSTEM_PACKAGES=1 \
     jupyterlab-git \
     jupyterlab-lsp \
     notebook \
+    nbclassic \
     nbconvert \
     python-lsp-server[all] \
   ## Include custom fonts

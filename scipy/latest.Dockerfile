@@ -34,6 +34,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     librsvg2-bin \
     qpdf \
     texinfo \
+    ## For h5py wheels
+    libhdf5-dev \
   ## Install quarto
   && curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
   && mkdir -p /opt/quarto \
@@ -102,7 +104,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ipympl\
     ipywidgets \
     matplotlib \
-    numba \
+    #numba \
     numexpr \
     numpy \
     pandas \
@@ -121,7 +123,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Install facets
   && cd /tmp \
   && git clone https://github.com/PAIR-code/facets.git \
-  && jupyter nbextension install facets/facets-dist/ --sys-prefix \
+  && jupyter nbclassic-extension install facets/facets-dist/ --sys-prefix \
   && cd / \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
