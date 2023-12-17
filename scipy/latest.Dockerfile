@@ -128,9 +128,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
-  ## Update default PATH settings in /etc/profile
-  && sed -i "s|/opt/code-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|/opt/TinyTeX/bin/linux:/opt/quarto/bin:/opt/code-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|g" /etc/profile \
-  && sed -i "s|/opt/code-server/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games|/opt/TinyTeX/bin/linux:/opt/quarto/bin:/opt/code-server/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games|g" /etc/profile \
+  ## Update default PATH settings in /etc/profile.d/00-reset-path.sh
+  && sed -i 's|/opt/code-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|/opt/TinyTeX/bin/linux:/opt/quarto/bin:/opt/code-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|g' /etc/profile.d/00-reset-path.sh \
+  && sed -i 's|/opt/code-server/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games|/opt/TinyTeX/bin/linux:/opt/quarto/bin:/opt/code-server/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games|g' /etc/profile.d/00-reset-path.sh \
   ## Clean up
   && rm -rf /tmp/* \
   && rm -rf /var/lib/apt/lists/* \

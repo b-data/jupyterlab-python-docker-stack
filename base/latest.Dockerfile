@@ -38,7 +38,8 @@ RUN cp -a /files/etc/skel /files/home/${NB_USER} \
   ## Otherwise set to 777 in the target image
   && find /files -type d -exec chmod 755 {} \; \
   && find /files -type f -exec chmod 644 {} \; \
-  && find /files/usr/local/bin -type f -exec chmod 755 {} \;
+  && find /files/usr/local/bin -type f -exec chmod 755 {} \; \
+  && find /files/etc/profile.d -type f -exec chmod 755 {} \;
 
 FROM glcr.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} AS gsi
 FROM glcr.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} AS glfsi
@@ -226,9 +227,6 @@ RUN mkdir /opt/code-server \
   && cd /opt/code-server/lib/vscode/extensions/ms-toolsai.jupyter-* \
   && mkdir -m 1777 temp \
   && mkdir -m 1777 tmp \
-  ## Update default PATH settings in /etc/profile
-  && sed -i "s|/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|/opt/code-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|g" /etc/profile \
-  && sed -i "s|/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games|/opt/code-server/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games|g" /etc/profile \
   ## Clean up
   && rm -rf /tmp/* \
     ${HOME}/.config \
