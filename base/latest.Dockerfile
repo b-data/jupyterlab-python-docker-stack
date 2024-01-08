@@ -29,11 +29,8 @@ COPY conf/shell /files
 COPY conf/user /files
 COPY scripts /files
 
-RUN cp -a /files/etc/skel /files/home/${NB_USER} \
-  && cp -a /files/etc/skel/. /files/var/backups/skel \
-  && chown -R ${NB_UID}:${NB_GID} \
-    /files/home/${NB_USER} \
-    /files/var/backups/skel \
+RUN cp -a /files/etc/skel/. /files/var/backups/skel \
+  && chown -R ${NB_UID}:${NB_GID} /files/var/backups/skel \
   ## Ensure file modes are correct when using CI
   ## Otherwise set to 777 in the target image
   && find /files -type d -exec chmod 755 {} \; \
