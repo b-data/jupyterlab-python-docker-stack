@@ -285,6 +285,24 @@ This project follows the
 [Contributor Covenant](https://www.contributor-covenant.org)
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
+## Support
+
+For commercial support, please contact b-data by email: <support@b-data.ch>.
+
+b-data tailors the JupyterLab images to your needs, e.g.
+
+* Integration of self-signed CA certificates to enable communication with web
+  services on the intranet
+* Setting up the necessary environment variables so that everything works
+  behind a corporate proxy server
+
+Additionally, the JupyterHub setup can be customised to allow
+
+* Authentication with AD/LDAP
+* Mounting CIFS/SMB file shares
+
+and much more.
+
 ## License
 
 [MIT](LICENSE) © 2022 b-data GmbH
