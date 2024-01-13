@@ -12,7 +12,8 @@ Multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
 Images considered stable for Python versions ≥ 3.10.5.
 
-:microscope: Check out `jupyterlab/python/scipy` at https://demo.jupyter.b-data.ch.
+:microscope: Check out `jupyterlab/python/scipy` at
+https://demo.jupyter.b-data.ch.
 
 ![Screenshot](assets/screenshot.png)
 
@@ -105,6 +106,7 @@ The following extensions are pre-installed for **code-server**:
 * [Usage](#usage)
 * [Similar projects](#similar-projects)
 * [Contributing](#contributing)
+* [Support](#support)
 * [License](#license)
 
 ## Prerequisites
