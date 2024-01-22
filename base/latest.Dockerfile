@@ -284,5 +284,5 @@ COPY --from=files /files/var/backups/skel ${HOME}
 EXPOSE 8888
 
 ## Configure container startup
-ENTRYPOINT ["tini", "-g", "--"]
+ENTRYPOINT ["tini", "-g", "--", "start.sh"]
 CMD ["start-notebook.sh"]

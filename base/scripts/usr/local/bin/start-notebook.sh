@@ -18,5 +18,6 @@ if [[ "${RESTARTABLE}" == "yes" ]]; then
     wrapper="run-one-constantly"
 fi
 
+echo "Executing:" ${wrapper} "jupyter" "${DOCKER_STACKS_JUPYTER_CMD}" "${NOTEBOOK_ARGS}" "$@"
 # shellcheck disable=SC1091,SC2086
-exec /usr/local/bin/start.sh ${wrapper} jupyter ${DOCKER_STACKS_JUPYTER_CMD} ${NOTEBOOK_ARGS} "$@"
+exec ${wrapper} jupyter ${DOCKER_STACKS_JUPYTER_CMD} ${NOTEBOOK_ARGS} "$@"
