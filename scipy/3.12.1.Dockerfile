@@ -1,5 +1,5 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
-ARG PYTHON_VERSION=3.11.7
+ARG PYTHON_VERSION=3.12.1
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.4.549
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2024/02/06/tlnet
@@ -34,6 +34,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     librsvg2-bin \
     qpdf \
     texinfo \
+    ## For h5py wheels
+    libhdf5-dev \
   ## Install quarto
   && curl -sLO https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
   && mkdir -p /opt/quarto \
