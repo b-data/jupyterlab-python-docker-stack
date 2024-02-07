@@ -8,8 +8,7 @@ GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 Images available for Python versions ≥ 3.11.1.
 
 :microscope: Check out `jupyterlab/cuda/python/scipy` at
-https://demo.cuda.jupyter.b-data.ch.  
-:point_right: You can ask [b-data](mailto:request@b-data.ch?subject=[CUDA%20Jupyter]%20Request%20to%20whitelist%20GitHub%20account) to whitelist your GitHub account for access.
+https://demo.cuda.jupyter.b-data.ch.
 
 ![CUDA screenshot](assets/cuda-screenshot.png)
 
@@ -76,7 +75,7 @@ cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.12.0 \
+  --build-arg PYTHON_VERSION=3.12.1 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -184,7 +183,8 @@ podman run -it --rm \
   -e NB_USER=root \
   -e NB_UID=0 \
   -e NB_GID=0 \
-  IMAGE[:MAJOR[.MINOR[.PATCH]]] start-notebook.sh --allow-root
+  -e NOTEBOOK_ARGS="--allow-root" \
+  IMAGE[:MAJOR[.MINOR[.PATCH]]]
 ```
 
 #### Using Docker Desktop

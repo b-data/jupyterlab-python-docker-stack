@@ -8,7 +8,7 @@ ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 
 FROM glcr.b-data.ch/nodejs/nsi/${NODE_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as nsi
 
-FROM ${BUILD_ON_IMAGE}:${PYTHON_VERSION}
+FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -18,7 +18,7 @@ ARG NODE_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR
 ARG BUILD_START
 
-ENV PARENT_IMAGE=${BUILD_ON_IMAGE}:${PYTHON_VERSION} \
+ENV PARENT_IMAGE=${BUILD_ON_IMAGE}${PYTHON_VERSION:+:$PYTHON_VERSION} \
     NODE_VERSION=${NODE_VERSION} \
     BUILD_DATE=${BUILD_START}
 
@@ -44,11 +44,11 @@ RUN apt-get update \
   && if [ -n "$PYTHON_VERSION" ]; then \
     ## make some useful symlinks that are expected to exist
     ## ("/usr/bin/python" and friends)
-    for src in pydoc3 python3; do \
+    for src in pydoc3 python3 python3-config; do \
       dst="$(echo "$src" | tr -d 3)"; \
-      [ -s "/usr/bin/$src" ]; \
-      [ ! -e "/usr/bin/$dst" ]; \
-      ln -svT "$src" "/usr/bin/$dst"; \
+      if [ -s "/usr/bin/$src" ] && [ ! -e "/usr/bin/$dst" ]; then \
+        ln -svT "$src" "/usr/bin/$dst"; \
+      fi \
     done; \
   fi \
   ## Clean up Node.js installation
