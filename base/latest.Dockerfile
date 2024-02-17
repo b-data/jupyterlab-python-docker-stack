@@ -241,6 +241,14 @@ RUN export PIP_BREAK_SYSTEM_PACKAGES=1 \
     nbclassic \
     nbconvert \
     python-lsp-server[all] \
+  ## Fix https://github.com/jupyterhub/jupyter-server-proxy/issues/445
+  && pyFile="$(echo /usr/local/lib/python*/*-packages/jupyter_server_proxy/handlers.py)" \
+  && sed -i 's/subprotocols=self\.subprotocols/subprotocols=self\.selected_subprotocol/g' \
+    "$pyFile" \
+  && if $(grep -q subprotocols=self.selected_subprotocol "$pyFile"); then \
+    sed -i '/def select_subprotocol/{:a;N;s/\n[[:blank:]]\+.*//;ta;!P;D}' \
+      "$pyFile"; \
+  fi \
   ## Include custom fonts
   && sed -i 's|</head>|<link rel="preload" href="{{page_config.fullStaticUrl}}/assets/fonts/MesloLGS-NF-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous"></head>|g' /usr/local/share/jupyter/lab/static/index.html \
   && sed -i 's|</head>|<link rel="preload" href="{{page_config.fullStaticUrl}}/assets/fonts/MesloLGS-NF-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous"></head>|g' /usr/local/share/jupyter/lab/static/index.html \
