@@ -155,7 +155,7 @@ docker run --rm \
 
 It will be *bind mounted* as the JupyterLab user's home directory and
 automatically populated.  
-:exlamation: *Bind mounting* a subfolder of the home directory is only possible
+:exclamation: *Bind mounting* a subfolder of the home directory is only possible
 for images with Python version ≥ 3.12.2.
 
 ### Run container
