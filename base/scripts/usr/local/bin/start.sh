@@ -139,12 +139,23 @@ if [ "$(id -u)" == 0 ] ; then
                     exit 1
                 fi
             fi
-        # The home directory could be bind mounted. Populate it if it is empty
-        elif [[ "$(ls -A "/home/${NB_USER}${DOMAIN:+@$DOMAIN}" 2> /dev/null)" == "" ]]; then
-            _log "Populating home dir /home/${NB_USER}${DOMAIN:+@$DOMAIN}..."
-            # shellcheck disable=SC2086
-            if cp ${CP_OPTS:--a} /home/jovyan/. "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/"; then
-                _log "Success!"
+        # The home directory could be bind mounted. Populate it.
+        elif [[ ! -f "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated" ]]; then
+            # Create list of missing files (top level only)
+            fd="$(comm -13 <(cd  "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"; ls -A) <(cd /home/jovyan; ls -A) \
+                | paste -sd ',' -)"
+            # Handle case when only marker is missing
+            if [[ "${fd}" == ".populated" ]]; then
+                sf="${fd}"
+            else
+                sf="{${fd}}"
+            fi
+            _log "Populating home dir: /home/${NB_USER}${DOMAIN:+@$DOMAIN}"
+            _log "Copying files/directories (recursively):"
+            _log "- ${fd}"
+            if eval "cp ${CP_OPTS:--a} /home/jovyan/${sf} /home/${NB_USER}${DOMAIN:+@$DOMAIN}"; then
+                date -uIseconds > "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated"
+                _log "Done populating home dir"
             else
                 _log "ERROR: Failed to copy data from /home/jovyan to /home/${NB_USER}${DOMAIN:+@$DOMAIN}!"
                 exit 1
@@ -159,10 +170,18 @@ if [ "$(id -u)" == 0 ] ; then
         fi
     fi
 
+    # Trigger changing ownership of the desired user's home folder
+    if [[ "${CP_OPTS}" == "" && "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
+        if [[ "${CHOWN_HOME}" != "1" && "${CHOWN_HOME}" != "yes" ]]; then
+            export CHOWN_HOME="1"
+            trg_msg="(Automatic) "
+        fi
+    fi
+
     # Optionally ensure the desired user get filesystem ownership of it's home
     # folder and/or additional folders
     if [[ "${CHOWN_HOME}" == "1" || "${CHOWN_HOME}" == "yes" ]]; then
-        _log "Ensuring /home/${NB_USER}${DOMAIN:+@$DOMAIN} is owned by ${NB_UID}:${NB_GID} ${CHOWN_HOME_OPTS:+(chown options: ${CHOWN_HOME_OPTS})}"
+        _log "${trg_msg}Ensuring /home/${NB_USER}${DOMAIN:+@$DOMAIN} is owned by ${NB_UID}:${NB_GID} ${CHOWN_HOME_OPTS:+(chown options: ${CHOWN_HOME_OPTS})}"
         if [[ ! -L "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt" || ("$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")") ]]; then
             # shellcheck disable=SC2086
             chown ${CHOWN_HOME_OPTS} "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"
@@ -176,6 +195,14 @@ if [ "$(id -u)" == 0 ] ; then
                 ln -sf /var/tmp/.pam_mount.conf.xml "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
                 chown -h "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
             fi
+        fi
+    fi
+    if [[ "${CP_OPTS}" == "" && "${sf}" != "" ]]; then
+        if [[ "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
+            _log "(Automatic) Ensuring the following files/directories in /home/${NB_USER}${DOMAIN:+@$DOMAIN} are owned by ${NB_UID}:${NB_GID} (chown options: -R):"
+            _log "- ${fd}"
+            # shellcheck disable=SC2086
+            eval "chown -R ${NB_UID}:${NB_GID} /home/${NB_USER}${DOMAIN:+@$DOMAIN}/${sf}"
         fi
     fi
     if [ -n "${CHOWN_EXTRA}" ]; then
