@@ -4,6 +4,10 @@
 
 set -e
 
+function run_user_group() {
+  runuser -u "${NB_USER}" -g "$(id -gn "${NB_USER}")" -G "users" -- "$@"
+}
+
 # The _log function is used for everything this script wants to log. It will
 # always log errors and warnings, but can be silenced for other messages
 # by setting JUPYTER_DOCKER_STACKS_QUIET environment variable.
@@ -187,13 +191,11 @@ if [ "$(id -u)" == 0 ] ; then
             chown ${CHOWN_HOME_OPTS} "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"
             # Symlink temporarily mounted filesystems to home directory
             if [[ "$(ls -A /mnt 2> /dev/null)" != "" ]]; then
-                ln -snf /mnt "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt"
-                chown -h "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt"
+                run_user_group ln -snf /mnt "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt"
             fi
             # Symlink pam_mount configuration to home directory
             if [[ -f /var/tmp/.pam_mount.conf.xml ]]; then
-                ln -sf /var/tmp/.pam_mount.conf.xml "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
-                chown -h "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
+                run_user_group ln -sf /var/tmp/.pam_mount.conf.xml "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
             fi
         fi
     fi

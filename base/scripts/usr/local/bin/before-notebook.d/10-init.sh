@@ -34,27 +34,27 @@ if [ "$(id -u)" == 0 ] ; then
   fi
 
   ## Create user's projects and workspaces folder
-  su "$NB_USER" -c "mkdir -p /home/$NB_USER${DOMAIN:+@$DOMAIN}/projects"
-  su "$NB_USER" -c "mkdir -p /home/$NB_USER${DOMAIN:+@$DOMAIN}/workspaces"
+  run_user_group mkdir -p "/home/$NB_USER${DOMAIN:+@$DOMAIN}/projects"
+  run_user_group mkdir -p "/home/$NB_USER${DOMAIN:+@$DOMAIN}/workspaces"
 
   CS_USD="/home/$NB_USER${DOMAIN:+@$DOMAIN}/.local/share/code-server/User"
   # Install code-server settings
-  su "$NB_USER" -c "mkdir -p $CS_USD"
+  run_user_group mkdir -p "$CS_USD"
   if [[ ! -f "$CS_USD/settings.json" ]]; then
-    su "$NB_USER" -c "cp ${CP_OPTS:--a} /var/backups/skel/.local/share/code-server/User/settings.json \
-      $CS_USD/settings.json"
-    chown :"$NB_GID" "$CS_USD/settings.json"
+    run_user_group cp -a --no-preserve=ownership \
+      /var/backups/skel/.local/share/code-server/User/settings.json \
+      "$CS_USD/settings.json"
   fi
   # Update code-server settings
-  su "$NB_USER" -c "mv $CS_USD/settings.json $CS_USD/settings.json.bak"
-  su "$NB_USER" -c "sed -i ':a;N;\$!ba;s/,\n\}/\n}/g' $CS_USD/settings.json.bak"
+  run_user_group mv "$CS_USD/settings.json" "$CS_USD/settings.json.bak"
+  run_user_group sed -i ':a;N;$!ba;s/,\n\}/\n}/g' "$CS_USD/settings.json.bak"
   if [[ $(jq . "$CS_USD/settings.json.bak" 2> /dev/null) ]]; then
-    su "$NB_USER" -c "jq -s '.[0] * .[1]' \
+    run_user_group jq -s '.[0] * .[1]' \
       /var/backups/skel/.local/share/code-server/User/settings.json \
-      $CS_USD/settings.json.bak > \
-      $CS_USD/settings.json"
+      "$CS_USD/settings.json.bak" > \
+      "$CS_USD/settings.json"
   else
-    su "$NB_USER" -c "mv $CS_USD/settings.json.bak $CS_USD/settings.json"
+    run_user_group mv "$CS_USD/settings.json.bak" "$CS_USD/settings.json"
   fi
 
   # Remove old .zcompdump files
