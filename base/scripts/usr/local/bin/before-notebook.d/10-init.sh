@@ -51,8 +51,8 @@ if [ "$(id -u)" == 0 ] ; then
   if [[ $(jq . "$CS_USD/settings.json.bak" 2> /dev/null) ]]; then
     run_user_group jq -s '.[0] * .[1]' \
       /var/backups/skel/.local/share/code-server/User/settings.json \
-      "$CS_USD/settings.json.bak" > \
-      "$CS_USD/settings.json"
+      "$CS_USD/settings.json.bak" | run_user_group tee \
+      "$CS_USD/settings.json" > /dev/null
   else
     run_user_group mv "$CS_USD/settings.json.bak" "$CS_USD/settings.json"
   fi
@@ -94,8 +94,8 @@ else
   if [[ $(jq . "$CS_USD/settings.json.bak" 2> /dev/null) ]]; then
     jq -s '.[0] * .[1]' \
       /var/backups/skel/.local/share/code-server/User/settings.json \
-      "$CS_USD/settings.json.bak" > \
-      "$CS_USD/settings.json"
+      "$CS_USD/settings.json.bak" | tee \
+      "$CS_USD/settings.json" > /dev/null
   else
     mv "$CS_USD/settings.json.bak" "$CS_USD/settings.json"
   fi
