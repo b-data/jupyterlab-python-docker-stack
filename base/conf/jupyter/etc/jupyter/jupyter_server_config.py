@@ -37,6 +37,7 @@ def _codeserver_command(port):
         full_path,
         "--socket={unix_socket}",
         "--auth=none",
+        "--disable-update-check",
         "--disable-telemetry",
         data_dir,
         extensions_dir,
