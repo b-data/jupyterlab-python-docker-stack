@@ -255,9 +255,6 @@ RUN export PIP_BREAK_SYSTEM_PACKAGES=1 \
     nbclassic \
     nbconvert \
     python-lsp-server[all] \
-  ## Fix https://github.com/jupyterhub/jupyter-server-proxy/issues/445
-  && sed -i 's/subprotocols=self\.subprotocols/subprotocols=self\.subprotocols if self\.subprotocols else None/g' \
-    /usr/local/lib/python*/*-packages/jupyter_server_proxy/handlers.py \
   ## Copy custom fonts
   && mkdir -p /usr/local/share/jupyter/lab/static/assets/fonts \
   && cp -a /usr/share/fonts/truetype/meslo/*.ttf /usr/local/share/jupyter/lab/static/assets/fonts \
