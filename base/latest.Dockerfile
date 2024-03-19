@@ -255,10 +255,8 @@ RUN export PIP_BREAK_SYSTEM_PACKAGES=1 \
     nbclassic \
     nbconvert \
     python-lsp-server[all] \
-  ## Jupyter Server Proxy: Set maximum allowed HTTP body size to 1 GiB
-  && sed -i 's/SimpleAsyncHTTPClient(/SimpleAsyncHTTPClient(max_body_size=1073741824,/g' \
-    /usr/local/lib/python*/*-packages/jupyter_server_proxy/handlers.py \
-  && sed -i 's/AsyncHTTPClient()/AsyncHTTPClient(max_body_size=1073741824)/g' \
+  ## Jupyter Server Proxy: Set maximum allowed HTTP body size to 10 GiB
+  && sed -i 's/AsyncHTTPClient(/AsyncHTTPClient(max_body_size=10737418240, /g' \
     /usr/local/lib/python*/*-packages/jupyter_server_proxy/handlers.py \
   ## Jupyter Server Proxy: Set maximum allowed websocket message size to 1 GiB
   && sed -i 's/"_default_max_message_size",.*$/"_default_max_message_size", 1024 \* 1024 \* 1024/g' \
