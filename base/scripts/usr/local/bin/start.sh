@@ -118,7 +118,7 @@ if [ "$(id -u)" == 0 ] ; then
         # Do not preserve ownership in rootless mode
         CP_OPTS="-a --no-preserve=ownership"
         # Pip: Install packages to the user site
-        export PIP_USER=1
+        export PIP_USER=${PIP_USER:-1}
     fi
     # Note: Allows to run the container as root.
     # Use case: Docker/Podman in rootless mode.
