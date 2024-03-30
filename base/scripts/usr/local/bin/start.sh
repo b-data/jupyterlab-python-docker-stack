@@ -191,8 +191,8 @@ if [ "$(id -u)" == 0 ]; then
     # Optionally ensure the desired user get filesystem ownership of it's home
     # folder and/or additional folders
     if [[ "${CHOWN_HOME}" == "1" || "${CHOWN_HOME}" == "yes" ]]; then
-        _log "${trg_msg}Ensuring /home/${NB_USER}${DOMAIN:+@$DOMAIN} is owned by ${NB_UID}:${NB_GID} ${CHOWN_HOME_OPTS:+(chown options: ${CHOWN_HOME_OPTS})}"
         if [[ ! -L "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt" || ("$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")") ]]; then
+            _log "${trg_msg}Ensuring /home/${NB_USER}${DOMAIN:+@$DOMAIN} is owned by ${NB_UID}:${NB_GID} ${CHOWN_HOME_OPTS:+(chown options: ${CHOWN_HOME_OPTS})}"
             # shellcheck disable=SC2086
             chown ${CHOWN_HOME_OPTS} "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"
             # Symlink temporarily mounted filesystems to home directory
