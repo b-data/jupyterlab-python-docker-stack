@@ -1,4 +1,8 @@
 {
+  "@jupyterlab/apputils-extension:notification": {
+    "checkForUpdates": false,
+    "fetchNews": false
+  },
   "@jupyterlab/apputils-extension:themes": {
     "theme": "JupyterLab Dark"
   },

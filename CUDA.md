@@ -75,7 +75,7 @@ cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.12.1 \
+  --build-arg PYTHON_VERSION=3.12.2 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -106,14 +106,11 @@ docker run --rm \
 ```
 
 It will be *bind mounted* as the JupyterLab user's home directory and
-automatically populated on first run.
+automatically populated.  
+:exclamation: *Bind mounting* a subfolder of the home directory is only possible
+for images with Python version ≥ 3.12.2.
 
 ### Run container
-
-| :exclamation: Always mount the user's **entire** home directory.<br>Mounting a subfolder prevents the container from starting.[^1] |
-|:-----------------------------------------------------------------------------------------------------------------------------------|
-
-[^1]: The only exception is the use case described at [Jupyter Docker Stacks > Quick Start > Example 2](https://github.com/jupyter/docker-stacks#quick-start).
 
 self built:
 

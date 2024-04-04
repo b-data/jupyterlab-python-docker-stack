@@ -4,9 +4,19 @@
 
 set -e
 
-# The _log function is used for everything this script wants to log. It will
-# always log errors and warnings, but can be silenced for other messages
-# by setting JUPYTER_DOCKER_STACKS_QUIET environment variable.
+if [ -n "${CUDA_IMAGE}" ]; then
+  echo
+  print_banner_text "=" "JUPYTER"
+  echo
+fi
+
+function run_user_group() {
+  runuser -u "${NB_USER}" -g "$(id -gn "${NB_USER}")" -G "users" -- "$@"
+}
+
+# The _log function is used for everything this script wants to log.
+# It will always log errors and warnings but can be silenced for other messages
+# by setting the JUPYTER_DOCKER_STACKS_QUIET environment variable.
 _log () {
     if [[ "$*" == "ERROR:"* ]] || [[ "$*" == "WARNING:"* ]] || [[ "${JUPYTER_DOCKER_STACKS_QUIET}" == "" ]]; then
         echo "$@"
@@ -53,7 +63,7 @@ source /usr/local/bin/run-hooks.sh /usr/local/bin/start-notebook.d
 # things before we run the command passed to start.sh as the desired user
 # (NB_USER).
 #
-if [ "$(id -u)" == 0 ] ; then
+if [ "$(id -u)" == 0 ]; then
     # Environment variables:
     # - NB_USER: the desired username and associated home folder
     # - NB_UID: the desired user id
@@ -61,20 +71,20 @@ if [ "$(id -u)" == 0 ] ; then
     # - NB_GROUP: a group name we want for the group
     # - GRANT_SUDO: a boolean ("1" or "yes") to grant the user sudo rights
     # - CHOWN_HOME: a boolean ("1" or "yes") to chown the user's home folder
-    # - CHOWN_EXTRA: a comma separated list of paths to chown
+    # - CHOWN_EXTRA: a comma-separated list of paths to chown
     # - CHOWN_HOME_OPTS / CHOWN_EXTRA_OPTS: arguments to the chown commands
     # - CHMOD_HOME: a boolean ("1" or "yes") to chmod the user's home folder
     # - CHMOD_HOME_MODE: mode argument to the chmod command
 
     # Refit the jovyan user to the desired the user (NB_USER)
-    if id jovyan &> /dev/null ; then
+    if id jovyan &> /dev/null; then
         if ! usermod --home "/home/${NB_USER}${DOMAIN:+@$DOMAIN}" --login "${NB_USER}" jovyan 2>&1 | grep "no changes" > /dev/null; then
             _log "Updated the jovyan user:"
             _log "- username: jovyan       -> ${NB_USER}"
             _log "- home dir: /home/jovyan -> /home/${NB_USER}${DOMAIN:+@$DOMAIN}"
         fi
     elif ! id -u "${NB_USER}" &> /dev/null; then
-        _log "ERROR: Neither the jovyan user or '${NB_USER}' exists. This could be the result of stopping and starting, the container with a different NB_USER environment variable."
+        _log "ERROR: Neither the jovyan user nor '${NB_USER}' exists. This could be the result of stopping and starting, the container with a different NB_USER environment variable."
         exit 1
     fi
 
@@ -114,12 +124,12 @@ if [ "$(id -u)" == 0 ] ; then
         # Do not preserve ownership in rootless mode
         CP_OPTS="-a --no-preserve=ownership"
         # Pip: Install packages to the user site
-        export PIP_USER=1
+        export PIP_USER=${PIP_USER:-1}
     fi
     # Note: Allows to run the container as root.
     # Use case: Docker/Podman in rootless mode.
 
-    # Move or symlink the jovyan home directory to the desired users home
+    # Move or symlink the jovyan home directory to the desired user's home
     # directory if it doesn't already exist, and update the current working
     # directory to the new location if needed.
     if [[ "${NB_USER}" != "jovyan" ]]; then
@@ -139,12 +149,23 @@ if [ "$(id -u)" == 0 ] ; then
                     exit 1
                 fi
             fi
-        # The home directory could be bind mounted. Populate it if it is empty
-        elif [[ "$(ls -A "/home/${NB_USER}${DOMAIN:+@$DOMAIN}" 2> /dev/null)" == "" ]]; then
-            _log "Populating home dir /home/${NB_USER}${DOMAIN:+@$DOMAIN}..."
-            # shellcheck disable=SC2086
-            if cp ${CP_OPTS:--a} /home/jovyan/. "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/"; then
-                _log "Success!"
+        # The home directory could be bind mounted. Populate it.
+        elif [[ ! -f "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated" ]]; then
+            # Create list of missing files (top level only)
+            fd="$(comm -13 <(cd  "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"; ls -A) <(cd /home/jovyan; ls -A) \
+                | paste -sd ',' -)"
+            # Handle case when only marker is missing
+            if [[ "${fd}" == ".populated" ]]; then
+                sf="${fd}"
+            else
+                sf="{${fd}}"
+            fi
+            _log "Populating home dir: /home/${NB_USER}${DOMAIN:+@$DOMAIN}"
+            _log "Copying files/directories (recursively):"
+            _log "- ${fd}"
+            if eval "cp ${CP_OPTS:--a} /home/jovyan/${sf} /home/${NB_USER}${DOMAIN:+@$DOMAIN}"; then
+                date -uIseconds > "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated"
+                _log "Done populating home dir"
             else
                 _log "ERROR: Failed to copy data from /home/jovyan to /home/${NB_USER}${DOMAIN:+@$DOMAIN}!"
                 exit 1
@@ -159,23 +180,37 @@ if [ "$(id -u)" == 0 ] ; then
         fi
     fi
 
+    # Trigger changing ownership of the desired user's home folder
+    if [[ "${CP_OPTS}" == "" && "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
+        if [[ "${CHOWN_HOME}" != "1" && "${CHOWN_HOME}" != "yes" ]]; then
+            export CHOWN_HOME="1"
+            trg_msg="(Automatic) "
+        fi
+    fi
+
     # Optionally ensure the desired user get filesystem ownership of it's home
     # folder and/or additional folders
     if [[ "${CHOWN_HOME}" == "1" || "${CHOWN_HOME}" == "yes" ]]; then
-        _log "Ensuring /home/${NB_USER}${DOMAIN:+@$DOMAIN} is owned by ${NB_UID}:${NB_GID} ${CHOWN_HOME_OPTS:+(chown options: ${CHOWN_HOME_OPTS})}"
         if [[ ! -L "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt" || ("$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")") ]]; then
+            _log "${trg_msg}Ensuring /home/${NB_USER}${DOMAIN:+@$DOMAIN} is owned by ${NB_UID}:${NB_GID} ${CHOWN_HOME_OPTS:+(chown options: ${CHOWN_HOME_OPTS})}"
             # shellcheck disable=SC2086
             chown ${CHOWN_HOME_OPTS} "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"
             # Symlink temporarily mounted filesystems to home directory
             if [[ "$(ls -A /mnt 2> /dev/null)" != "" ]]; then
-                ln -snf /mnt "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt"
-                chown -h "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt"
+                run_user_group ln -snf /mnt "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/mnt"
             fi
             # Symlink pam_mount configuration to home directory
             if [[ -f /var/tmp/.pam_mount.conf.xml ]]; then
-                ln -sf /var/tmp/.pam_mount.conf.xml "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
-                chown -h "${NB_UID}:${NB_GID}" "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
+                run_user_group ln -sf /var/tmp/.pam_mount.conf.xml "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.pam_mount.conf.xml"
             fi
+        fi
+    fi
+    if [[ "${CP_OPTS}" == "" && "${sf}" != "" ]]; then
+        if [[ "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
+            _log "(Automatic) Ensuring the following files/directories in /home/${NB_USER}${DOMAIN:+@$DOMAIN} are owned by ${NB_UID}:${NB_GID} (chown options: -R):"
+            _log "- ${fd}"
+            # shellcheck disable=SC2086
+            eval "chown -R ${NB_UID}:${NB_GID} /home/${NB_USER}${DOMAIN:+@$DOMAIN}/${sf}"
         fi
     fi
     if [ -n "${CHOWN_EXTRA}" ]; then
@@ -191,7 +226,7 @@ if [ "$(id -u)" == 0 ] ; then
     fi
 
     # Optionally grant passwordless sudo rights for the desired user
-    if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == "yes" ]]; then
+    if [[ "${GRANT_SUDO}" == "1" || "${GRANT_SUDO}" == "yes" ]]; then
         _log "Granting ${NB_USER} passwordless sudo rights!"
         echo "${NB_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/added-by-start-script
     fi
@@ -226,7 +261,7 @@ if [ "$(id -u)" == 0 ] ; then
         # - We use the `--set-home` flag to set the HOME variable appropriately.
         #
         # - To reduce the default list of variables deleted by sudo, we could have
-        #   used `env_delete` from /etc/sudoers. It has higher priority than the
+        #   used `env_delete` from /etc/sudoers. It has a higher priority than the
         #   `--preserve-env` flag and the `env_keep` configuration.
         #
         # - We preserve LD_LIBRARY_PATH, PATH and PYTHONPATH explicitly. Note however that sudo
@@ -249,7 +284,7 @@ else
     # Attempt to ensure the user uid we currently run as has a named entry in
     # the /etc/passwd file, as it avoids software crashing on hard assumptions
     # on such entry. Writing to the /etc/passwd was allowed for the root group
-    # from the Dockerfile during build.
+    # from the Dockerfile during the build.
     #
     # ref: https://github.com/jupyter/docker-stacks/issues/552
     if ! whoami &> /dev/null; then

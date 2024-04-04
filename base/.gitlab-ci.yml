@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.12.1"
+    PYTHON_VERSION: "3.12.2"
     TAG_VERSION_MAJ_MIN: "false"
     TAG_VERSION_MAJ: "false"
 
@@ -68,6 +68,7 @@ build:latest-linux-amd64:
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
       --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg CUDA_IMAGE_LICENSE
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:latest-linux-amd64
@@ -113,6 +114,7 @@ build:latest-linux-arm64v8:
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
       --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg CUDA_IMAGE_LICENSE
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:latest-linux-arm64v8
@@ -157,6 +159,7 @@ build:version-linux-amd64:
       --build-arg BASE_IMAGE_TAG
       --build-arg BUILD_ON_IMAGE
       --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg CUDA_IMAGE_LICENSE
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f $PYTHON_VERSION.Dockerfile .
@@ -197,6 +200,7 @@ build:version-linux-arm64v8:
       --build-arg BASE_IMAGE_TAG
       --build-arg BUILD_ON_IMAGE
       --build-arg CUDA_IMAGE_FLAVOR
+      --build-arg CUDA_IMAGE_LICENSE
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f $PYTHON_VERSION.Dockerfile .
