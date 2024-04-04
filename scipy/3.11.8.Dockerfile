@@ -1,8 +1,8 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION=3.11.8
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG QUARTO_VERSION=1.4.549
-ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
+ARG QUARTO_VERSION=1.4.552
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2024/04/02/tlnet
 
 FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:}${PYTHON_VERSION}
 
