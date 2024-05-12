@@ -3,7 +3,7 @@ ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE
 ARG PYTHON_VERSION
 
-ARG NODE_VERSION=18.19.1
+ARG NODE_VERSION=18.20.2
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 
 FROM glcr.b-data.ch/nodejs/nsi/${NODE_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} as nsi
@@ -21,6 +21,9 @@ ARG BUILD_START
 ENV PARENT_IMAGE=${BUILD_ON_IMAGE}${PYTHON_VERSION:+:}${PYTHON_VERSION} \
     NODE_VERSION=${NODE_VERSION} \
     BUILD_DATE=${BUILD_START}
+
+## Prevent Corepack showing the URL when it needs to download software
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 ## Install Node.js
 COPY --from=nsi /usr/local /usr/local
