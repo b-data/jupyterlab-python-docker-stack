@@ -104,7 +104,6 @@ are installed.
   * Theme > Selected Theme: JupyterLab Dark
   * Terminal > Font family: MesloLGS NF
   * Python LSP Server: Example settings according to [jupyter-lsp/jupyterlab-lsp > Installation > Configuring the servers](https://github.com/jupyter-lsp/jupyterlab-lsp#configuring-the-servers)
-  * R LSP Server: Example settings according to [jupyter-lsp/jupyterlab-lsp > Installation > Configuring the servers](https://github.com/jupyter-lsp/jupyterlab-lsp#configuring-the-servers)
 * [code-server](base/conf/user/var/backups/skel/.local/share/code-server/User/settings.json)
   * Text Editor > Tab Size: 2
   * Extensions > GitLens — Git supercharged
