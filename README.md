@@ -309,4 +309,6 @@ and much more.
 
 ## License
 
-[MIT](LICENSE) © 2022 b-data GmbH
+Copyright © 2022 b-data GmbH
+
+Distributed under the terms of the [MIT License](LICENSE), with exceptions.
