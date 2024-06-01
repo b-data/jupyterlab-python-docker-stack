@@ -4,7 +4,7 @@ Topmost entry = Tag `latest`
 
 | Python     | CUDA   | cuBLAS    | cuDNN     | NCCL   | TensorRT  | Linux distro |
 |:-----------|:-------|:----------|:----------|:-------|:----------|:-------------|
-| 3.12.3     | 12.4.1 | 12.4.5.8  | 8.9.7.29  | 2.21.5 | 10.0.1.6  | Ubuntu 22.04 |
+| 3.12.3     | 12.5.0 | 12.5.2.13 | 8.9.7.29  | 2.21.5 | 10.0.1.6  | Ubuntu 22.04 |
 | 3.11.9     | 11.8.0 | 11.11.3.6 | 8.9.6.50  | 2.15.5 | 8.5.3[^2] | Ubuntu 22.04 |
 | 3.12.2     | 11.8.0 | 11.11.3.6 | 8.9.6.50  | 2.15.5 | 8.5.3[^2] | Ubuntu 22.04 |
 | 3.11.8     | 11.8.0 | 11.11.3.6 | 8.9.6.50  | 2.15.5 | 8.5.3[^2] | Ubuntu 22.04 |
@@ -29,7 +29,7 @@ Topmost entry = Tag `latest`
 
 | Python | CUDA | PyTorch[^3]    | TensorFlow                |
 |:-------|:-----|:---------------|:--------------------------|
-| 3.12   | 12.4 | 2.2 ≤ version  | 2.16 ≤ version            |
+| 3.12   | 12.5 | 2.2 ≤ version  | 2.16 ≤ version            |
 | 3.12   | 11.8 | 2.2 ≤ version  | 2.16 ≤ version (CPU-only) |
 | 3.11   | 11.8 | 2.0 ≤ version  | 2.12 ≤ version < 2.15     |
 | 3.10   | 11.8 | 1.12 ≤ version | 2.8  ≤ version < 2.15     |
@@ -40,7 +40,7 @@ Topmost entry = Tag `latest`
 
 | CUDA   | NVIDIA Linux driver | NVIDIA Windows driver[^4] |
 |:-------|:--------------------|:--------------------------|
-| 12.4.1 | ≥ 550.54.15         | ≥ 551.78                  |
+| 12.5.0 | ≥ 555.42.02         | ≥ 555.85                  |
 | 11.8.0 | ≥ 520.61.05         | ≥ 520.06                  |
 
 [^4]: [GPU support in Docker Desktop | Docker Docs](https://docs.docker.com/desktop/gpu/),
