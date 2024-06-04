@@ -202,6 +202,7 @@ docker run -it --rm \
 ## Similar projects
 
 * [iot-salzburg/gpu-jupyter](https://github.com/iot-salzburg/gpu-jupyter)
+* [pangeo-data/pangeo-docker-images](https://github.com/pangeo-data/pangeo-docker-images)
 * [prp/jupyter-stack](https://gitlab.nrp-nautilus.io/prp/jupyter-stack)
 
 **What makes this project different:**
