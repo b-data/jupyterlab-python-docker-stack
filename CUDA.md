@@ -75,7 +75,7 @@ cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.12.2 \
+  --build-arg PYTHON_VERSION=3.12.3 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -202,12 +202,13 @@ docker run -it --rm \
 ## Similar projects
 
 * [iot-salzburg/gpu-jupyter](https://github.com/iot-salzburg/gpu-jupyter)
+* [pangeo-data/pangeo-docker-images](https://github.com/pangeo-data/pangeo-docker-images)
 * [prp/jupyter-stack](https://gitlab.nrp-nautilus.io/prp/jupyter-stack)
 
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=11.8.0-cudnn8-devel-ubuntu22.04)
+1. Derived from [`nvidia/cuda:12.5.0-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=12.5.0-devel-ubuntu22.04)
     * including development libraries and headers
 1. TensortRT and TensorRT plugin libraries
     * including development libraries and headers

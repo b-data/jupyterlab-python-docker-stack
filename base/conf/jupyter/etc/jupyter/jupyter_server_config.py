@@ -50,7 +50,7 @@ c.ServerProxy.servers = {
         "timeout": 20,
         "launcher_entry": {
             "title": "code-server",
-            "icon_path": "/opt/code-server/vscode.svg"
+            "icon_path": "/opt/code-server/code-server.svg"
         },
         "unix_socket": "/tmp/code-server-ipc.sock",
         "new_browser_tab": True
