@@ -37,12 +37,25 @@ Topmost entry = Tag `latest`
 
 [^3]: Installs its own CUDA binaries
 
-## Recommended NVIDIA driver
+## Recommended NVIDIA driver (Regular)
 
-| CUDA   | NVIDIA Linux driver | NVIDIA Windows driver[^4] |
-|:-------|:--------------------|:--------------------------|
-| 12.5.0 | ≥ 555.42.02         | ≥ 555.85                  |
-| 11.8.0 | ≥ 520.61.05         | ≥ 520.06                  |
+| CUDA   | Linux driver version | Windows driver version[^4] |
+|:-------|:---------------------|:---------------------------|
+| 12.5.0 | ≥ 555.42.02          | ≥ 555.85                   |
+| 11.8.0 | ≥ 520.61.05          | ≥ 520.06                   |
 
 [^4]: [GPU support in Docker Desktop | Docker Docs](https://docs.docker.com/desktop/gpu/),
 [Nvidia GPU Support for Windows · Issue #19005 · containers/podman](https://github.com/containers/podman/issues/19005)
+
+## Supported NVIDIA drivers (LTSB)
+
+| CUDA   | Driver version 535[^5] | Driver version 470[^6] |
+|:-------|:----------------------:|:----------------------:|
+| 12.5.0 | 🟢                      | 🟢                      |
+| 11.8.0 | 🟡                      | 🟢                      |
+
+🟢: Works due to the CUDA forward compat package  
+🟡: Supported due to backward compatibility
+
+[^5]: EOL: June 2026  
+[^6]: EOL: July 2024
