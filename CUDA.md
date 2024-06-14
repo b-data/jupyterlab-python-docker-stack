@@ -58,8 +58,7 @@ Use driver version 535
 ([Long Term Support Branch](https://docs.nvidia.com/datacenter/tesla/drivers/index.html#lifecycle))
 to ensure
 [forward compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#forward-compatibility)
-until June 2026.
-
+until June 2026.  
 :information_source: The host running the GPU accelerated images only requires
 the NVIDIA driver, the CUDA toolkit does not have to be installed.
 
