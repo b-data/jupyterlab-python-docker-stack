@@ -67,7 +67,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && tlmgr update --self \
   ## TeX packages as requested by the community
   && curl -sSLO https://yihui.org/gh/tinytex/tools/pkgs-yihui.txt \
-  && tlmgr install $(cat pkgs-yihui.txt | tr '\n' ' ') \
+  && tlmgr install $(cat pkgs-yihui.txt | sed '/^ms$/d' | tr '\n' ' ') \
+  ## ms: All packages of that bundle have now become independent packages
+  && tlmgr install count1to multitoc prelim2e everyshi \
   && rm -f pkgs-yihui.txt \
   ## TeX packages as in rocker/verse
   && tlmgr install \
