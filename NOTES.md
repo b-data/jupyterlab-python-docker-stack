@@ -120,13 +120,13 @@ are installed.
   * [Powerlevel10k](base/conf/user/var/backups/skel/.p10k.zsh): `p10k configure`
     * Does this look like a diamond (rotated square)?: (y)  Yes.
     * Does this look like a lock?: (y)  Yes.
-    * Does this look like a Debian logo (swirl/spiral)?: (y)  Yes.
+    * Does this look like an upwards arrow?: (y)  Yes.
     * Do all these icons fit between the crosses?: (y)  Yes.
     * Prompt Style: (3)  Rainbow.
     * Character Set: (1)  Unicode.
     * Show current time?: (2)  24-hour format.
     * Prompt Separators: (1)  Angled.
-    * Prompt Heads: (1)  Sharp.
+    * Prompt Heads: (3)  Sharp.
     * Prompt Tails: (1)  Flat.
     * Prompt Height: (2)  Two lines.
     * Prompt Connection: (2)  Dotted.
