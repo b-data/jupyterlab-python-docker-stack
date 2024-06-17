@@ -289,7 +289,10 @@ This project follows the
 
 ## Support
 
-For commercial support, please contact b-data by email: <support@b-data.ch>.
+Community support: Open a new disussion
+[here](https://github.com/orgs/b-data/discussions).
+
+Commercial support: Contact b-data by [email](mailto:support@b-data.ch).
 
 b-data tailors the JupyterLab images to your needs, e.g.
 
