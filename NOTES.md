@@ -36,6 +36,8 @@ The following startup hooks are put in place:
   to create user's projects and workspaces folder.
 * [/usr/local/bin/before-notebook.d/30-code-server.sh](base/scripts/usr/local/bin/before-notebook.d/30-code-server.sh)
   to update code-server settings.
+* [/usr/local/bin/before-notebook.d/71-tensorboard.sh](base/scripts/usr/local/bin/before-notebook.d/71-tensorboard.sh)
+  to use Jupyter Server Proxy for TensorBoard.
 * [/usr/local/bin/before-notebook.d/90-limits.sh](base/scripts/usr/local/bin/before-notebook.d/90-limits.sh)
   * *soft* limit the *address space* based on the amount of *physical* and
     *virtual memory* of the host. (default: command `ulimit -v`)

@@ -26,6 +26,7 @@ their copyrights and license statements are listed below.
 
 --------------------------------------------------------------------------------
 base/conf/jupyter/etc/jupyter/jupyter_server_config.py
+base/scripts/usr/local/bin/before-notebook.d/71-tensorboard.sh
 base/scripts/usr/local/bin/run-hooks.sh
 base/scripts/usr/local/bin/start-notebook.sh
 base/scripts/usr/local/bin/start-singleuser.sh
