@@ -47,6 +47,8 @@ The following startup hooks are put in place:
     `NPROC_LIMIT`. (default: command `ulimit -u`)
   * limit the number of *pending signals* according to environment variable
     `SIGPEN_LIMIT`. (default: command `ulimit -i`)
+* [/usr/local/bin/before-notebook.d/95-misc.sh](base/scripts/usr/local/bin/before-notebook.d/95-misc.sh)
+  to export environment variables to `/tmp/environment`.
 
 ### Custom scripts
 
