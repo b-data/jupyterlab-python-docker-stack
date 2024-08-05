@@ -56,6 +56,8 @@ The same as the
 
 Use driver version 535
 ([Long Term Support Branch](https://docs.nvidia.com/datacenter/tesla/drivers/index.html#lifecycle))
+with [NVIDIA Data Center GPUs](https://resources.nvidia.com/l/en-us-gpu) or
+[select NGC-Ready NVIDIA RTX boards](https://docs.nvidia.com/certification-programs/ngc-ready-systems/index.html)
 to ensure
 [forward compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#forward-compatibility)
 until June 2026.  
