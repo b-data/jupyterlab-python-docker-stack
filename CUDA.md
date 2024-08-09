@@ -1,4 +1,4 @@
-# CUDA-enabled JupyterLab Python docker stack
+# CUDA-based JupyterLab Python docker stack
 
 GPU accelerated, multi-arch (`linux/amd64`, `linux/arm64/v8`) docker images:
 
@@ -57,6 +57,14 @@ The same as the
 :information_source: The host running the GPU accelerated images only requires
 the NVIDIA driver, the CUDA toolkit does not have to be installed.
 
+Use driver version 535
+([Long Term Support Branch](https://docs.nvidia.com/datacenter/tesla/drivers/index.html#lifecycle))
+with [NVIDIA Data Center GPUs](https://resources.nvidia.com/l/en-us-gpu) or
+[select NGC-Ready NVIDIA RTX boards](https://docs.nvidia.com/certification-programs/ngc-ready-systems/index.html)
+to ensure
+[forward compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#forward-compatibility)
+until June 2026.
+
 ## Install
 
 To install the NVIDIA Container Toolkit, follow the instructions for your
@@ -75,7 +83,7 @@ cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=22.04 \
   --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.12.3 \
+  --build-arg PYTHON_VERSION=3.12.4 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -208,7 +216,7 @@ docker run -it --rm \
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:12.5.0-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=12.5.0-devel-ubuntu22.04)
+1. Derived from [`nvidia/cuda:12.5.1-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=12.5.1-devel-ubuntu22.04)
     * including development libraries and headers
 1. TensortRT and TensorRT plugin libraries
     * including development libraries and headers

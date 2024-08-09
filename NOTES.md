@@ -36,9 +36,19 @@ The following startup hooks are put in place:
   to create user's projects and workspaces folder.
 * [/usr/local/bin/before-notebook.d/30-code-server.sh](base/scripts/usr/local/bin/before-notebook.d/30-code-server.sh)
   to update code-server settings.
+* [/usr/local/bin/before-notebook.d/71-tensorboard.sh](base/scripts/usr/local/bin/before-notebook.d/71-tensorboard.sh)
+  to use Jupyter Server Proxy for TensorBoard.
 * [/usr/local/bin/before-notebook.d/90-limits.sh](base/scripts/usr/local/bin/before-notebook.d/90-limits.sh)
-  to set the *soft limit* for *the maximum amount of virtual memory* based on
-  the amount of *physical* and *virtual memory* of the host.
+  * *soft* limit the *address space* based on the amount of *physical* and
+    *virtual memory* of the host. (default: command `ulimit -v`)
+  * limit the number of *file descriptors* according to environment variable
+    `NOFILE_LIMIT`. (default: command `ulimit -n`)
+  * limit the number of *processes* according to environment variable
+    `NPROC_LIMIT`. (default: command `ulimit -u`)
+  * limit the number of *pending signals* according to environment variable
+    `SIGPEN_LIMIT`. (default: command `ulimit -i`)
+* [/usr/local/bin/before-notebook.d/95-misc.sh](base/scripts/usr/local/bin/before-notebook.d/95-misc.sh)
+  to export environment variables to `/tmp/environment`.
 
 ### Custom scripts
 
@@ -120,13 +130,13 @@ are installed.
   * [Powerlevel10k](base/conf/user/var/backups/skel/.p10k.zsh): `p10k configure`
     * Does this look like a diamond (rotated square)?: (y)  Yes.
     * Does this look like a lock?: (y)  Yes.
-    * Does this look like a Debian logo (swirl/spiral)?: (y)  Yes.
+    * Does this look like an upwards arrow?: (y)  Yes.
     * Do all these icons fit between the crosses?: (y)  Yes.
     * Prompt Style: (3)  Rainbow.
     * Character Set: (1)  Unicode.
     * Show current time?: (2)  24-hour format.
     * Prompt Separators: (1)  Angled.
-    * Prompt Heads: (1)  Sharp.
+    * Prompt Heads: (3)  Sharp.
     * Prompt Tails: (1)  Flat.
     * Prompt Height: (2)  Two lines.
     * Prompt Connection: (2)  Dotted.

@@ -1,7 +1,7 @@
 [![minimal-readme compliant](https://img.shields.io/badge/readme%20style-minimal-brightgreen.svg)](https://github.com/RichardLitt/standard-readme/blob/master/example-readmes/minimal-readme.md) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) <a href="https://liberapay.com/benz0li/donate"><img src="https://liberapay.com/assets/widgets/donate.svg" alt="Donate using Liberapay" height="20"></a>
 
-| See the [CUDA-enabled JupyterLab Python docker stack](CUDA.md) for GPU accelerated docker images. |
-|:--------------------------------------------------------------------------------------------------|
+| See the [CUDA-based JupyterLab Python docker stack](CUDA.md) for GPU accelerated docker images. |
+|:------------------------------------------------------------------------------------------------|
 
 # JupyterLab Python docker stack
 
@@ -104,6 +104,7 @@ The following extensions are pre-installed for **code-server**:
 * [Prerequisites](#prerequisites)
 * [Install](#install)
 * [Usage](#usage)
+* [Misc](#misc)
 * [Similar projects](#similar-projects)
 * [Contributing](#contributing)
 * [Support](#support)
@@ -128,7 +129,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.12.3 \
+  --build-arg PYTHON_VERSION=3.12.4 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
@@ -257,6 +258,27 @@ docker run -it --rm \
 
 [^1]: *Device activation* may require a one-time login from the extension's sidebar.
 
+## Misc
+
+### marimo
+
+To add a JupyterLab Launcher icon for marimo:
+
+1. Terminal: Install [marimo](https://marimo.io) and click
+
+   ```bash
+   pip install marimo click
+   ```
+
+1. Terminal: Install
+   [jupyter-marimo-proxy](https://github.com/b-data/jupyter-marimo-proxy/tree/jupyterlab-docker-stack)
+
+   ```bash
+   pip install git+https://github.com/b-data/jupyter-marimo-proxy.git@jupyterlab-docker-stack
+   ```
+
+1. Restart the container
+
 ## Similar projects
 
 * [jupyter/docker-stacks](https://github.com/jupyter/docker-stacks)
@@ -268,7 +290,7 @@ What makes this project different:
    :information_source: Runs on Apple M series using Docker Desktop.
 1. Base image: [Debian](https://hub.docker.com/_/debian) instead of
    [Ubuntu](https://hub.docker.com/_/ubuntu)  
-   :information_source: CUDA-enabled images are Ubuntu-based.
+   :information_source: CUDA-based images use Ubuntu.
 1. IDE: [code-server](https://github.com/coder/code-server) next to
    [JupyterLab](https://github.com/jupyterlab/jupyterlab)  
    :information_source: code-server =
@@ -289,7 +311,9 @@ This project follows the
 
 ## Support
 
-For commercial support, please contact b-data by email: <support@b-data.ch>.
+Community support: Open a new disussion
+[here](https://github.com/orgs/b-data/discussions). Commercial support: Contact
+b-data by [email](mailto:support@b-data.ch).
 
 b-data tailors the JupyterLab images to your needs, e.g.
 
