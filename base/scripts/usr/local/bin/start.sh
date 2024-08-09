@@ -11,7 +11,11 @@ if [ -n "${CUDA_IMAGE}" ]; then
 fi
 
 function run_user_group() {
-  runuser -u "${NB_USER}" -g "$(id -gn "${NB_USER}")" -G "users" -- "$@"
+  if [ "$(id -u)" == 0 ] && [ "${NB_USER}" = "root" ] && [ "${NB_UID}" = "$(id -u "${NB_USER}")" ] && [ "${NB_GID}" = "$(id -g "${NB_USER}")" ]; then
+    "$@"
+  else
+    runuser -u "${NB_USER}" -g "$(id -gn "${NB_USER}")" -G "users" -- "$@"
+  fi
 }
 
 # The _log function is used for everything this script wants to log.
@@ -237,11 +241,14 @@ if [ "$(id -u)" == 0 ]; then
     unset_explicit_env_vars
 
     _log "Running as ${NB_USER}:" "${cmd[@]}"
-    exec sudo --preserve-env --set-home --user "${NB_USER}" \
-        LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
-        PATH="${PATH}" \
-        PYTHONPATH="${PYTHONPATH:-}" \
-        "${cmd[@]}"
+    if [ "${NB_USER}" = "root" ] && [ "${NB_UID}" = "$(id -u "${NB_USER}")" ] && [ "${NB_GID}" = "$(id -g "${NB_USER}")" ]; then
+        HOME="/home/root" exec "${cmd[@]}"
+    else
+        exec sudo --preserve-env --set-home --user "${NB_USER}" \
+            LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
+            PATH="${PATH}" \
+            PYTHONPATH="${PYTHONPATH:-}" \
+            "${cmd[@]}"
         # Notes on how we ensure that the environment that this container is started
         # with is preserved (except vars listed in JUPYTER_ENV_VARS_TO_UNSET) when
         # we transition from running as root to running as NB_USER.
@@ -269,6 +276,7 @@ if [ "$(id -u)" == 0 ]; then
         #   above in /etc/sudoers.d/path. Thus PATH is irrelevant to how the above
         #   sudo command resolves the path of `${cmd[@]}`. The PATH will be relevant
         #   for resolving paths of any subprocesses spawned by `${cmd[@]}`.
+    fi
 
 # The container didn't start as the root user, so we will have to act as the
 # user we started as.
