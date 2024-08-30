@@ -7,7 +7,7 @@ ARG CUDA_IMAGE_FLAVOR
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ARG JUPYTERHUB_VERSION=5.1.0
-ARG JUPYTERLAB_VERSION=4.2.4
+ARG JUPYTERLAB_VERSION=4.2.5
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG CODE_SERVER_VERSION=4.92.2
 ARG GIT_VERSION=2.46.0
@@ -190,8 +190,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && dpkg -i pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   && rm pandoc-${PANDOC_VERSION}-1-${dpkgArch}.deb \
   ## Delete potential user with UID 1000
-  && if $(grep -q 1000 /etc/passwd); then \
-    userdel $(id -un 1000); \
+  && if grep -q 1000 /etc/passwd; then \
+    userdel --remove $(id -un 1000); \
   fi \
   ## Do not set user limits for sudo/sudo-i
   && sed -i 's/.*pam_limits.so/#&/g' /etc/pam.d/sudo \
