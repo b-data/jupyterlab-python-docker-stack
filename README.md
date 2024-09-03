@@ -30,6 +30,7 @@ base → scipy
   * **Git**: A distributed version-control system for tracking changes in source
     code.
   * **Git LFS**: A Git extension for versioning large files.
+  * **Neovim**: Vim-fork focused on extensibility and usability. (3.12.5+)
   * **Pandoc**: A universal markup converter.
   * **Python**: An interpreted, object-oriented, high-level programming language
     with dynamic semantics.

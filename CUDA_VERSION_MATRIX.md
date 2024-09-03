@@ -1,5 +1,7 @@
 # CUDA Version Matrix
 
+Image tags = Python versions
+
 Topmost entry = Tag `latest`
 
 | Python     | CUDA   | cuBLAS    | cuDNN     | NCCL   | TensorRT  | Linux distro |
@@ -24,7 +26,7 @@ Topmost entry = Tag `latest`
 | 3.11.1[^1] | 11.8.0 | 11.11.3.6 | 8.7.0.84  | 2.16.2 | 8.5.3     | Ubuntu 20.04 |
 | 3.10.10    | 11.8.0 | 11.11.3.6 | 8.7.0.84  | 2.16.2 | 8.5.3     | Ubuntu 20.04 |
 
-[^1]: w/o numba
+[^1]: w/o numba  
 [^2]: `amd64` only
 
 ## PyTorch/TensorFlow compatibility
