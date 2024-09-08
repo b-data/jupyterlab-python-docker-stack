@@ -8,15 +8,11 @@ set -e
 LANG=${LANG:=en_US.UTF-8}
 TZ=${TZ:=Etc/UTC}
 
-if [ "$(id -u)" == 0 ] ; then
-  # Update timezone if needed
-  if [ "$TZ" != "Etc/UTC" ]; then
-    _log "Setting TZ to $TZ"
-    ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime \
-      && echo "$TZ" > /etc/timezone
-  fi
+# Info about timezone
+_log "TZ is set to $TZ (/etc/localtime and /etc/timezone remain unchanged)"
 
-  # Add/Update locale if needed
+if [ "$(id -u)" == 0 ] ; then
+  # Add/Update locale if requested
   if [ -n "$LANGS" ]; then
     for i in $LANGS; do
       sed -i "s/# $i/$i/g" /etc/locale.gen
@@ -26,27 +22,24 @@ if [ "$(id -u)" == 0 ] ; then
     sed -i "s/# $LANG/$LANG/g" /etc/locale.gen
   fi
   if [[ "$LANG" != "en_US.UTF-8" || -n "$LANGS" ]]; then
-    locale-gen
+    locale-gen --keep-existing
   fi
-  if [ "$LANG" != "en_US.UTF-8" ]; then
-    _log "Setting LANG to $LANG"
-    update-locale --reset LANG="$LANG"
-  fi
+  update-locale --reset LANG="$LANG"
+  # Info about locale
+  _log "LANG is set to $LANG"
 else
-  # Warn if the user wants to change the timezone but hasn't started the
-  # container as root.
-  if [ "$TZ" != "Etc/UTC" ]; then
-    _log "WARNING: Setting TZ to $TZ but /etc/localtime and /etc/timezone remain unchanged!"
-  fi
-
-  # Warn if the user wants to change the locale but hasn't started the
-  # container as root.
-  if [[ -n "$LANGS" ]]; then
+  # Warn if the user wants to add locales but hasn't started the container as
+  # root.
+  if [ -n "$LANGS" ]; then
     _log "WARNING: Container must be started as root to add locale(s)!"
   fi
-  if [[ "$LANG" != "en_US.UTF-8" ]]; then
-    _log "WARNING: Container must be started as root to update locale!"
-    _log "Resetting LANG to en_US.UTF-8"
-    LANG=en_US.UTF-8
+  # Warn if the user wants to change to a locale that is not available.
+  if ! grep -v '^#' < /etc/locale.gen | grep -q "$LANG"; then
+    _log "WARNING: Locale $LANG is not available!"
+    . /etc/default/locale
+    _log "WARNING: Resetting LANG to $LANG"
+  else
+    # Info about locale
+    _log "LANG is set to $LANG"
   fi
 fi

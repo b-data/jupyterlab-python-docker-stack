@@ -1,6 +1,7 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.12.4"
+    PYTHON_VERSION: "3.12.5"
+    CTAN_REPO_BUILD_LATEST: "https://mirror.init7.net/ctan/systems/texlive/tlnet"
     TAG_VERSION_MAJ_MIN: "false"
     TAG_VERSION_MAJ: "false"
 
@@ -65,6 +66,7 @@ build:latest-linux-amd64:
       docker build --pull
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
+      --build-arg CTAN_REPO_BUILD_LATEST
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:latest-linux-amd64
@@ -107,6 +109,7 @@ build:latest-linux-arm64v8:
       docker build --pull
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
+      --build-arg CTAN_REPO_BUILD_LATEST
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:latest-linux-arm64v8
