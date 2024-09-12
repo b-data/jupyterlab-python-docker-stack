@@ -130,7 +130,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.12.5 \
+  --build-arg PYTHON_VERSION=3.12.6 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
