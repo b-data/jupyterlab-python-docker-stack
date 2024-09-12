@@ -33,7 +33,7 @@ Topmost entry = Tag `latest`
 
 ## PyTorch/TensorFlow compatibility
 
-| Python | CUDA | PyTorch[^3]    | TensorFlow[^4]            |
+| Python | CUDA | PyTorch[^4]    | TensorFlow[^5]            |
 |:-------|:-----|:---------------|:--------------------------|
 | 3.12   | 12.6 | 2.2 ≤ version  | 2.16 ≤ version            |
 | 3.12   | 12.5 | 2.2 ≤ version  | 2.16 ≤ version            |
@@ -41,22 +41,22 @@ Topmost entry = Tag `latest`
 | 3.11   | 11.8 | 2.0 ≤ version  | 2.12 ≤ version < 2.15     |
 | 3.10   | 11.8 | 1.12 ≤ version | 2.8  ≤ version < 2.15     |
 
-[^3]: Installs its own CUDA binaries
-[^4]: The expected TensorRT version is symlinked to the installed TensorRT
+[^4]: Installs its own CUDA binaries
+[^5]: The expected TensorRT version is symlinked to the installed TensorRT
 version.  
 ❗️ This relies on backwards compatibility of TensorRT, which may not always be
 given.
 
 ## Recommended NVIDIA driver (Regular)
 
-| CUDA   | Linux driver version | Windows driver version[^5] |
+| CUDA   | Linux driver version | Windows driver version[^6] |
 |:-------|:---------------------|:---------------------------|
 | 12.6.1 | ≥ 560.35.03          | ≥ 560.94                   |
 | 12.5.1 | ≥ 555.42.06          | ≥ 555.85                   |
 | 12.5.0 | ≥ 555.42.02          | ≥ 555.85                   |
 | 11.8.0 | ≥ 520.61.05          | ≥ 520.06                   |
 
-[^5]: [GPU support in Docker Desktop | Docker Docs](https://docs.docker.com/desktop/gpu/)  
+[^6]: [GPU support in Docker Desktop | Docker Docs](https://docs.docker.com/desktop/gpu/)  
 [Nvidia GPU Support for Windows · Issue #19005 · containers/podman](https://github.com/containers/podman/issues/19005)
 
 ## Supported NVIDIA drivers (LTSB)
@@ -65,7 +65,7 @@ Only works with
 [NVIDIA Data Center GPUs](https://resources.nvidia.com/l/en-us-gpu) or
 [select NGC-Ready NVIDIA RTX boards](https://docs.nvidia.com/certification-programs/ngc-ready-systems/index.html).
 
-| CUDA   | Driver version 535[^6] | Driver version 470[^7] |
+| CUDA   | Driver version 535[^7] | Driver version 470[^8] |
 |:-------|:----------------------:|:----------------------:|
 | 12.6.1 | 🟢                      | 🟢                      |
 | 12.5.1 | 🟢                      | 🟢                      |
@@ -75,5 +75,5 @@ Only works with
 🟢: Works due to the CUDA forward compat package  
 🟡: Supported due to backward compatibility
 
-[^6]: EOL: June 2026  
-[^7]: EOL: July 2024
+[^7]: EOL: June 2026  
+[^8]: EOL: July 2024
