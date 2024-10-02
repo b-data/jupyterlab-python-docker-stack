@@ -9,9 +9,9 @@ ARG NB_UID=1000
 ARG JUPYTERHUB_VERSION=5.1.0
 ARG JUPYTERLAB_VERSION=4.2.5
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG CODE_SERVER_VERSION=4.92.2
+ARG CODE_SERVER_VERSION=4.93.1
 ARG NEOVIM_VERSION=0.10.1
-ARG GIT_VERSION=2.46.0
+ARG GIT_VERSION=2.46.2
 ARG GIT_LFS_VERSION=3.5.1
 ARG PANDOC_VERSION=3.2
 
@@ -173,12 +173,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     done; \
   else \
     ## Force update pip, setuptools and wheel
-    curl -sLO https://bootstrap.pypa.io/get-pip.py; \
-    python get-pip.py \
+    pip install --upgrade --force-reinstall \
       pip \
       setuptools \
       wheel; \
-    rm get-pip.py; \
   fi \
   ## Install font MesloLGS NF
   && mkdir -p /usr/share/fonts/truetype/meslo \
