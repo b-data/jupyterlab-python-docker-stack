@@ -6,6 +6,7 @@ Topmost entry = Tag `latest`
 
 | Python     | CUDA   | cuBLAS    | cuDNN     | NCCL   | TensorRT[^2]            | Linux distro |
 |:-----------|:-------|:----------|:----------|:-------|:------------------------|:-------------|
+| 3.13.0     | 12.6.1 | 12.6.1.4  | 8.9.7.29  | 2.23.4 | 10.4.0.26/<br>10.3.0.26 | Ubuntu 22.04 |
 | 3.12.7     | 12.6.1 | 12.6.1.4  | 8.9.7.29  | 2.23.4 | 10.4.0.26/<br>10.3.0.26 | Ubuntu 22.04 |
 | 3.11.10    | 11.8.0 | 11.11.3.6 | 8.9.6.50  | 2.15.5 | 8.5.3[^3]               | Ubuntu 22.04 |
 | 3.12.6     | 12.6.1 | 12.6.1.4  | 8.9.7.29  | 2.23.4 | 10.4.0.26/<br>10.3.0.26 | Ubuntu 22.04 |
@@ -35,13 +36,14 @@ Topmost entry = Tag `latest`
 
 ## PyTorch/TensorFlow compatibility
 
-| Python | CUDA | PyTorch[^4]    | TensorFlow[^5]            |
-|:-------|:-----|:---------------|:--------------------------|
-| 3.12   | 12.6 | 2.2 ≤ version  | 2.16 ≤ version            |
-| 3.12   | 12.5 | 2.2 ≤ version  | 2.16 ≤ version            |
-| 3.12   | 11.8 | 2.2 ≤ version  | 2.16 ≤ version (CPU-only) |
-| 3.11   | 11.8 | 2.0 ≤ version  | 2.12 ≤ version < 2.15     |
-| 3.10   | 11.8 | 1.12 ≤ version | 2.8  ≤ version < 2.15     |
+| Python | CUDA | PyTorch[^4]                  | TensorFlow[^5]            |
+|:-------|:-----|:-----------------------------|:--------------------------|
+| 3.13   | 12.6 | 2.6 ≤ version (experimental) | n/a                       |
+| 3.12   | 12.6 | 2.2 ≤ version                | 2.16 ≤ version            |
+| 3.12   | 12.5 | 2.2 ≤ version                | 2.16 ≤ version            |
+| 3.12   | 11.8 | 2.2 ≤ version                | 2.16 ≤ version (CPU-only) |
+| 3.11   | 11.8 | 2.0 ≤ version                | 2.12 ≤ version < 2.15     |
+| 3.10   | 11.8 | 1.12 ≤ version               | 2.8  ≤ version < 2.15     |
 
 [^4]: Installs its own CUDA binaries
 [^5]: The expected TensorRT version is symlinked to the installed TensorRT
