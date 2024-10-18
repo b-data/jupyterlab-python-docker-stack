@@ -216,7 +216,7 @@ docker run -it --rm \
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:12.6.1-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=12.6.1-devel-ubuntu22.04)
+1. Derived from [`nvidia/cuda:12.6.2-devel-ubuntu22.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=12.6.2-devel-ubuntu22.04)
     * including development libraries and headers
 1. TensortRT and TensorRT plugin libraries
     * including development libraries and headers
