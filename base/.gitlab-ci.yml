@@ -1,7 +1,7 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.12.7"
-    TAG_VERSION_MAJ_MIN: "false"
+    PYTHON_VERSION: "3.12.8"
+    TAG_VERSION_MAJ_MIN: "true"
     TAG_VERSION_MAJ: "false"
 
 .before-script-build: &before-script-build
