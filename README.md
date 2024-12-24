@@ -100,6 +100,8 @@ The following extensions are pre-installed for **code-server**:
 * `{PYTHON_VERSION,latest}-devtools-docker`: The combination of both
 * `{PYTHON_VERSION,latest}-devtools-docker-root`: The combination of all three
 
+See also [Notes on subtag `devtools`](DEVTOOLS_NOTES.md).
+
 ## Table of Contents
 
 * [Prerequisites](#prerequisites)
