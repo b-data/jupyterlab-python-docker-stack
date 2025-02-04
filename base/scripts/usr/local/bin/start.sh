@@ -116,8 +116,8 @@ if [ "$(id -u)" == 0 ]; then
         userdel "${NB_USER}"
         useradd --no-log-init --home "/home/${NB_USER}${DOMAIN:+@$DOMAIN}" --shell "$(which zsh)" --uid "${NB_UID}" --gid "${NB_GID}" --groups 100 "${NB_USER}"
     else
-        # Otherwise, and if not the jovyan user, add it to the default group
-        if [[ "${NB_USER}" != "jovyan" ]]; then
+        # Otherwise, and if not jovyan or root, add it to the default group
+        if [[ "${NB_USER}" != "jovyan" && "${NB_USER}" != "root" ]]; then
             usermod -a -G 100 "${NB_USER}"
         fi
     fi

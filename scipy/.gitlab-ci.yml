@@ -1,6 +1,6 @@
 .env:
   variables:
-    PYTHON_VERSION: "3.13.0"
+    PYTHON_VERSION: "3.13.1"
     CTAN_REPO_BUILD_LATEST: "https://mirror.init7.net/ctan/systems/texlive/tlnet"
     TAG_VERSION_MAJ_MIN: "false"
     TAG_VERSION_MAJ: "false"
