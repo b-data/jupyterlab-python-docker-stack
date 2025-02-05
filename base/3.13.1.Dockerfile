@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
-ARG PYTHON_VERSION=3.12.8
+ARG PYTHON_VERSION=3.13.1
 ARG CUDA_IMAGE_FLAVOR
 
 ARG NB_USER=jovyan
@@ -173,10 +173,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     done; \
   else \
     ## Force update pip, setuptools and wheel
-    pip install --upgrade --force-reinstall \
-      pip \
-      setuptools \
-      wheel; \
+    pip install --upgrade --force-reinstall pip; \
   fi \
   ## Install font MesloLGS NF
   && mkdir -p /usr/share/fonts/truetype/meslo \
@@ -330,7 +327,10 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 COPY --from=files /files /
 COPY --from=files /files/var/backups/skel ${HOME}
 
-EXPOSE 8888
+ARG JUPYTER_PORT=8888
+ENV JUPYTER_PORT=${JUPYTER_PORT}
+
+EXPOSE $JUPYTER_PORT
 
 ## Configure container startup
 ENTRYPOINT ["tini", "-g", "--", "start.sh"]

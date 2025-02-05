@@ -1,5 +1,5 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
-ARG PYTHON_VERSION=3.12.8
+ARG PYTHON_VERSION=3.13.1
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.6.40
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2025/02/04/tlnet
