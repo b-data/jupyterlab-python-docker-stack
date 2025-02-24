@@ -324,6 +324,8 @@ b-data tailors the JupyterLab images to your needs, e.g.
   services on the intranet.
 * Setting up the necessary environment variables so that everything works
   behind a corporate proxy server.
+* If supported by the NVIDIA GPU(s): Correctly handle CUDA forward compatibility
+  for GPU accelerated images.
 
 Additionally, the
 [JupyterHub](https://github.com/b-data/docker-deployment-jupyter) setup can be
