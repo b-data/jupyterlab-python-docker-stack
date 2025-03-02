@@ -52,7 +52,7 @@ Topmost entry = Tag `latest`
 | 3.12   | 12.6 | version ≥ 2.2                | version ≥ 2.16            |
 | 3.12   | 12.5 | version ≥ 2.2                | version ≥ 2.16            |
 | 3.12   | 11.8 | version ≥ 2.2                | version ≥ 2.16 (CPU-only) |
-| 3.11   | 11.8 | version ≥ 2.0                | 2.15 ≥ version > 2.12     |
+| 3.11   | 11.8 | version ≥ 2.0                | 2.15 ≥ version > 2.11     |
 | 3.10   | 11.8 | version ≥ 1.12               | 2.15 ≥ version > 2.8      |
 
 [^4]: Installs its own CUDA binaries
