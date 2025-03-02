@@ -42,7 +42,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1 \
   && rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
   ## Exempt quarto from address space limit
-  && sed -i 's/"${QUARTO_DENO}"/prlimit -v=unlimited: "${QUARTO_DENO}"/g' \
+  && sed -i 's/"${QUARTO_DENO}"/prlimit --as=unlimited: "${QUARTO_DENO}"/g' \
     /opt/quarto/bin/quarto \
   ## Remove quarto pandoc
   && rm /opt/quarto/bin/tools/$(uname -m)/pandoc \
