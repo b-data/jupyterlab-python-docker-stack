@@ -225,6 +225,9 @@ ENV PATH=/opt/code-server/bin:$PATH \
 RUN mkdir /opt/code-server \
   && cd /opt/code-server \
   && curl -sL https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-linux-$(dpkg --print-architecture).tar.gz | tar zxf - --no-same-owner --strip-components=1 \
+  ## Exempt code-server from address space limit
+  && sed -i 's/exec/exec prlimit --as=unlimited:/g' \
+    /opt/code-server/bin/code-server \
   ## Copy custom fonts
   && mkdir -p /opt/code-server/src/browser/media/fonts \
   && cp -a /usr/share/fonts/truetype/meslo/*.ttf /opt/code-server/src/browser/media/fonts \
