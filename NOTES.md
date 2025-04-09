@@ -39,14 +39,16 @@ The following startup hooks are put in place:
 * [/usr/local/bin/before-notebook.d/71-tensorboard.sh](base/scripts/usr/local/bin/before-notebook.d/71-tensorboard.sh)
   to use Jupyter Server Proxy for TensorBoard.
 * [/usr/local/bin/before-notebook.d/90-limits.sh](base/scripts/usr/local/bin/before-notebook.d/90-limits.sh)
-  * *soft* limit the *address space* based on the amount of *physical* and
-    *virtual memory* of the host. (default: command `ulimit -v`)
+  * *soft* limit the *address space* based on the amount of *physical memory*
+    (`MEM_LIMIT`) and *virtual memory* (`SWAP_ENABLE`, `SWAP_FACTOR`). (default:
+    command `prlimit -v`)
+    * Do not limit if `NO_AS_LIMIT` or `NO_MEM_LIMIT` is set to `1` or `yes`.
   * limit the number of *file descriptors* according to environment variable
-    `NOFILE_LIMIT`. (default: command `ulimit -n`)
+    `NOFILE_LIMIT`. (default: command `prlimit -n`)
   * limit the number of *processes* according to environment variable
-    `NPROC_LIMIT`. (default: command `ulimit -u`)
+    `NPROC_LIMIT`. (default: command `prlimit -u`)
   * limit the number of *pending signals* according to environment variable
-    `SIGPEN_LIMIT`. (default: command `ulimit -i`)
+    `SIGPEN_LIMIT`. (default: command `prlimit -i`)
 * [/usr/local/bin/before-notebook.d/95-misc.sh](base/scripts/usr/local/bin/before-notebook.d/95-misc.sh)
   to export environment variables to `/tmp/environment`.
 
