@@ -1,5 +1,5 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
-ARG PYTHON_VERSION=3.12.9
+ARG PYTHON_VERSION=3.13.2
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.6.43
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2025/04/08/tlnet
@@ -42,7 +42,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && tar -xzf quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz -C /opt/quarto --no-same-owner --strip-components=1 \
   && rm quarto-${QUARTO_VERSION}-linux-${dpkgArch}.tar.gz \
   ## Exempt quarto from address space limit
-  && sed -i 's/"${QUARTO_DENO}"/prlimit -v=unlimited: "${QUARTO_DENO}"/g' \
+  && sed -i 's/"${QUARTO_DENO}"/prlimit --as=unlimited: "${QUARTO_DENO}"/g' \
     /opt/quarto/bin/quarto \
   ## Remove quarto pandoc
   && rm /opt/quarto/bin/tools/$(uname -m)/pandoc \

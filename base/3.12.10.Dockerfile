@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=12
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
-ARG PYTHON_VERSION=3.12.9
+ARG PYTHON_VERSION=3.12.10
 ARG CUDA_IMAGE_FLAVOR
 
 ARG NB_USER=jovyan
@@ -173,10 +173,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     done; \
   else \
     ## Force update pip, setuptools and wheel
-    pip install --upgrade --force-reinstall \
-      pip \
-      setuptools \
-      wheel; \
+    pip install --upgrade --force-reinstall pip; \
   fi \
   ## Install font MesloLGS NF
   && mkdir -p /usr/share/fonts/truetype/meslo \
