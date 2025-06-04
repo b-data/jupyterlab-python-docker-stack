@@ -173,7 +173,10 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     done; \
   else \
     ## Force update pip, setuptools and wheel
-    pip install --upgrade --force-reinstall pip; \
+    pip install --upgrade --force-reinstall \
+      pip \
+      setuptools \
+      wheel; \
   fi \
   ## Install font MesloLGS NF
   && mkdir -p /usr/share/fonts/truetype/meslo \
