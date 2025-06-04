@@ -50,7 +50,7 @@ The following extensions are pre-installed for **code-server**:
 * [.gitignore Generator](https://github.com/piotrpalarz/vscode-gitignore-generator)
 * [Black Formatter](https://open-vsx.org/extension/ms-python/black-formatter)  
   :information_source: devtools subtags
-* [Docker](https://open-vsx.org/extension/ms-azuretools/vscode-docker)  
+* [Container Tools](https://open-vsx.org/extension/ms-azuretools/vscode-containers)  
   :information_source: docker subtags
 * [EditorConfig](https://open-vsx.org/extension/EditorConfig/EditorConfig)
   (3.11.3+)
@@ -132,7 +132,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.13.2 \
+  --build-arg PYTHON_VERSION=3.13.3 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```

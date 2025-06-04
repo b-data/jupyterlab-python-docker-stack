@@ -49,7 +49,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
     --install-extension exiasr.hadolint \
   && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
-    --install-extension ms-azuretools.vscode-docker \
+    --install-extension ms-azuretools.vscode-containers \
   && code-server --extensions-dir "$CODE_BUILTIN_EXTENSIONS_DIR" \
     --install-extension timonwong.shellcheck \
   ## Enable shellcheck system-wide
