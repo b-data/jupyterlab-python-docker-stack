@@ -7,6 +7,6 @@ set -e
 # Export environment variables to /tmp/environment
 exclude_vars="HOME OLDPWD PWD SHLVL"
 for var in $(compgen -e); do
-  [[ ! $exclude_vars =~ $var ]] && echo "$var=${!var}" \
+  [[ ! $exclude_vars =~ $var ]] && echo "$var='${!var//\'/\'\\\'\'}'" \
     >> "/tmp/environment"
 done
