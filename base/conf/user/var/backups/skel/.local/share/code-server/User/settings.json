@@ -2,7 +2,9 @@
   "editor.tabSize": 2,
   "gitlab.aiAssistedCodeSuggestions.enabled": false,
   "gitlab.duo.enabledWithoutGitlabProject": false,
+  "gitlab.duoAgentPlatform.enabled": false,
   "gitlab.duoChat.enabled": false,
+  "gitlab.duoCodeSuggestions.enabled": false,
   "gitlens.graph.statusBar.enabled": false,
   "gitlens.menus": {
     "scm": {
