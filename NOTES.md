@@ -119,13 +119,23 @@ are installed.
   * Python LSP Server: Example settings according to [jupyter-lsp/jupyterlab-lsp > Installation > Configuring the servers](https://github.com/jupyter-lsp/jupyterlab-lsp#configuring-the-servers)
 * [code-server](base/conf/user/var/backups/skel/.local/share/code-server/User/settings.json)
   * Text Editor > Tab Size: 2
+  * Extensions > GitLab Workflow
+    * GitLab Duo Pro > Duo Code Suggestions: false
+    * GitLab Duo Pro > Duo Chat: false
+    * GitLab Duo Pro > Duo Agent Platform: false
+    * GitLab Duo Pro > Enabled Without Gitlab Project: false
   * Extensions > GitLens — Git supercharged
     * General > Show Welcome On Install: false
     * General > Show Whats New After Upgrade: false
     * Graph commands disabled where possible
+  * Extensions > Python
+    * Language Server: Jedi
+  * Extensions > Resource Monitor Configuration
+    * Show: Battery: false
+    * Show: Cpufreq: false
   * Application > Telemetry: Telemetry Level: off
   * Features > Terminal > Integrated: Font Family: MesloLGS NF
-  * Workbench > Appearance > Color Theme: Default Dark+
+  * Workbench > Appearance > Color Theme: Default Dark Modern
 * Zsh
   * Oh My Zsh: `~/.zshrc`
     * Set PATH so it includes user's private bin if it exists

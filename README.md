@@ -247,6 +247,18 @@ docker run -it --rm \
 
 *might* be sufficient.
 
+### code-server settings
+
+Some extension features enabled *by default* are intentionally disabled, i.e.
+[set to `false`](NOTES.md#default).
+
+To enable one of these features, explicitly set it to `true` under
+'Command Palette...' > 'Preferences: Open User Settings (JSON)'.
+
+Enabling these via the GUI is not sufficient. Such default settings are
+overwritten upon restart by the
+[Juypter startup hook](NOTES.md#jupyter-startup-hooks) `30-code-server.sh`.
+
 ### Credential storage
 
 **:exclamation: Keyring services are not available due to the difficulties of**
