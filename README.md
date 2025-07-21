@@ -259,20 +259,6 @@ Enabling these via the GUI is not sufficient. Such default settings are
 overwritten upon restart by the
 [Juypter startup hook](NOTES.md#jupyter-startup-hooks) `30-code-server.sh`.
 
-### Credential storage
-
-**:exclamation: Keyring services are not available due to the difficulties of**
-**setting them up in containers.**  
-**Therefore, provide login credentials for the following extensions as**
-**environment variables (`-e`):**
-
-| Extension                       | Environment variable                                                                                                                                                |
-|:--------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GitHub Pull Requests and Issues | `GITHUB_TOKEN`: Personal access token with scopes `repo` and `user`.[^1]                                                                                            |
-| GitLab Workflow                 | `GITLAB_WORKFLOW_INSTANCE_URL`: GitLab instance URL (e.g. https://gitlab.com).<br>`GITLAB_WORKFLOW_TOKEN`: Personal access token with scopes `api` and `read_user`. |
-
-[^1]: *Device activation* may require a one-time login from the extension's sidebar.
-
 ## Misc
 
 ### marimo
