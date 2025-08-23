@@ -6,7 +6,7 @@ Topmost entry = Tag `latest`
 
 | Python     | CUDA   | cuBLAS    | cuDNN     | NCCL   | TensorRT[^2]             | Linux distro |
 |:-----------|:-------|:----------|:----------|:-------|:-------------------------|:-------------|
-| 3.13.7     | 12.9.1 | 12.9.1.4  | 9.11.1.4  | 2.27.3 | n/a                      | Ubuntu 24.04 |
+| 3.13.7     | 13.0.0 | 13.0.0.19 | 9.12.0.46 | 2.27.7 | n/a                      | Ubuntu 24.04 |
 | 3.12.11    | 12.9.0 | 12.9.0.13 | 8.9.7.29  | 2.26.5 | 10.11.0.33/<br>10.3.0.26 | Ubuntu 22.04 |
 | 3.13.6     | 12.9.1 | 12.9.1.4  | 9.11.1.4  | 2.27.3 | n/a                      | Ubuntu 22.04 |
 | 3.13.5     | 12.9.1 | 12.9.1.4  | 9.11.0.98 | 2.27.3 | n/a                      | Ubuntu 22.04 |
@@ -54,7 +54,7 @@ Topmost entry = Tag `latest`
 
 | Python | CUDA | PyTorch[^4]                  | TensorFlow[^5]                   |
 |:-------|:-----|:-----------------------------|:---------------------------------|
-| 3.13   | 12.9 | version ≥ 2.5 (experimental) | n/a                              |
+| 3.13   | 13.0 | version ≥ 2.5 (experimental) | n/a                              |
 | 3.12   | 12.9 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
 | 3.13   | 12.8 | version ≥ 2.5 (experimental) | n/a                              |
 | 3.12   | 12.8 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
@@ -75,6 +75,7 @@ given.
 
 | CUDA   | Linux driver version | Windows driver version[^6] |
 |:-------|:---------------------|:---------------------------|
+| 13.0.0 | ≥ 580.65.06          | n/a                        |
 | 12.9.1 | ≥ 575.57.08          | ≥ 576.57                   |
 | 12.9.0 | ≥ 575.51.03          | ≥ 576.02                   |
 | 12.8.1 | ≥ 570.124.06         | ≥ 572.61                   |
@@ -97,6 +98,7 @@ Only works with
 
 | CUDA   | Driver version 535[^7] | Driver version 470[^8] |
 |:-------|:----------------------:|:----------------------:|
+| 13.0.0 | 🔵                      | 🔴                      |
 | 12.9.1 | 🟢                      | 🔵                      |
 | 12.9.0 | 🟢                      | 🔵                      |
 | 12.8.1 | 🟢                      | 🔵                      |
@@ -108,6 +110,7 @@ Only works with
 | 12.5.0 | 🟢                      | 🔵                      |
 | 11.8.0 | 🟡                      | 🟢                      |
 
+🔴: Not supported
 🔵: Supported with the CUDA forward compat package only  
 🟢: Supported due to minor-version compatibility[^9]  
 🟡: Supported due to backward compatibility
