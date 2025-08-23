@@ -4,6 +4,16 @@
     TAG_VERSION_MAJ_MIN: "false"
     TAG_VERSION_MAJ: "false"
 
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $PYTHON_VERSION =~ /3.12/
+      variables:
+        BASE_IMAGE_TAG: "12"
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $BASE_IMAGE == "ubuntu" && $PYTHON_VERSION =~ /3.12/
+      variables:
+        BASE_IMAGE_TAG: "22.04"
+    - if: $CI_COMMIT_BRANCH
+
 .before-script-build: &before-script-build
   - |
     if [[ ! -z "$CI_BUILD_PLATFORMS" ]]; then
