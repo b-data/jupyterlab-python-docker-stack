@@ -6,11 +6,16 @@
 
 workflow:
   rules:
-    - if: $CI_COMMIT_BRANCH == "freeze-version" && $PYTHON_VERSION =~ /3.12/
+    - if: $CI_COMMIT_BRANCH == "main" && $CUDA_BASE_IMAGE == "ubuntu"
+      variables:
+        BASE_IMAGE: "$CUDA_BASE_IMAGE"
+        BASE_IMAGE_TAG: "$CUDA_BASE_IMAGE_TAG"
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_BASE_IMAGE == null && $PYTHON_VERSION =~ /3.12/
       variables:
         BASE_IMAGE_TAG: "12"
-    - if: $CI_COMMIT_BRANCH == "freeze-version" && $BASE_IMAGE == "ubuntu" && $PYTHON_VERSION =~ /3.12/
+    - if: $CI_COMMIT_BRANCH == "freeze-version" && $CUDA_BASE_IMAGE == "ubuntu" && $PYTHON_VERSION =~ /3.12/
       variables:
+        BASE_IMAGE: "$CUDA_BASE_IMAGE"
         BASE_IMAGE_TAG: "22.04"
     - if: $CI_COMMIT_BRANCH
 
