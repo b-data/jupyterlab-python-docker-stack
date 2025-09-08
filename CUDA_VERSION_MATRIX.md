@@ -47,7 +47,7 @@ Topmost entry = Tag `latest`
 
 ## Breaking changes
 
-* Python 3.13.0: Drop TensorRT
+* Python 3.13: Drop TensorRT
   * <https://github.com/tensorflow/tensorflow/pull/68303>
 
 ## PyTorch/TensorFlow compatibility
