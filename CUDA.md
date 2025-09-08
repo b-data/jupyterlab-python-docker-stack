@@ -27,8 +27,6 @@ The same as the
   [NCCL](https://developer.nvidia.com/nccl) and
   [cuDNN](https://developer.nvidia.com/cudnn)
   * including development libraries and headers
-* TensortRT and TensorRT plugin libraries
-  * including development libraries and headers
 
 :point_right: See the [CUDA Version Matrix](CUDA_VERSION_MATRIX.md) for detailed
 information.
@@ -217,8 +215,6 @@ docker run -it --rm \
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
 1. Derived from [`nvidia/cuda:13.0.0-devel-ubuntu24.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=13.0.0-devel-ubuntu24.04)
-    * including development libraries and headers
-1. TensortRT and TensorRT plugin libraries
     * including development libraries and headers
 1. IDE: [code-server](https://github.com/coder/code-server) next to
    [JupyterLab](https://github.com/jupyterlab/jupyterlab)
