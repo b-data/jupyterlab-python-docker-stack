@@ -214,7 +214,7 @@ docker run -it --rm \
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:13.0.0-devel-ubuntu24.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=13.0.0-devel-ubuntu24.04)
+1. Derived from [`nvidia/cuda:13.0.1-devel-ubuntu24.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=13.0.1-devel-ubuntu24.04)
     * including development libraries and headers
 1. IDE: [code-server](https://github.com/coder/code-server) next to
    [JupyterLab](https://github.com/jupyterlab/jupyterlab)
