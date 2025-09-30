@@ -185,7 +185,7 @@ if [ "$(id -u)" == 0 ]; then
     fi
 
     # Trigger changing ownership of the desired user's home folder
-    if [[ "${CP_OPTS}" == "" && "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
+    if [[ -z "${CP_OPTS}" && "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
         if [[ "${CHOWN_HOME}" != "1" && "${CHOWN_HOME}" != "yes" ]]; then
             export CHOWN_HOME="1"
             trg_msg="(Automatic) "
@@ -209,10 +209,14 @@ if [ "$(id -u)" == 0 ]; then
             fi
         fi
     fi
-    if [[ "${CP_OPTS}" == "" && "${sf}" != "" ]]; then
+    if [[ -z "${CP_OPTS}" ]]; then
         if [[ "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
             _log "(Automatic) Ensuring the following files/directories in /home/${NB_USER}${DOMAIN:+@$DOMAIN} are owned by ${NB_UID}:${NB_GID} (chown options: -R):"
-            _log "- ${fd}"
+            if [[ -z "${sf}" ]]; then
+                _log "- $(cd "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"; ls -A | paste -sd ',' -)"
+            else
+                _log "- ${fd}"
+            fi
             # shellcheck disable=SC2086
             eval "chown -R ${NB_UID}:${NB_GID} /home/${NB_USER}${DOMAIN:+@$DOMAIN}/${sf}"
         fi
