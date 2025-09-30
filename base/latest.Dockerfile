@@ -210,6 +210,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## Create backup directory for home directory
   && mkdir -p /var/backups/skel \
   && chown ${NB_UID}:${NB_GID} /var/backups/skel \
+  ## Allow writing to /etc/passwd for the root group
+  && chmod g+w /etc/passwd \
   ## Install Tini
   && curl -sL https://github.com/krallin/tini/releases/download/v0.19.0/tini-${dpkgArch} -o /usr/local/bin/tini \
   && chmod +x /usr/local/bin/tini \
