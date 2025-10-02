@@ -294,10 +294,12 @@ else
     JOVYAN_GID="$(id -g jovyan 2>/dev/null)"  # The default GID for the jovyan user
 
     # Prohibit the usage of system accounts
-    ci="$(getent passwd "$(id -u)" | cut -d: -f7)"
-    if [[ "${ci}" == "/usr/sbin/nologin" || "${ci}" == "/bin/sync" ]]; then
-        _log "ERROR: The usage of system account '$(id -un)' is prohibited!"
-        exit 1
+    if [ "$(id -u)" -lt 1000 ]; then
+        ci="$(getent passwd "$(id -u)" | cut -d: -f7)"
+        if [[ "${ci}" == "/bin/false" || "${ci}" == *"/sbin/nologin" || "${ci}" == "/bin/sync" ]]; then
+            _log "ERROR: The usage of system account '$(id -un)' is prohibited!"
+            exit 1
+        fi
     fi
 
     # Attempt to ensure the user uid we currently run as has a named entry in
