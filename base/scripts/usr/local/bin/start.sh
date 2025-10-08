@@ -185,7 +185,7 @@ if [ "$(id -u)" == 0 ]; then
     fi
 
     # Trigger changing ownership of the desired user's home folder
-    if [[ "${CP_OPTS}" == "" && "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
+    if [[ -z "${CP_OPTS}" && "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
         if [[ "${CHOWN_HOME}" != "1" && "${CHOWN_HOME}" != "yes" ]]; then
             export CHOWN_HOME="1"
             trg_msg="(Automatic) "
@@ -209,10 +209,14 @@ if [ "$(id -u)" == 0 ]; then
             fi
         fi
     fi
-    if [[ "${CP_OPTS}" == "" && "${sf}" != "" ]]; then
+    if [[ -z "${CP_OPTS}" ]]; then
         if [[ "$(stat -c '%u:%g' "/home/${NB_USER}${DOMAIN:+@$DOMAIN}/.populated")" != "$(id -u "${NB_USER}"):$(id -g "${NB_USER}")" ]]; then
             _log "(Automatic) Ensuring the following files/directories in /home/${NB_USER}${DOMAIN:+@$DOMAIN} are owned by ${NB_UID}:${NB_GID} (chown options: -R):"
-            _log "- ${fd}"
+            if [[ -z "${sf}" ]]; then
+                _log "- $(cd "/home/${NB_USER}${DOMAIN:+@$DOMAIN}"; ls -A | paste -sd ',' -)"
+            else
+                _log "- ${fd}"
+            fi
             # shellcheck disable=SC2086
             eval "chown -R ${NB_UID}:${NB_GID} /home/${NB_USER}${DOMAIN:+@$DOMAIN}/${sf}"
         fi
@@ -289,6 +293,15 @@ else
     JOVYAN_UID="$(id -u jovyan 2>/dev/null)"  # The default UID for the jovyan user
     JOVYAN_GID="$(id -g jovyan 2>/dev/null)"  # The default GID for the jovyan user
 
+    # Prohibit the usage of system accounts
+    if [ "$(id -u)" -lt 1000 ]; then
+        ci="$(getent passwd "$(id -u)" | cut -d: -f7)"
+        if [[ "${ci}" == "/bin/false" || "${ci}" == *"/sbin/nologin" || "${ci}" == "/bin/sync" ]]; then
+            _log "ERROR: The usage of system account '$(id -un)' is prohibited!"
+            exit 1
+        fi
+    fi
+
     # Attempt to ensure the user uid we currently run as has a named entry in
     # the /etc/passwd file, as it avoids software crashing on hard assumptions
     # on such entry. Writing to the /etc/passwd was allowed for the root group
@@ -303,17 +316,52 @@ else
             # We cannot use "sed --in-place" since sed tries to create a temp file in
             # /etc/ and we may not have write access. Apply sed on our own temp file:
             sed --expression="s/^jovyan:/nayvoj:/" /etc/passwd > /tmp/passwd
-            echo "${NB_USER}:x:$(id -u):$(id -g):,,,:/home/jovyan:$(which zsh)" >> /tmp/passwd
+            echo "${NB_USER}:x:$(id -u):$(id -g):,,,:/var/tmp/home/${NB_USER}:$(which zsh)" >> /tmp/passwd
             cat /tmp/passwd > /etc/passwd
             rm /tmp/passwd
 
             _log "Added new ${NB_USER} user ($(id -u):$(id -g)). Fixed UID!"
+            _log "- home dir: /var/tmp/home/$(id -un)"
 
-            if [[ "${NB_USER}" != "jovyan" ]]; then
-                _log "WARNING: user is ${NB_USER} but home is /home/jovyan. You must run as root to rename the home directory!"
+            # Create and populate the new user's home directory
+            mkdir -p "/var/tmp/home/$(id -un)"
+            if [[ ! -f "/var/tmp/home/$(id -un)/.populated" ]]; then
+                # Create list of missing files (top level only)
+                fd="$(comm -13 <(cd  "/var/tmp/home/$(id -un)"; ls -A) <(cd /var/backups/skel; ls -A) \
+                    | paste -sd ',' -)"
+                # Handle case when only marker is missing
+                if [[ "${fd}" == ".populated" ]]; then
+                    sf="${fd}"
+                else
+                    sf="{${fd}}"
+                fi
+                _log "Populating home dir: /var/tmp/home/$(id -un)"
+                _log "Copying files/directories (recursively):"
+                _log "- ${fd}"
+                if eval "cp -r /var/backups/skel/${sf} /var/tmp/home/$(id -un)"; then
+                    date -uIseconds > "/var/tmp/home/$(id -un)/.populated"
+                    _log "Done populating home dir"
+                else
+                    _log "ERROR: Failed to copy data from /var/backups/skel to /var/tmp/home/$(id -un)!"
+                    exit 1
+                fi
             fi
+            HOME="/var/tmp/home/$(id -un)"
+            export HOME
+            
+            # Ensure the current working directory is updated to the new path
+            if [[ "${PWD}/" == "/home/jovyan/"* ]]; then
+                new_wd="/var/tmp/home/$(id -un)/${PWD:13}"
+                _log "Changing working directory to ${new_wd}"
+                cd "${new_wd}"
+                CODE_WORKDIR="/var/tmp/home/$(id -un)/projects"
+                export CODE_WORKDIR
+            fi
+
+            _log "In case of permission problems, start the container with group 'users' (100), e.g. using \"--group-add=users\"."
         else
-            _log "WARNING: unable to fix missing /etc/passwd entry because we don't have write permission. Try setting gid=0 with \"--user=$(id -u):0\"."
+            _log "ERROR: unable to fix missing /etc/passwd entry because we don't have write permission. Try setting gid=0 with \"--user=$(id -u):0\"."
+            exit 1
         fi
     fi
 
@@ -332,8 +380,8 @@ else
     fi
 
     # Warn if the user isn't able to write files to ${HOME}
-    if [[ ! -w /home/jovyan ]]; then
-        _log "WARNING: no write access to /home/jovyan. Try starting the container with group 'users' (100), e.g. using \"--group-add=users\"."
+    if [[ ! -w "${HOME}" ]]; then
+        _log "WARNING: no write access to ${HOME}. Try starting the container with group 'users' (100), e.g. using \"--group-add=users\"."
     fi
 
     # NOTE: This hook is run as the user we started the container as!
