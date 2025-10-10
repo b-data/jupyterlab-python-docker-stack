@@ -1,8 +1,8 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION=3.12.11
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG QUARTO_VERSION=1.7.31
-ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
+ARG QUARTO_VERSION=1.8.25
+ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2025/10/09/tlnet
 
 FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:}${PYTHON_VERSION}
 
@@ -52,7 +52,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   ## by building a dummy package using equivs
   && apt-get install -y --no-install-recommends equivs \
   && cd /tmp \
-  && wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/debian-control-texlive-in.txt \
+  && wget https://raw.githubusercontent.com/scottkosty/install-tl-ubuntu/master/debian-control-texlive-in.txt \
   && equivs-build debian-* \
   && mv texlive-local*.deb texlive-local.deb \
   && dpkg -i texlive-local.deb \

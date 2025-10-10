@@ -1,8 +1,7 @@
-.env:
-  variables:
-    PYTHON_VERSION: "3.14.0"
-    TAG_VERSION_MAJ_MIN: "false"
-    TAG_VERSION_MAJ: "false"
+variables:
+  PYTHON_VERSION: "3.12.11"
+  TAG_VERSION_MAJ_MIN: "true"
+  TAG_VERSION_MAJ: "false"
 
 workflow:
   rules:
@@ -44,7 +43,6 @@ workflow:
 
 .build:
   image: glcr.b-data.ch/docker/docker:dind
-  extends: .env
   services:
     - name: glcr.b-data.ch/docker/docker:dind
       alias: docker
@@ -59,7 +57,6 @@ workflow:
 .post:
   image: glcr.b-data.ch/docker/docker:dind
   stage: .post
-  extends: .env
 
 stages:
   - .pre
