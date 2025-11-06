@@ -129,11 +129,6 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     tables==3.10.1 \
     widgetsnbextension \
     xlrd \
-  ## Install facets
-  && cd /tmp \
-  && git clone https://github.com/PAIR-code/facets.git \
-  && jupyter nbclassic-extension install facets/facets-dist/ --sys-prefix \
-  && cd / \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
