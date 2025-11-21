@@ -1,4 +1,5 @@
 {
+  "chat.disableAIFeatures": true,
   "editor.tabSize": 2,
   "gitlab.aiAssistedCodeSuggestions.enabled": false,
   "gitlab.duo.enabledWithoutGitlabProject": false,
