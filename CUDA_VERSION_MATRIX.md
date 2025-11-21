@@ -58,11 +58,11 @@ Topmost entry = Tag `latest`
 | Python | CUDA | PyTorch[^4]                  | TensorFlow[^5]                   |
 |:-------|:-----|:-----------------------------|:---------------------------------|
 | 3.14   | 13.0 | version ≥ 2.9 (experimental) | n/a                              |
-| 3.13   | 13.0 | version ≥ 2.5 (experimental) | n/a                              |
+| 3.13   | 13.0 | version ≥ 2.6                | n/a                              |
 | 3.12   | 12.9 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
-| 3.13   | 12.8 | version ≥ 2.5 (experimental) | n/a                              |
+| 3.13   | 12.8 | version ≥ 2.6                | n/a                              |
 | 3.12   | 12.8 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
-| 3.13   | 12.6 | version ≥ 2.5 (experimental) | n/a                              |
+| 3.13   | 12.6 | version ≥ 2.6                | n/a                              |
 | 3.12   | 12.6 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
 | 3.12   | 12.5 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
 | 3.12   | 11.8 | version ≥ 2.4                | 2.18 > version ≥ 2.16 (CPU-only) |
