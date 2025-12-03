@@ -1,5 +1,5 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
-ARG PYTHON_VERSION=3.13.9
+ARG PYTHON_VERSION=3.14.0
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.8.26
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2025/12/02/tlnet
@@ -34,6 +34,8 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     librsvg2-bin \
     qpdf \
     texinfo \
+    ## Python: For tables wheels
+    libblosc2-dev \
     ## Python: For h5py wheels (arm64)
     libhdf5-dev \
   ## Install quarto
@@ -111,7 +113,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     ipympl\
     ipywidgets \
     matplotlib \
-    numba \
+    #numba \
     numexpr \
     numpy \
     pandas \
@@ -124,14 +126,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
-    tables \
+    tables==3.10.1 \
     widgetsnbextension \
     xlrd \
-  ## Install facets
-  && cd /tmp \
-  && git clone https://github.com/PAIR-code/facets.git \
-  && jupyter nbclassic-extension install facets/facets-dist/ --sys-prefix \
-  && cd / \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
