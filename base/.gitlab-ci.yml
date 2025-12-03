@@ -1,6 +1,6 @@
 variables:
-  PYTHON_VERSION: "3.13.9"
-  TAG_VERSION_MAJ_MIN: "true"
+  PYTHON_VERSION: "3.14.0"
+  TAG_VERSION_MAJ_MIN: "false"
   TAG_VERSION_MAJ: "false"
 
 workflow:
