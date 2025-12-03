@@ -1,7 +1,7 @@
 variables:
-  PYTHON_VERSION: "3.13.10"
+  PYTHON_VERSION: "3.14.0"
   CTAN_REPO_BUILD_LATEST: "https://www.texlive.info/CTAN/systems/texlive/tlnet"
-  TAG_VERSION_MAJ_MIN: "true"
+  TAG_VERSION_MAJ_MIN: "false"
   TAG_VERSION_MAJ: "false"
 
 .before-script-build: &before-script-build
