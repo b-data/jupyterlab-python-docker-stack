@@ -56,6 +56,13 @@ Topmost entry = Tag `latest`
 | 3.10.6     | 2.3.1       | 3.4.6       | 4.6.1 (1.70.2)     | n/a    | 2.37.3 | 3.2.0   | 2.19.2 | Debian 11    |
 | 3.10.5     | 2.3.1       | 3.4.4       | 4.5.1 (1.68.1)     | n/a    | 2.37.1 | 3.2.0   | 2.18   | Debian 11    |
 
+### Bugs
+
+* Versions 3.13.{9,10,11} and 3.14.{0,1,2}: \[vscode-shellcheck/vscode-shellcheck\]
+  ShellCheck is not installed or not working
+  * Cross reference: <https://github.com/vscode-shellcheck/vscode-shellcheck/issues/1708>
+    * Cross reference: <https://github.com/microsoft/vscode/issues/276673>
+
 ## scipy images
 
 | Python     | CTAN date  | Quarto      |
@@ -110,10 +117,3 @@ Topmost entry = Tag `latest`
 
 [^1]: w/o numba  
 [^2]: `amd64` only
-
-### Bugs
-
-* Versions 3.13.{9,10,11} and 3.14.{0,1,2}: \[vscode-shellcheck/vscode-shellcheck\]
-  ShellCheck is not installed or not working
-  * Cross reference: <https://github.com/vscode-shellcheck/vscode-shellcheck/issues/1708>
-    * Cross reference: <https://github.com/microsoft/vscode/issues/276673>
