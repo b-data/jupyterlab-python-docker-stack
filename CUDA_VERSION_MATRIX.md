@@ -80,7 +80,7 @@ version.
 ❗️ This relies on backwards compatibility of TensorRT, which may not always be
 given.
 
-## Recommended NVIDIA driver (Regular)
+## Recommended NVIDIA driver (NFB/PB)
 
 | CUDA   | Linux driver version | Windows driver version[^6] |
 |:-------|:---------------------|:---------------------------|
