@@ -124,9 +124,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
+    tables \
     widgetsnbextension \
     xlrd \
-  && pip install git+https://github.com/PyTables/PyTables.git \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
