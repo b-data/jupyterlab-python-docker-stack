@@ -1,5 +1,5 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
-ARG PYTHON_VERSION=3.13.12
+ARG PYTHON_VERSION=3.14.3
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
 ARG QUARTO_VERSION=1.9.36
 ARG CTAN_REPO=https://www.texlive.info/tlnet-archive/2026/04/07/tlnet
@@ -127,11 +127,6 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     tables \
     widgetsnbextension \
     xlrd \
-  ## Install facets
-  && cd /tmp \
-  && git clone https://github.com/PAIR-code/facets.git \
-  && jupyter nbclassic-extension install facets/facets-dist/ --sys-prefix \
-  && cd / \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \
