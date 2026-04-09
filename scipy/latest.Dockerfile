@@ -1,7 +1,7 @@
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/jupyterlab/python/base
 ARG PYTHON_VERSION
 ARG CODE_BUILTIN_EXTENSIONS_DIR=/opt/code-server/lib/vscode/extensions
-ARG QUARTO_VERSION=1.8.27
+ARG QUARTO_VERSION=1.9.36
 ARG CTAN_REPO=https://mirror.ctan.org/systems/texlive/tlnet
 
 FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:}${PYTHON_VERSION}
@@ -124,9 +124,9 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
     sqlalchemy \
     statsmodels \
     sympy \
+    tables \
     widgetsnbextension \
     xlrd \
-  && pip install git+https://github.com/PyTables/PyTables.git \
   ## Install code-server extensions
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension quarto.quarto \
   && code-server --extensions-dir ${CODE_BUILTIN_EXTENSIONS_DIR} --install-extension James-Yu.latex-workshop \

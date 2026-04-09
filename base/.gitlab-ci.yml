@@ -1,5 +1,5 @@
 variables:
-  PYTHON_VERSION: "3.14.2"
+  PYTHON_VERSION: "3.14.3"
   TAG_VERSION_MAJ_MIN: "false"
   TAG_VERSION_MAJ: "false"
 
