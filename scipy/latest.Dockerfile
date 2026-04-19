@@ -73,7 +73,6 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && tlmgr update --self \
   ## TeX packages as requested by the community
   && curl -sSLO https://yihui.org/gh/tinytex/tools/pkgs-yihui.txt \
-  && sed -i "s/pdfmanagement-testphase/pdfmanagement/g" pkgs-yihui.txt \
   && tlmgr install $(cat pkgs-yihui.txt | tr '\n' ' ') \
   && rm -f pkgs-yihui.txt \
   ## TeX packages as in rocker/verse
