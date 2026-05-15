@@ -55,13 +55,13 @@ The same as the
 :information_source: The host running the GPU accelerated images only requires
 the NVIDIA driver, the CUDA toolkit does not have to be installed.
 
-Use driver version 535
-([Long Term Support Branch](https://docs.nvidia.com/datacenter/tesla/drivers/index.html#lifecycle))
+Use driver version 580
+([Long Term Support Branch](https://docs.nvidia.com/datacenter/tesla/drivers/latest/driver-lifecycle.html))
 with [NVIDIA Data Center GPUs](https://resources.nvidia.com/l/en-us-gpu) or
-[select NGC-Ready NVIDIA RTX boards](https://docs.nvidia.com/certification-programs/ngc-ready-systems/index.html)
+[select NGC-Ready NVIDIA RTX boards](https://docs.nvidia.com/certification-programs/latest/ngc-ready-systems.html)
 to ensure
-[forward compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#forward-compatibility)
-until June 2026.
+[forward compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/forward-compatibility.html)
+until June 2028.
 
 ## Install
 
@@ -81,7 +81,7 @@ cd base && docker build \
   --build-arg BASE_IMAGE=ubuntu \
   --build-arg BASE_IMAGE_TAG=24.04 \
   --build-arg BUILD_ON_IMAGE=glcr.b-data.ch/cuda/python/ver \
-  --build-arg PYTHON_VERSION=3.14.3 \
+  --build-arg PYTHON_VERSION=3.14.4 \
   --build-arg CUDA_IMAGE_FLAVOR=devel \
   -t jupyterlab/cuda/python/base \
   -f latest.Dockerfile .
@@ -214,7 +214,7 @@ docker run -it --rm \
 **What makes this project different:**
 
 1. Multi-arch: `linux/amd64`, `linux/arm64/v8`
-1. Derived from [`nvidia/cuda:13.2.0-devel-ubuntu24.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=13.2.0-devel-ubuntu24.04)
+1. Derived from [`nvidia/cuda:13.2.1-devel-ubuntu24.04`](https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=13.2.1-devel-ubuntu24.04)
     * including development libraries and headers
 1. IDE: [code-server](https://github.com/coder/code-server) next to
    [JupyterLab](https://github.com/jupyterlab/jupyterlab)
