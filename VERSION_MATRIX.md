@@ -63,7 +63,9 @@ Topmost entry = Tag `latest`
 
 ### Bugs
 
-* Versions 3.13.{9,10,11} and 3.14.{0,1}: \[vscode-shellcheck/vscode-shellcheck\]
+* Versions 3.13.{12,13} and 3.14.{3}: VS Code Python extension: Python
+  environment tools are not available
+* Versions 3.13.{9,10} and 3.14.{0,1}: \[vscode-shellcheck/vscode-shellcheck\]
   ShellCheck is not installed or not working
   * Cross reference: <https://github.com/vscode-shellcheck/vscode-shellcheck/issues/1708>
     * Cross reference: <https://github.com/microsoft/vscode/issues/276673>
