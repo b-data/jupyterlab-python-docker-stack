@@ -17,6 +17,11 @@ https://demo.jupyter.b-data.ch.
 
 ![Screenshot](assets/screenshot.png)
 
+Due to ongoing DDoS attacks, access to b-data's IT infrastructure has been
+blocked for all Chinese servers.  
+:information_source: For any requests to unblock individual Chinese IPs or CIDR
+blocks, please contact <olivier.benz@b-data.ch>.
+
 **Build chain**
 
 base → scipy
