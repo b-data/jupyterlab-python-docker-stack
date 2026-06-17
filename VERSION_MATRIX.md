@@ -8,6 +8,7 @@ Topmost entry = Tag `latest`
 
 | Python     | Jupyter Hub | Jupyter Lab | code‑server (Code) | Neovim | Git    | Git LFS | Pandoc | Linux distro |
 |:-----------|:------------|:------------|:-------------------|:-------|:-------|:--------|:-------|:-------------|
+| 3.14.5     | 5.4.6       | 4.5.8       | 4.117.0 (1.117.0)  | 0.12.2 | 2.54.0 | 3.7.1   | 3.8.3  | Debian 13    |
 | 3.13.13    | 5.4.4       | 4.5.6       | 4.115.0 (1.115.0)  | 0.12.1 | 2.53.0 | 3.7.1   | 3.8.3  | Debian 13    |
 | 3.14.4     | 5.4.4       | 4.5.7       | 4.117.0 (1.117.0)  | 0.12.2 | 2.54.0 | 3.7.1   | 3.8.3  | Debian 13    |
 | 3.14.3     | 5.4.4       | 4.5.6       | 4.114.1 (1.114.1)  | 0.12.1 | 2.53.0 | 3.7.1   | 3.8.3  | Debian 13    |
@@ -62,7 +63,9 @@ Topmost entry = Tag `latest`
 
 ### Bugs
 
-* Versions 3.13.{9,10,11} and 3.14.{0,1}: \[vscode-shellcheck/vscode-shellcheck\]
+* Versions 3.13.{12,13} and 3.14.{3}: VS Code Python extension: Python
+  environment tools are missing
+* Versions 3.13.{9,10} and 3.14.{0,1}: \[vscode-shellcheck/vscode-shellcheck\]
   ShellCheck is not installed or not working
   * Cross reference: <https://github.com/vscode-shellcheck/vscode-shellcheck/issues/1708>
     * Cross reference: <https://github.com/microsoft/vscode/issues/276673>
@@ -71,6 +74,7 @@ Topmost entry = Tag `latest`
 
 | Python     | CTAN date  | Quarto      |
 |:-----------|:-----------|:------------|
+| 3.14.5     |            | 1.9.38      |
 | 3.13.13    |            | 1.9.36      |
 | 3.14.4     | 2026‑05‑10 | 1.9.37      |
 | 3.14.3     | 2026‑04‑07 | 1.9.36      |
