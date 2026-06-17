@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=debian
 ARG BASE_IMAGE_TAG=13
 ARG BUILD_ON_IMAGE=glcr.b-data.ch/python/ver
-ARG PYTHON_VERSION=3.13.13
+ARG PYTHON_VERSION=3.14.5
 ARG CUDA_IMAGE_FLAVOR
 
 ARG NB_USER=jovyan
@@ -59,8 +59,9 @@ RUN cp -a /files/etc/skel/. /files/var/backups/skel \
 FROM glcr.b-data.ch/neovim/nvsi:${NEOVIM_VERSION} AS nvsi
 FROM glcr.b-data.ch/git/gsi/${GIT_VERSION}/${BASE_IMAGE}:${BASE_IMAGE_TAG} AS gsi
 FROM glcr.b-data.ch/git-lfs/glfsi:${GIT_LFS_VERSION} AS glfsi
+FROM glcr.b-data.ch/vscode-extensions/ms-python.python:latest-python-env-tools AS pet
 
-FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:}${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR}
+FROM ${BUILD_ON_IMAGE}${PYTHON_VERSION:+:}${PYTHON_VERSION}${CUDA_IMAGE_FLAVOR:+-}${CUDA_IMAGE_FLAVOR} AS jupyterlab-python-base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -330,9 +331,23 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
   ## Create backup of home directory
   && cp -a ${HOME}/. /var/backups/skel
 
+FROM files AS files-pet
+
+COPY --from=jupyterlab-python-base /opt/code-server/lib/vscode/extensions /tmp/extensions
+COPY --from=pet /python-env-tools /tmp/python-env-tools
+
+## Add missing Python environment tools to Python extension
+RUN extensionBasename="$(basename /tmp/extensions/ms-python.python-*)" \
+  && mkdir -p "/files/opt/code-server/lib/vscode/extensions/$extensionBasename" \
+  && cp -r /tmp/python-env-tools \
+    /files/opt/code-server/lib/vscode/extensions/ms-python.python-*-universal \
+  && rm -rf /tmp/*
+
+FROM jupyterlab-python-base
+
 ## Copy files as late as possible to avoid cache busting
-COPY --from=files /files /
-COPY --from=files /files/var/backups/skel ${HOME}
+COPY --from=files-pet /files /
+COPY --from=files-pet /files/var/backups/skel ${HOME}
 
 ARG JUPYTER_PORT=8888
 ENV JUPYTER_PORT=${JUPYTER_PORT}
