@@ -6,7 +6,7 @@ Topmost entry = Tag `latest`
 
 | Python     | CUDA   | cuBLAS    | cuDNN     | NCCL   | TensorRT[^2]             | Linux distro |
 |:-----------|:-------|:----------|:----------|:-------|:-------------------------|:-------------|
-| 3.14.7     | 13.3.1 | 13.6.0.2  | 9.25.0.15 | 2.30.7 | n/a                      | Ubuntu 24.04 |
+| 3.14.7     | 13.4.1 | 13.7.0.27 | 9.26.0.51 | 2.31.2 | n/a                      | Ubuntu 24.04 |
 | 3.13.15    | 13.3.1 | 13.6.0.2  | 9.25.0.15 | 2.30.7 | n/a                      | Ubuntu 24.04 |
 | 3.14.6     | 13.3.1 | 13.6.0.2  | 9.25.0.15 | 2.30.7 | n/a                      | Ubuntu 24.04 |
 | 3.13.14    | 13.3.1 | 13.6.0.2  | 9.25.0.15 | 2.30.7 | n/a                      | Ubuntu 24.04 |
@@ -68,25 +68,26 @@ Topmost entry = Tag `latest`
 
 ## PyTorch/TensorFlow compatibility
 
-| Python | CUDA | PyTorch[^4]                  | TensorFlow[^5]                   |
-|:-------|:-----|:-----------------------------|:---------------------------------|
-| 3.14   | 13.3 | version ≥ 2.9 (experimental) | n/a                              |
-| 3.13   | 13.3 | version ≥ 2.9                | n/a                              |
-| 3.14   | 13.2 | version ≥ 2.9 (experimental) | n/a                              |
-| 3.13   | 13.2 | version ≥ 2.9                | n/a                              |
-| 3.14   | 13.1 | version ≥ 2.9 (experimental) | n/a                              |
-| 3.13   | 13.1 | version ≥ 2.9                | n/a                              |
-| 3.14   | 13.0 | version ≥ 2.9 (experimental) | n/a                              |
-| 3.13   | 13.0 | version ≥ 2.9                | n/a                              |
-| 3.12   | 12.9 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
-| 3.13   | 12.8 | version ≥ 2.6                | n/a                              |
-| 3.12   | 12.8 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
-| 3.13   | 12.6 | version ≥ 2.6                | n/a                              |
-| 3.12   | 12.6 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
-| 3.12   | 12.5 | version ≥ 2.4                | 2.18 > version ≥ 2.16            |
-| 3.12   | 11.8 | version ≥ 2.4                | 2.18 > version ≥ 2.16 (CPU-only) |
-| 3.11   | 11.8 | version ≥ 2.0                | 2.16 > version ≥ 2.12            |
-| 3.10   | 11.8 | version ≥ 1.12               | 2.16 > version ≥ 2.9             |
+| Python | CUDA | PyTorch[^4]    | TensorFlow[^5]                   |
+|:-------|:-----|:---------------|:---------------------------------|
+| 3.14   | 13.4 | version ≥ 2.13 | n/a                              |
+| 3.14   | 13.3 | version ≥ 2.13 | n/a                              |
+| 3.13   | 13.3 | version ≥ 2.9  | n/a                              |
+| 3.14   | 13.2 | version ≥ 2.13 | n/a                              |
+| 3.13   | 13.2 | version ≥ 2.9  | n/a                              |
+| 3.14   | 13.1 | version ≥ 2.13 | n/a                              |
+| 3.13   | 13.1 | version ≥ 2.9  | n/a                              |
+| 3.14   | 13.0 | version ≥ 2.13 | n/a                              |
+| 3.13   | 13.0 | version ≥ 2.9  | n/a                              |
+| 3.12   | 12.9 | version ≥ 2.4  | 2.18 > version ≥ 2.16            |
+| 3.13   | 12.8 | version ≥ 2.6  | n/a                              |
+| 3.12   | 12.8 | version ≥ 2.4  | 2.18 > version ≥ 2.16            |
+| 3.13   | 12.6 | version ≥ 2.6  | n/a                              |
+| 3.12   | 12.6 | version ≥ 2.4  | 2.18 > version ≥ 2.16            |
+| 3.12   | 12.5 | version ≥ 2.4  | 2.18 > version ≥ 2.16            |
+| 3.12   | 11.8 | version ≥ 2.4  | 2.18 > version ≥ 2.16 (CPU-only) |
+| 3.11   | 11.8 | version ≥ 2.0  | 2.16 > version ≥ 2.12            |
+| 3.10   | 11.8 | version ≥ 1.12 | 2.16 > version ≥ 2.9             |
 
 [^4]: Installs its own CUDA dependencies
 [^5]: The expected TensorRT version is symlinked to the installed TensorRT
@@ -98,6 +99,7 @@ given.
 
 | CUDA   | Linux driver version | Windows driver version[^6] |
 |:-------|:---------------------|:---------------------------|
+| 13.4.1 | ≥ 615.71.09          | n/a                        |
 | 13.3.1 | ≥ 610.43.02          | n/a                        |
 | 13.3.0 | ≥ 610.43.02          | n/a                        |
 | 13.2.1 | ≥ 595.58.03          | n/a                        |
@@ -128,6 +130,7 @@ Only works with
 
 | CUDA   | Driver version 580[^7] | Driver version 535[^8] | Driver version 470[^9] |
 |:-------|:----------------------:|:----------------------:|:----------------------:|
+| 13.4.1 | 🟢                      | 🔵                      | 🔴                      |
 | 13.3.1 | 🟢                      | 🔵                      | 🔴                      |
 | 13.3.0 | 🟢                      | 🔵                      | 🔴                      |
 | 13.2.1 | 🟢                      | 🔵                      | 🔴                      |
