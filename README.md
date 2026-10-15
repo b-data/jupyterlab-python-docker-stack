@@ -17,11 +17,6 @@ https://demo.jupyter.b-data.ch.
 
 ![Screenshot](assets/screenshot.png)
 
-Due to ongoing DDoS attacks, access to b-data's IT infrastructure has been
-blocked for all Chinese servers.  
-:information_source: For any requests to unblock individual Chinese IPs or CIDR
-blocks, please contact <olivier.benz@b-data.ch>.
-
 **Build chain**
 
 base → scipy
@@ -137,7 +132,7 @@ To install docker, follow the instructions for your platform:
 
 ```bash
 cd base && docker build \
-  --build-arg PYTHON_VERSION=3.14.6 \
+  --build-arg PYTHON_VERSION=3.14.7 \
   -t jupyterlab/python/base \
   -f latest.Dockerfile .
 ```
