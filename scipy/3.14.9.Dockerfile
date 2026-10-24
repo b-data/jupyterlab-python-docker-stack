@@ -12,7 +12,7 @@ ARG BUILD_ON_IMAGE
 ARG CODE_BUILTIN_EXTENSIONS_DIR
 ARG QUARTO_VERSION
 ARG CTAN_REPO
-ARG CTAN_REPO_BUILD
+ARG CTAN_REPO_BUILD_LATEST
 ARG BUILD_START
 
 USER root
@@ -60,7 +60,7 @@ RUN dpkgArch="$(dpkg --print-architecture)" \
   && apt-get -y autoremove \
   ## Admin-based install of TinyTeX
   && CTAN_REPO_ORIG=${CTAN_REPO} \
-  && CTAN_REPO=${CTAN_REPO_BUILD:-$CTAN_REPO} \
+  && CTAN_REPO=${CTAN_REPO_BUILD_LATEST:-$CTAN_REPO} \
   && export CTAN_REPO \
   && wget -qO- "https://yihui.org/tinytex/install-unx.sh" \
     | sh -s - --admin --no-path \

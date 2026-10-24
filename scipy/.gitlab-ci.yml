@@ -1,15 +1,8 @@
 variables:
   PYTHON_VERSION: "3.14.9"
-  CTAN_REPO_BUILD: "https://mirror.init7.net/ctan/systems/texlive/tlnet"
+  CTAN_REPO_BUILD_LATEST: "https://mirror.init7.net/ctan/systems/texlive/tlnet"
   TAG_VERSION_MAJ_MIN: "true"
   TAG_VERSION_MAJ: "false"
-
-workflow:
-  rules:
-    - if: $CI_COMMIT_BRANCH == "freeze-version" && $TAG_VERSION_MAJ_MIN == "true"
-      variables:
-        CTAN_REPO_BUILD: "https://mirror.init7.net/ctan/systems/texlive/tlnet"
-    - if: $CI_COMMIT_BRANCH
 
 .before-script-build: &before-script-build
   - |
@@ -70,7 +63,7 @@ build:latest-linux-amd64:
       docker build --pull
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
-      --build-arg CTAN_REPO_BUILD
+      --build-arg CTAN_REPO_BUILD_LATEST
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -t $CI_APP_REPO:latest-linux-amd64
@@ -113,7 +106,7 @@ build:latest-linux-arm64v8:
       docker build --pull
       --build-arg BUILD_ON_IMAGE
       --build-arg PYTHON_VERSION
-      --build-arg CTAN_REPO_BUILD
+      --build-arg CTAN_REPO_BUILD_LATEST
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -t $CI_APP_REPO:latest-linux-arm64v8
@@ -155,7 +148,6 @@ build:version-linux-amd64:
     - >
       docker build --pull
       --build-arg BUILD_ON_IMAGE
-      --build-arg CTAN_REPO_BUILD
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-amd64
       -f scipy/$PYTHON_VERSION.Dockerfile .
@@ -193,7 +185,6 @@ build:version-linux-arm64v8:
     - >
       docker build --pull
       --build-arg BUILD_ON_IMAGE
-      --build-arg CTAN_REPO_BUILD
       --build-arg BUILD_START=$(date -uIseconds)
       -t $CI_APP_REPO:$CI_APP_TAG-linux-arm64v8
       -f scipy/$PYTHON_VERSION.Dockerfile .
